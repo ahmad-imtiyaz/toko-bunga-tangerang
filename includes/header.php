@@ -381,8 +381,14 @@ section[id] { scroll-margin-top: 90px; }
    UTILITIES
 ════════════════════════════════════════ */
 .line-clamp-2 {
-  display: -webkit-box; -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2; overflow: hidden;
+  display: -webkit-box;
+  display: box;
+  -webkit-box-orient: vertical;
+  
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+
+  overflow: hidden;
 }
 .prose p  { margin-bottom: 1rem; line-height: 1.75; }
 .prose ul { padding-left: 1.25rem; margin-bottom: 1rem; }

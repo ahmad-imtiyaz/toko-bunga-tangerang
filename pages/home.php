@@ -651,23 +651,14 @@ require __DIR__ . '/../includes/header.php';
     <?php endforeach; endfor; ?>
   </div>
 </div>
-
 <!-- ============================================================
-     LAYANAN SECTION
+     LAYANAN SECTION — Split Kiri-Kanan High-End Florist
+     Tema: Elegan & Mewah | Palet ivory/rose/blush/cream
 ============================================================ -->
 <?php
-/* ================================================================
-   LAYANAN SECTION — Bento Grid Asimetris
-   Konsisten dengan tema navy + gold hero section
-   Desktop: grid asimetris (kartu besar + kecil)
-   Mobile : 2 kolom seragam, rapi
-================================================================ */
-
-// Ambil hanya kategori INDUK
 $parent_cats = array_filter($categories, fn($c) => empty($c['parent_id']) || $c['parent_id'] == 0);
 $parent_cats = array_values($parent_cats);
 
-// Ambil sub-kategori
 $sub_cats = db()->query("
     SELECT * FROM categories
     WHERE parent_id IS NOT NULL AND parent_id != 0 AND status = 'active'
@@ -678,241 +669,465 @@ $subs_by_parent = [];
 foreach ($sub_cats as $sc) {
     $subs_by_parent[$sc['parent_id']][] = $sc;
 }
-
-// Bento slot pattern (desktop): 0=tall-wide, 1=normal, 2=normal, 3=wide, 4=normal, 5=tall, dst
-// Kita definisikan class per posisi (loop mod 6)
-$bento_classes = [
-    0 => 'md:col-span-2 md:row-span-2',   // BESAR: 2x2
-    1 => 'md:col-span-1 md:row-span-1',   // normal
-    2 => 'md:col-span-1 md:row-span-1',   // normal
-    3 => 'md:col-span-1 md:row-span-1',   // normal
-    4 => 'md:col-span-2 md:row-span-1',   // lebar
-    5 => 'md:col-span-1 md:row-span-1',   // normal
-];
-
-$min_heights = [
-    0 => 'min-h-[320px] md:min-h-[340px]',
-    1 => 'min-h-[160px] md:min-h-[160px]',
-    2 => 'min-h-[160px] md:min-h-[160px]',
-    3 => 'min-h-[160px] md:min-h-[160px]',
-    4 => 'min-h-[160px] md:min-h-[160px]',
-    5 => 'min-h-[160px] md:min-h-[160px]',
-];
 ?>
 
 <style>
-  section#produk {
+/* ════════════════════════════════════════
+   LAYANAN SECTION
+════════════════════════════════════════ */
+#layanan {
+  background: var(--ivory);
   position: relative;
-  z-index: 1; /* lebih rendah dari dropdown layanan */
+  overflow: hidden;
 }
 
-section#layanan {
+/* Ornamen background */
+#layanan::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -120px;
+  width: 480px; height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242,196,206,.22) 0%, transparent 70%);
+  pointer-events: none;
+}
+#layanan::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,137,154,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Section header ── */
+.layanan-overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--dusty);
+  margin-bottom: 16px;
+}
+.layanan-overline-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--rose);
+}
+.layanan-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  color: var(--dark);
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+.layanan-title em {
+  font-style: italic;
+  color: var(--dusty);
+}
+.layanan-subtitle {
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 480px;
+}
+
+/* ── Divider ornament ── */
+.section-ornament {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 14px 0 56px;
+}
+.ornament-line {
+  height: 1px;
+  width: 56px;
+  background: linear-gradient(to right, var(--rose), transparent);
+}
+.ornament-text {
+  color: var(--rose);
+  font-size: 13px;
+  letter-spacing: .2em;
+}
+
+/* ════════════════════════════════════════
+   SPLIT ROW — tiap layanan
+════════════════════════════════════════ */
+.layanan-row {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  gap: 0;
+  min-height: 260px;
+  border-bottom: 1px solid rgba(212,137,154,.12);
   position: relative;
-  z-index: 2; /* lebih tinggi */
+  overflow: visible;
 }
-  /* Tambah di bagian <style> section layanan */
-.bento-grid {
-  overflow: visible !important;
+.layanan-row.reversed {
+  grid-template-columns: 58% 42%;
+}
+.layanan-row:first-child { border-top: 1px solid rgba(212,137,154,.12); }
+
+/* Gambar side */
+.layanan-img-side {
+  position: relative;
+  overflow: hidden;
+  min-height: 240px;
+}
+.layanan-img-side img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+}
+.layanan-row:hover .layanan-img-side img {
+  transform: scale(1.04);
 }
 
-.layanan-card {
-  overflow: visible !important;
+/* Overlay foto */
+.layanan-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(242,196,206,.15) 0%, rgba(44,26,30,.1) 100%);
+  transition: opacity .4s;
 }
-  /* Tambah di CSS layanan */
-.layanan-card:has(.layanan-sub.show) {
-  z-index: 300;
+.layanan-row:hover .layanan-img-overlay {
+  opacity: 0;
 }
-  /* Dropdown sub-kategori */
-  .layanan-sub { display: none; }
-  .layanan-sub.show {
-    display: block;
-    animation: subDropIn .18s ease;
-  }
-  @keyframes subDropIn {
-    from { opacity:0; transform:translateY(-6px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-  .sub-arrow { transition: transform .2s; }
-  .sub-arrow.open { transform: rotate(180deg); }
 
-  /* Pastikan grid overflow visible untuk dropdown */
-  #layanan .bento-grid { overflow: visible; }
+/* Nomor urut di sudut foto */
+.layanan-img-num {
+  position: absolute;
+  top: 20px; left: 20px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.7);
+  background: rgba(44,26,30,.4);
+  backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+/* Badge kategori di foto */
+.layanan-img-badge {
+  position: absolute;
+  bottom: 20px; right: 20px;
+  background: rgba(253,249,244,.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212,137,154,.25);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  box-shadow: 0 4px 20px rgba(44,26,30,.12);
+}
+
+/* Text side */
+.layanan-text-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 40px;
+  background: var(--ivory);
+  position: relative;
+  transition: background .3s;
+}
+.layanan-row:hover .layanan-text-side {
+  background: rgba(250,245,238,.7);
+}
+
+/* Reversed row: teks kiri, foto kanan */
+.layanan-row.reversed .layanan-img-side { order: 2; }
+.layanan-row.reversed .layanan-text-side { order: 1; }
+
+/* Garis aksen kiri di text side */
+.layanan-text-side::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--blush), transparent);
+  opacity: 0;
+  transition: opacity .4s;
+}
+.layanan-row:hover .layanan-text-side::before { opacity: 1; }
+.layanan-row.reversed .layanan-text-side::before {
+  left: auto; right: 0;
+}
+
+/* Icon */
+.layanan-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+  display: block;
+  transition: transform .3s;
+}
+.layanan-row:hover .layanan-icon { transform: scale(1.1) rotate(-3deg); }
+
+/* Nama layanan */
+.layanan-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+  font-weight: 600;
+  color: var(--dark);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+/* Garis dekoratif bawah nama */
+.layanan-name-rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.layanan-name-rule-line {
+  height: 1px;
+  width: 28px;
+  background: var(--rose);
+  transition: width .4s;
+}
+.layanan-row:hover .layanan-name-rule-line { width: 44px; }
+.layanan-name-rule-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--blush);
+}
+
+/* Deskripsi */
+.layanan-desc {
+  font-family: 'Jost', sans-serif;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 16px;
+  max-width: 340px;
+}
+
+/* Sub-kategori pills */
+.layanan-subs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.layanan-sub-pill {
+  font-family: 'Jost', sans-serif;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--dusty);
+  border: 1px solid rgba(212,137,154,.28);
+  background: rgba(242,196,206,.1);
+  padding: 4px 11px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background .2s, border-color .2s, color .2s;
+  white-space: nowrap;
+}
+.layanan-sub-pill:hover {
+  background: rgba(242,196,206,.25);
+  border-color: var(--rose);
+  color: var(--dark);
+}
+
+/* CTA link */
+.layanan-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--dusty);
+  text-decoration: none;
+  transition: gap .25s, color .2s;
+}
+.layanan-cta:hover {
+  gap: 12px;
+  color: var(--dark);
+}
+.layanan-cta-arrow {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--rose);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .25s, border-color .25s;
+}
+.layanan-cta:hover .layanan-cta-arrow {
+  background: var(--rose);
+  border-color: var(--rose);
+}
+.layanan-cta:hover .layanan-cta-arrow svg { color: #fff; }
+
+/* ── Fallback tanpa gambar ── */
+.layanan-img-fallback {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(242,196,206,.3) 0%, rgba(212,137,154,.15) 100%);
+}
+.layanan-img-fallback-icon {
+  font-size: 72px;
+  opacity: .35;
+  transition: transform .5s, opacity .3s;
+}
+.layanan-row:hover .layanan-img-fallback-icon {
+  transform: scale(1.12);
+  opacity: .5;
+}
+
+/* ════════════════════════════════════════
+   MOBILE
+════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .layanan-row,
+  .layanan-row.reversed {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .layanan-row .layanan-img-side  { order: 1 !important; min-height: 200px; }
+  .layanan-row .layanan-text-side { order: 2 !important; padding: 22px 18px 26px; }
+  .layanan-text-side::before      { display: none; }
+  .layanan-name                   { font-size: 1.4rem; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .layanan-row,
+  .layanan-row.reversed { grid-template-columns: 1fr 1fr; }
+  .layanan-text-side { padding: 24px 28px; }
+  .layanan-name { font-size: 1.4rem; }
+}
 </style>
 
-<!-- ============================================================
+<!-- ════════════════════════════════════════
      LAYANAN SECTION
-============================================================ -->
-<section id="layanan" class="py-20 bg-[#0B1F4A] relative overflow-visible">
-
-  <!-- Dekorasi background subtle -->
-  <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F5C518]/30 to-transparent"></div>
-  <div class="absolute inset-0 opacity-[0.03]"
-       style="background-image: radial-gradient(circle, #F5C518 1px, transparent 1px); background-size: 40px 40px;"></div>
+════════════════════════════════════════ -->
+<section id="layanan" class="py-20 relative">
 
   <div class="relative z-10 max-w-7xl mx-auto px-4">
 
     <!-- Header -->
-    <div class="text-center mb-14">
-      <div class="inline-flex items-center gap-2 bg-[#F5C518]/10 border border-[#F5C518]/25 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-[#F5C518] mb-5">
-        <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#F5C518]"></span>
+    <div class="mb-0">
+      <div class="layanan-overline">
+        <span class="layanan-overline-dot"></span>
         Apa yang Kami Tawarkan
       </div>
-      <h2 class="font-serif text-3xl md:text-4xl font-black text-white mt-2 mb-4">Layanan Kami</h2>
-      <p class="text-white/50 max-w-xl mx-auto text-[15px] leading-relaxed">
-        Kami menyediakan berbagai jenis rangkaian bunga segar berkualitas tinggi untuk setiap momen spesial Anda di Tangerang.
+      <h2 class="layanan-title">
+        Layanan <em>Spesial</em><br>untuk Setiap Momen
+      </h2>
+      <p class="layanan-subtitle">
+        Kami menyediakan berbagai rangkaian bunga segar berkualitas tinggi, dirancang khusus untuk setiap momen spesial Anda di Tangerang.
       </p>
+      <div class="section-ornament">
+        <div class="ornament-line"></div>
+        <span class="ornament-text">✦ ✦ ✦</span>
+        <div class="ornament-line" style="background:linear-gradient(to left,var(--rose),transparent)"></div>
+      </div>
     </div>
 
-    <!-- ── BENTO GRID ── -->
-    <div class="bento-grid grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 auto-rows-auto">
+  </div>
 
-      <?php foreach ($parent_cats as $i => $cat):
-        $slot      = $i % 6;
-        $has_img   = !empty($cat['image']);
-        $img_url   = $has_img ? e(imgUrl($cat['image'], 'category')) : '';
-        $children  = $subs_by_parent[$cat['id']] ?? [];
-        $has_subs  = !empty($children);
+  <!-- ── Split rows — dalam max-width container ── -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4">
+    <div class="rounded-2xl overflow-hidden border border-[rgba(212,137,154,.15)] shadow-sm">
 
-        // Warna fallback kalau tidak ada gambar (gold-tinted)
-        $fallback_bg = [
-          'rgba(245,197,24,.08)',
-          'rgba(255,255,255,.04)',
-          'rgba(245,197,24,.06)',
-          'rgba(255,255,255,.03)',
-          'rgba(245,197,24,.10)',
-          'rgba(255,255,255,.05)',
-        ];
-        $bg = $fallback_bg[$i % count($fallback_bg)];
-      ?>
+    <?php foreach ($parent_cats as $i => $cat):
+      $reversed  = ($i % 2 !== 0);
+      $has_img   = !empty($cat['image']);
+      $img_url   = $has_img ? e(imgUrl($cat['image'], 'category')) : '';
+      $children  = $subs_by_parent[$cat['id']] ?? [];
+      $has_subs  = !empty($children);
+      $num       = str_pad($i + 1, 2, '0', STR_PAD_LEFT);
+    ?>
 
-      <!-- Kartu <?= $i ?> — slot <?= $slot ?> -->
-      <div class="layanan-card group relative rounded-2xl overflow-visible <?= $bento_classes[$slot] ?> <?= $min_heights[$slot] ?> transition-all duration-300 cursor-pointer"
-           style="<?= $has_img ? '' : "background: $bg;" ?> border: 1px solid rgba(255,255,255,.08);"
-           <?= $has_subs ? 'onclick="toggleLayananSub(this)"' : '' ?>>
+    <div class="layanan-row <?= $reversed ? 'reversed' : '' ?>">
 
-        <!-- Background gambar -->
+      <!-- ── GAMBAR ── -->
+      <div class="layanan-img-side">
         <?php if ($has_img): ?>
-        <div class="absolute inset-0 overflow-hidden rounded-2xl">
-          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-               style="background-image: url('<?= $img_url ?>')"></div>
-          <!-- Overlay gradient gold-navy -->
-          <div class="absolute inset-0 rounded-2xl transition-all duration-300"
-               style="background: linear-gradient(160deg, rgba(11,31,74,.25) 0%, rgba(11,31,74,.75) 100%);"></div>
-          <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-               style="background: linear-gradient(160deg, rgba(245,197,24,.15) 0%, rgba(11,31,74,.8) 100%);"></div>
-        </div>
+          <img src="<?= $img_url ?>" alt="<?= e($cat['name']) ?>" loading="lazy">
+          <div class="layanan-img-overlay"></div>
+          <div class="layanan-img-num"><?= $num ?></div>
+          <div class="layanan-img-badge"><?= e($cat['name']) ?></div>
+        <?php else: ?>
+          <div class="layanan-img-fallback">
+            <span class="layanan-img-fallback-icon">
+              <?= !empty($cat['icon']) ? e($cat['icon']) : '🌸' ?>
+            </span>
+          </div>
+          <div class="layanan-img-num"><?= $num ?></div>
+        <?php endif; ?>
+      </div>
+
+      <!-- ── TEKS ── -->
+      <div class="layanan-text-side">
+
+        <?php if (!empty($cat['icon'])): ?>
+        <span class="layanan-icon"><?= e($cat['icon']) ?></span>
         <?php endif; ?>
 
-        <!-- Aksen garis gold di sudut kiri atas -->
-        <div class="absolute top-0 left-0 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-          <div class="absolute top-3 left-3 w-4 h-[2px] bg-[#F5C518]"></div>
-          <div class="absolute top-3 left-3 w-[2px] h-4 bg-[#F5C518]"></div>
+        <h3 class="layanan-name"><?= e($cat['name']) ?></h3>
+
+        <div class="layanan-name-rule">
+          <div class="layanan-name-rule-line"></div>
+          <div class="layanan-name-rule-dot"></div>
         </div>
 
-        <!-- Content -->
-        <div class="relative z-10 p-5 md:p-6 flex flex-col justify-end h-full" style="min-height: inherit;">
+        <?php if (!empty($cat['description'])): ?>
+        <p class="layanan-desc"><?= e($cat['description']) ?></p>
+        <?php else: ?>
+        <p class="layanan-desc">
+          Rangkaian <?= e($cat['name']) ?> kami dirancang dengan penuh perhatian menggunakan bunga-bunga segar pilihan, siap diantar ke seluruh wilayah Tangerang.
+        </p>
+        <?php endif; ?>
 
-          <!-- Icon -->
-          <?php if (!empty($cat['icon'])): ?>
-          <div class="text-2xl md:text-3xl mb-3 transition-transform duration-300 group-hover:-translate-y-1 w-fit">
-            <?= e($cat['icon']) ?>
-          </div>
-          <?php endif; ?>
-
-          <!-- Nama layanan -->
-          <h3 class="font-serif font-bold text-base md:<?= $slot === 0 ? 'text-2xl' : 'text-lg' ?> leading-tight mb-2
-                     <?= $has_img ? 'text-white' : 'text-white/90' ?>">
-            <?= e($cat['name']) ?>
-          </h3>
-
-          <!-- Deskripsi singkat (hanya kartu besar / slot 0) -->
-          <?php if ($slot === 0 && !empty($cat['description'])): ?>
-          <p class="text-white/60 text-[13px] leading-relaxed mb-3 max-w-xs line-clamp-2">
-            <?= e($cat['description']) ?>
-          </p>
-          <?php endif; ?>
-
-          <!-- CTA -->
-          <?php if ($has_subs): ?>
-          <div class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#F5C518] mt-1 transition-all duration-200 opacity-60 group-hover:opacity-100">
-            Lihat kategori
-            <svg class="sub-arrow w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </div>
-          <?php else: ?>
-          <a href="<?= BASE_URL ?>/<?= e($cat['slug']) ?>/"
-             class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#F5C518] mt-1 transition-all duration-200 opacity-60 group-hover:opacity-100 no-underline"
-             onclick="event.stopPropagation()">
-            Lihat selengkapnya
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-            </svg>
-          </a>
-          <?php endif; ?>
-        </div>
-
-        <!-- ── Sub-kategori dropdown ── -->
+        <!-- Sub-kategori pills -->
         <?php if ($has_subs): ?>
-        <div class="layanan-sub absolute left-0 right-0 top-full mt-2 rounded-2xl z-[999] p-3 text-left"
-             style="background: #0f2860; border: 1px solid rgba(245,197,24,.2); box-shadow: 0 20px 60px rgba(0,0,0,.5);"
-             onclick="event.stopPropagation()">
-
-          <p class="text-[10px] text-[#F5C518]/60 font-bold uppercase tracking-widest px-2 mb-2">
-            Pilih kategori <?= e($cat['name']) ?>
-          </p>
-
+        <div class="layanan-subs">
           <?php foreach ($children as $ch): ?>
           <a href="<?= BASE_URL ?>/<?= e($ch['slug']) ?>/"
-             class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl transition text-sm font-medium text-white/75 hover:text-[#F5C518] hover:bg-[#F5C518]/08 no-underline"
-             style="cursor:pointer;">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#F5C518]/40 flex-shrink-0"></span>
+             class="layanan-sub-pill">
             <?= e($ch['name']) ?>
           </a>
           <?php endforeach; ?>
-
-          <div class="border-t mt-2 pt-2" style="border-color: rgba(255,255,255,.06);">
-            <a href="<?= BASE_URL ?>/<?= e($cat['slug']) ?>/"
-               class="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#F5C518]/50 hover:text-[#F5C518] transition no-underline">
-              Lihat semua <?= e($cat['name']) ?> →
-            </a>
-          </div>
         </div>
         <?php endif; ?>
 
-      </div><!-- /layanan-card -->
-      <?php endforeach; ?>
+        <!-- CTA -->
+        <a href="<?= BASE_URL ?>/<?= e($cat['slug']) ?>/"
+           class="layanan-cta">
+          Lihat Koleksi
+          <span class="layanan-cta-arrow">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </a>
 
-    </div><!-- /bento-grid -->
+      </div>
 
-  </div>
+    </div><!-- /layanan-row -->
+    <?php endforeach; ?>
+
+  </div><!-- /rounded wrapper -->
+  </div><!-- /max-width -->
+
 </section>
-
-<script>
-function toggleLayananSub(card) {
-  const sub = card.querySelector('.layanan-sub');
-  if (!sub) return;
-
-  const isOpen = sub.classList.contains('show');
-
-  // Tutup semua
-  document.querySelectorAll('.layanan-sub.show').forEach(el => el.classList.remove('show'));
-  document.querySelectorAll('.sub-arrow.open').forEach(el => el.classList.remove('open'));
-
-  if (!isOpen) {
-    sub.classList.add('show');
-    card.querySelector('.sub-arrow')?.classList.add('open');
-  }
-}
-
-// Tutup saat klik luar
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.layanan-card')) {
-    document.querySelectorAll('.layanan-sub.show').forEach(el => el.classList.remove('show'));
-    document.querySelectorAll('.sub-arrow.open').forEach(el => el.classList.remove('open'));
-  }
-});
-</script>
 
 <!-- ============================================================
      PRODUK SECTION
