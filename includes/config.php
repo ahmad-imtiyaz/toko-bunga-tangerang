@@ -8,7 +8,7 @@ define('DB_PASS',   '');
 define('DB_NAME',   'tokobungatangerang');
 define('DB_CHARSET','utf8mb4');
 
-define('BASE_URL',  'http://localhost/TOKOBUNGATangerang');
+define('BASE_URL',  'http://localhost/TOKOBUNGATANGERANG');
 define('SITE_NAME', 'Toko Bunga Tangerang');
 
 // Upload path

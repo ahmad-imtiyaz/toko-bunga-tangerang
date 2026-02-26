@@ -38,22 +38,27 @@ if ($base_path && str_starts_with($current_slug, $base_path))
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="<?= e(BASE_URL) ?>">
 
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        cream: { DEFAULT:'#FDF8F0', dark:'#F5EDD8' },
-        sage:  { DEFAULT:'#7A9E7E', dark:'#5C7C60', light:'#A8C5AC' },
-        gold:  { DEFAULT:'#C9A96E', dark:'#A8843E' },
-        navy:  { DEFAULT:'#2C3E6B', dark:'#1E2D52' },
+        blush:  { DEFAULT:'#F2C4CE', dark:'#D4899A' },
+        dusty:  { DEFAULT:'#C8788A' },
+        cream:  { DEFAULT:'#FAF5EE' },
+        ivory:  { DEFAULT:'#FDF9F4' },
+        rose:   { DEFAULT:'#D4899A' },
+        muted:  { DEFAULT:'#8C6B72' },
+        floral: { DEFAULT:'#2C1A1E' },
       },
       fontFamily: {
-        serif: ['"Playfair Display"','Georgia','serif'],
-        sans:  ['"DM Sans"','sans-serif'],
+        serif: ['"Cormorant Garamond"','Georgia','serif'],
+        sans:  ['"Jost"','sans-serif'],
       },
     }
   }
@@ -62,172 +67,370 @@ tailwind.config = {
 <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
 
 <style>
-/* ════════════════════════════════════════════
-   FLOATING PILL NAVBAR — ala iPhone / macOS
-════════════════════════════════════════════ */
+/* ════════════════════════════════════════
+   CSS VARIABLES
+════════════════════════════════════════ */
+:root {
+  --blush:   #F2C4CE;
+  --rose:    #D4899A;
+  --dusty:   #C8788A;
+  --cream:   #FAF5EE;
+  --ivory:   #FDF9F4;
+  --muted:   #8C6B72;
+  --dark:    #2C1A1E;
+  --gold:    #C9A96E;
+}
 
-/* Wrapper fixed — beri ruang agar pill mengambang */
+/* ════════════════════════════════════════
+   TOP BAR
+════════════════════════════════════════ */
+#topbar {
+  background: var(--dark);
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: rgba(255,255,255,.55);
+  padding: 8px 0;
+  transition: max-height .4s ease, opacity .3s ease;
+  overflow: hidden;
+  max-height: 40px;
+}
+#topbar.hide { max-height: 0; opacity: 0; pointer-events: none; }
+#topbar a { color: var(--blush); transition: color .2s; }
+#topbar a:hover { color: #fff; }
+.topbar-sep { color: rgba(255,255,255,.2); margin: 0 10px; }
+
+/* ════════════════════════════════════════
+   NAVBAR WRAPPER — fixed, full-width
+════════════════════════════════════════ */
 #navbar-wrap {
   position: fixed;
-  top: 32px; left: 0; right: 0; /* 32px = tinggi top bar */
+  top: 0; left: 0; right: 0;
   z-index: 50;
-  padding: 12px 20px 0;
-  pointer-events: none; /* area luar pill tetap bisa diklik */
-  transition: padding .4s cubic-bezier(.4,0,.2,1), top .4s cubic-bezier(.4,0,.2,1);
-}
-#navbar-wrap.scrolled { padding-top: 8px; top: 0; }
-
-/* Pill utama */
-#navbar {
-  pointer-events: all;
-  border-radius: 9999px;
-  background: rgba(11,31,74,.3);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,.15);
-  box-shadow: 0 4px 32px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.08);
-  transition: background .4s ease, border-color .4s ease,
-              box-shadow .4s ease, border-radius .3s ease;
+  /* Mobile: tidak ada topbar, langsung dari top:0 */
+  transform: translateY(0);
+  transition: box-shadow .4s ease;
 }
 
-/* Scrolled: pill lebih gelap & jelas */
-#navbar-wrap.scrolled #navbar {
-  background: rgba(8,23,41,.95);
-  border-color: rgba(245,197,24,.2);
-  box-shadow: 0 8px 48px rgba(0,0,0,.5), inset 0 1px 0 rgba(245,197,24,.06);
+/* Desktop: geser ke bawah topbar (37px) */
+@media (min-width: 768px) {
+  #navbar-wrap {
+    transform: translateY(37px);
+    transition: transform .4s cubic-bezier(.4,0,.2,1), box-shadow .4s ease;
+  }
+  #navbar-wrap.scrolled {
+    transform: translateY(0);
+    box-shadow: 0 4px 32px rgba(44,26,30,.10);
+  }
 }
 
-/* Mobile: pill jadi kotak rounded saat menu terbuka */
-#navbar.menu-open {
-  border-radius: 20px 20px 0 0 !important;
-  border-bottom-color: transparent !important;
-}
-
+/* Mobile scrolled: cukup tambah shadow */
 @media (max-width: 767px) {
-  #navbar-wrap { padding: 10px 12px 0; }
+  #navbar-wrap.scrolled {
+    box-shadow: 0 4px 20px rgba(44,26,30,.08);
+  }
 }
 
-/* Mobile menu dropdown dari bawah pill */
-#mobile-menu {
-  display: none;
-  background: rgba(8,23,41,.98);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(245,197,24,.15);
-  border-top: none;
-  border-radius: 0 0 20px 20px;
+/* ════════════════════════════════════════
+   NAVBAR — solid ivory, border bawah rose
+════════════════════════════════════════ */
+#navbar {
+  font-family: 'Jost', sans-serif;
+  background: var(--ivory);
+  border-bottom: 1px solid rgba(212,137,154,.22);
+  transition: background .3s ease, border-color .3s ease;
 }
-#mobile-menu.open { display: block; }
+#navbar-wrap.scrolled #navbar {
+  background: #fff;
+  border-bottom-color: rgba(212,137,154,.30);
+}
 
-/* ── Nav links ── */
+/* ════════════════════════════════════════
+   BRAND / LOGO
+════════════════════════════════════════ */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: opacity .2s;
+}
+.nav-brand:hover { opacity: .85; }
+.nav-logo-ring {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(212,137,154,.35);
+  box-shadow: 0 2px 12px rgba(212,137,154,.2);
+  flex-shrink: 0;
+}
+.nav-logo-ring img { width: 100%; height: 100%; object-fit: cover; }
+.nav-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.1;
+}
+.nav-brand-sub {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* ════════════════════════════════════════
+   DESKTOP NAV LINKS
+════════════════════════════════════════ */
 .nav-link {
-  color: rgba(255,255,255,.82);
-  font-size: .875rem; font-weight: 500;
-  padding: 7px 12px; border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--dark);
+  padding: 6px 14px;
+  border-radius: 100px;
+  text-decoration: none;
+  white-space: nowrap;
   transition: color .2s, background .2s;
-  text-decoration: none; white-space: nowrap;
+  position: relative;
 }
-.nav-link:hover { color: #F5C518; background: rgba(245,197,24,.1); }
-.nav-link.active { color: #F5C518; font-weight: 600; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%; right: 50%;
+  height: 1.5px;
+  background: var(--rose);
+  border-radius: 2px;
+  transition: left .25s ease, right .25s ease;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--dusty);
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  left: 14px; right: 14px;
+}
 
-.brand-name { color: #fff; font-size: 15px; }
-.brand-sub  { color: rgba(255,255,255,.5); font-size: 11px; }
-#navbar-wrap.scrolled .brand-sub { color: rgba(245,197,24,.55); }
+/* ════════════════════════════════════════
+   DROPDOWN — DESKTOP
+════════════════════════════════════════ */
+.nav-dropdown         { position: relative; }
+.nav-dropdown-btn     { cursor: pointer; background: none; border: none; }
 
-/* ── Desktop Dropdown ── */
-.nav-dropdown { position: relative; }
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 14px);
-  left: 50%; transform: translateX(-50%);
-  min-width: 230px;
-  background: rgba(8,23,41,.98);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(245,197,24,.2);
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  background: #fff;
+  border: 1px solid rgba(212,137,154,.18);
   border-radius: 18px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.5);
-  z-index: 999; padding: 8px;
-  animation: dropIn .18s ease;
+  box-shadow: 0 16px 48px rgba(44,26,30,.12);
+  padding: 8px;
+  z-index: 999;
+  animation: ddFadeIn .18s ease;
 }
-@keyframes dropIn {
+@keyframes ddFadeIn {
   from { opacity:0; transform:translateX(-50%) translateY(-8px); }
   to   { opacity:1; transform:translateX(-50%) translateY(0); }
 }
 .nav-dropdown:hover .nav-dropdown-menu,
 .nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
 
-/* ── Nested submenu ── */
+/* Arrow indicator on dropdown btn */
+.nav-dropdown-btn .dd-arrow {
+  display: inline-block;
+  transition: transform .2s;
+}
+.nav-dropdown:hover .dd-arrow { transform: rotate(180deg); }
+
+/* Nested submenu */
 .nav-sub-dropdown { position: relative; }
-.nav-sub-dropdown-menu {
+.nav-sub-menu {
   display: none;
   position: absolute;
-  top: -8px; left: calc(100% + 6px);
-  min-width: 220px;
-  background: rgba(8,23,41,.98);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(245,197,24,.2);
+  top: -8px;
+  left: calc(100% + 6px);
+  min-width: 210px;
+  background: #fff;
+  border: 1px solid rgba(212,137,154,.18);
   border-radius: 18px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.5);
-  z-index: 1000; padding: 8px;
-  animation: dropInR .18s ease;
+  box-shadow: 0 16px 48px rgba(44,26,30,.12);
+  padding: 8px;
+  z-index: 1000;
+  animation: ddFadeInR .18s ease;
 }
-@keyframes dropInR {
+@keyframes ddFadeInR {
   from { opacity:0; transform:translateY(-6px); }
   to   { opacity:1; transform:translateY(0); }
 }
 @media (max-width: 1100px) {
-  .nav-sub-dropdown-menu { left:auto; right:calc(100% + 6px); }
+  .nav-sub-menu { left: auto; right: calc(100% + 6px); }
 }
-.nav-sub-dropdown:hover .nav-sub-dropdown-menu,
-.nav-sub-dropdown:focus-within .nav-sub-dropdown-menu { display: block; }
+.nav-sub-dropdown:hover .nav-sub-menu,
+.nav-sub-dropdown:focus-within .nav-sub-menu { display: block; }
 
-/* ── Dropdown item ── */
+/* Dropdown item */
 .dd-item {
-  display:flex; align-items:center; gap:8px;
-  padding:9px 13px; border-radius:12px;
-  font-size:.84rem; font-weight:500;
-  color:rgba(255,255,255,.7); white-space:nowrap;
-  transition:background .15s, color .15s;
-  cursor:pointer; text-decoration:none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dark);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s, color .15s;
+  cursor: pointer;
 }
-.dd-item:hover { background:rgba(245,197,24,.1); color:#F5C518; }
-.dd-item.has-sub { justify-content:space-between; }
-.dd-item .chevron-right { opacity:.4; transition:opacity .15s; }
-.dd-item.has-sub:hover .chevron-right { opacity:1; }
+.dd-item:hover { background: rgba(242,196,206,.18); color: var(--dusty); }
+.dd-item.active { color: var(--dusty); font-weight: 600; }
+.dd-item .dd-sub-arrow { margin-left: auto; opacity: .4; transition: opacity .15s; }
+.dd-item:hover .dd-sub-arrow { opacity: 1; }
 
-/* ── Mobile link ── */
-.mob-link {
-  display:flex; align-items:center; gap:10px;
-  padding:11px 16px; border-radius:12px;
-  font-size:.875rem; font-weight:500;
-  color:rgba(255,255,255,.75);
-  transition:background .15s, color .15s;
-  text-decoration:none; width:100%; cursor:pointer;
+/* ════════════════════════════════════════
+   CTA BUTTON
+════════════════════════════════════════ */
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Jost', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  color: #fff;
+  background: linear-gradient(135deg, var(--blush) 0%, var(--dusty) 100%);
+  padding: 10px 20px;
+  border-radius: 100px;
+  text-decoration: none;
+  flex-shrink: 0;
+  box-shadow: 0 4px 18px rgba(200,120,138,.3);
+  transition: transform .25s, box-shadow .25s;
 }
-.mob-link:hover { background:rgba(245,197,24,.08); color:#F5C518; }
+.nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(200,120,138,.45);
+  color: #fff;
+  text-decoration: none;
+}
 
-/* ── Mobile accordion ── */
-.mob-acc-content { max-height:0; overflow:hidden; transition:max-height .3s ease; }
-.mob-acc-content.open { max-height:800px; }
-.mob-acc-btn .acc-arrow { transition:transform .25s; }
-.mob-acc-btn.open .acc-arrow { transform:rotate(180deg); }
-
-/* ── Hamburger ── */
+/* ════════════════════════════════════════
+   HAMBURGER — hanya tampil di mobile
+════════════════════════════════════════ */
 #menu-btn {
-  color:rgba(255,255,255,.85); border-radius:9999px;
-  padding:6px 10px; transition:background .2s, color .2s;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(212,137,154,.25);
+  background: rgba(242,196,206,.1);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--dark);
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
 }
-#menu-btn:hover { background:rgba(245,197,24,.1); color:#F5C518; }
+#menu-btn:hover {
+  background: rgba(242,196,206,.25);
+  border-color: rgba(212,137,154,.45);
+}
+/* Sembunyikan di desktop — override Tailwind md:hidden jika perlu */
+@media (min-width: 768px) {
+  #menu-btn { display: none !important; }
+}
 
-/* ── Top bar ── */
-#topbar {
-  background:#081729;
-  border-bottom:1px solid rgba(245,197,24,.08);
-  transition: opacity .3s, max-height .4s;
-  overflow:hidden; max-height:40px;
+/* ════════════════════════════════════════
+   MOBILE MENU
+════════════════════════════════════════ */
+#mobile-menu {
+  display: none;
+  background: #fff;
+  border-top: 1px solid rgba(212,137,154,.15);
+  padding: 12px 16px 20px;
 }
-#topbar.hide { opacity:0; max-height:0; pointer-events:none; }
+#mobile-menu.open { display: block; }
+
+.mob-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dark);
+  text-decoration: none;
+  width: 100%;
+  transition: background .15s, color .15s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+}
+.mob-link:hover { background: rgba(242,196,206,.15); color: var(--dusty); }
+
+/* Accordion */
+.mob-acc-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .3s ease;
+}
+.mob-acc-content.open { max-height: 900px; }
+.mob-acc-btn .acc-chevron { transition: transform .25s; margin-left: auto; opacity: .45; }
+.mob-acc-btn.open .acc-chevron { transform: rotate(180deg); opacity: 1; }
+
+.mob-sub-link {
+  display: block;
+  padding: 9px 14px 9px 20px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background .15s, color .15s;
+}
+.mob-sub-link:hover { background: rgba(242,196,206,.12); color: var(--dusty); }
+.mob-sub-link.all-link {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--rose);
+  text-transform: uppercase;
+  padding-bottom: 4px;
+  padding-top: 8px;
+}
+
+/* Ornament divider */
+.mob-divider {
+  border: none;
+  border-top: 1px solid rgba(212,137,154,.12);
+  margin: 8px 0;
+}
+
+/* ════════════════════════════════════════
+   SCROLL OFFSET
+════════════════════════════════════════ */
+section[id] { scroll-margin-top: 80px; }
+@media (min-width: 768px) {
+  section[id] { scroll-margin-top: 110px; }
+}
+
+/* ════════════════════════════════════════
+   BODY PADDING TOP — beri ruang navbar
+════════════════════════════════════════ */
+/* Mobile: hanya navbar (68px) */
+body { padding-top: 68px; }
+/* Desktop: topbar (37px) + navbar (68px) = 105px */
+@media (min-width: 768px) {
+  body { padding-top: 105px; }
+}
 </style>
 
 <script type="application/ld+json">
@@ -241,54 +444,66 @@ tailwind.config = {
 }
 </script>
 </head>
-<body class="font-sans bg-[#0B1F4A] text-gray-800 antialiased">
+<body class="font-sans text-floral antialiased" style="background:var(--ivory)">
 
-<!-- TOP BAR — hilang saat scroll -->
-<div id="topbar" class="hidden md:block text-xs py-2">
-  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-    <span class="text-white/45">📍 <?= e(setting('address')) ?></span>
-    <span class="text-white/45">
-      ⏰ <?= e(setting('jam_buka')) ?> &nbsp;|&nbsp;
-      📞 <a href="tel:<?= e(setting('whatsapp_number')) ?>"
-            class="text-[#F5C518]/65 hover:text-[#F5C518] transition"><?= e($phone) ?></a>
+<!-- ════════════════════════════
+     TOP BAR
+════════════════════════════ -->
+<div id="topbar" class="hidden md:block">
+  <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+    <span>
+      📍 <?= e(setting('address')) ?>
+    </span>
+    <span>
+      🌸 <?= e(setting('jam_buka')) ?>
+      <span class="topbar-sep">|</span>
+      📞 <a href="tel:<?= e(setting('whatsapp_number')) ?>"><?= e($phone) ?></a>
     </span>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     FLOATING PILL NAVBAR
-══════════════════════════════════════════════ -->
+<!-- ════════════════════════════
+     NAVBAR WRAP (fixed)
+════════════════════════════ -->
 <div id="navbar-wrap">
-<nav id="navbar">
-  <div class="max-w-7xl mx-auto px-4 md:px-5">
-    <div class="flex items-center justify-between h-14 md:h-[60px]">
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="max-w-7xl mx-auto px-4 md:px-6">
+
+    <!-- ── Row utama ── -->
+    <div class="flex items-center justify-between h-[64px] md:h-[68px]">
 
       <!-- Logo -->
-      <a href="<?= BASE_URL ?>/" class="flex items-center gap-2.5 flex-shrink-0">
-        <div class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-[#F5C518]/30 flex-shrink-0">
-          <img src="<?= BASE_URL ?>/assets/images/icon.png" alt="Logo" class="w-full h-full object-cover">
+      <a href="<?= BASE_URL ?>/" class="nav-brand">
+        <div class="nav-logo-ring">
+          <img src="<?= BASE_URL ?>/assets/images/icon.png" alt="Logo <?= e($site_name) ?>">
         </div>
         <div>
-          <div class="brand-name font-serif font-bold leading-tight"><?= e($site_name) ?></div>
-          <div class="brand-sub hidden sm:block"><?= e(setting('site_tagline')) ?></div>
+          <div class="nav-brand-name"><?= e($site_name) ?></div>
+          <div class="nav-brand-sub hidden sm:block"><?= e(setting('site_tagline')) ?></div>
         </div>
       </a>
 
-      <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center gap-0.5">
-        <a href="<?= BASE_URL ?>/"           class="nav-link <?= $current_slug==='' ? 'active':'' ?>">Home</a>
-        <a href="<?= BASE_URL ?>/#tentang"   class="nav-link">Tentang</a>
-        <a href="<?= BASE_URL ?>/#layanan"   class="nav-link">Layanan</a>
+      <!-- Desktop menu -->
+      <div class="hidden md:flex items-center gap-1">
+
+        <a href="<?= BASE_URL ?>/"
+           class="nav-link <?= $current_slug==='' ? 'active':'' ?>">Beranda</a>
+
+        <a href="<?= BASE_URL ?>/#tentang"
+           class="nav-link">Tentang</a>
+
+        <a href="<?= BASE_URL ?>/#layanan"
+           class="nav-link">Layanan</a>
 
         <!-- Produk dropdown -->
         <div class="nav-dropdown">
-          <button class="nav-link flex items-center gap-1 focus:outline-none">
+          <button class="nav-dropdown-btn nav-link flex items-center gap-1.5" aria-haspopup="true">
             Produk
-            <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            <svg class="dd-arrow w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
             </svg>
           </button>
-          <div class="nav-dropdown-menu">
+          <div class="nav-dropdown-menu" role="menu">
             <?php
             $desktop_tree = [];
             if (!empty($nav_parents)) {
@@ -311,22 +526,23 @@ tailwind.config = {
               ];
             }
             foreach ($desktop_tree as $node):
-              $hk = !empty($node['children']); ?>
-              <?php if ($hk): ?>
+              $hasChildren = !empty($node['children']);
+            ?>
+              <?php if ($hasChildren): ?>
               <div class="nav-sub-dropdown">
-                <div class="dd-item has-sub">
+                <div class="dd-item" role="menuitem">
                   <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
-                     class="flex-1 <?= $current_slug===$node['slug']?'text-[#F5C518]':'' ?>">
+                     class="flex-1 <?= $current_slug===$node['slug']?'text-dusty font-semibold':'' ?>">
                     <?= e($node['name']) ?>
                   </a>
-                  <svg class="chevron-right w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="dd-sub-arrow w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                   </svg>
                 </div>
-                <div class="nav-sub-dropdown-menu">
+                <div class="nav-sub-menu" role="menu">
                   <?php foreach ($node['children'] as $ch): ?>
                   <a href="<?= BASE_URL ?>/<?= e($ch['slug']) ?>/"
-                     class="dd-item <?= $current_slug===$ch['slug']?'text-[#F5C518]':'' ?>">
+                     class="dd-item <?= $current_slug===$ch['slug']?'active':'' ?>" role="menuitem">
                     <?= e($ch['name']) ?>
                   </a>
                   <?php endforeach; ?>
@@ -334,7 +550,7 @@ tailwind.config = {
               </div>
               <?php else: ?>
               <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
-                 class="dd-item <?= $current_slug===$node['slug']?'text-[#F5C518]':'' ?>">
+                 class="dd-item <?= $current_slug===$node['slug']?'active':'' ?>" role="menuitem">
                 <?= e($node['name']) ?>
               </a>
               <?php endif; ?>
@@ -345,142 +561,173 @@ tailwind.config = {
         <a href="<?= BASE_URL ?>/#area"      class="nav-link">Area Kirim</a>
         <a href="<?= BASE_URL ?>/#testimoni" class="nav-link">Testimoni</a>
         <a href="<?= BASE_URL ?>/#faq"       class="nav-link">FAQ</a>
+
       </div>
 
-      <!-- CTA Desktop -->
-      <a href="<?= e($wa_url) ?>" target="_blank" rel="noopener"
-         class="hidden md:inline-flex items-center gap-2 font-bold text-[#0B1F4A] text-[13px] px-4 py-2 rounded-full transition hover:brightness-110 hover:-translate-y-0.5 flex-shrink-0"
-         style="background:#F5C518;">
-        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
-        </svg>
-        Pesan Sekarang
-      </a>
+      <!-- CTA + Hamburger -->
+      <div class="flex items-center gap-3">
+        <a href="<?= e($wa_url) ?>" target="_blank" rel="noopener" class="nav-cta hidden md:inline-flex">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
+          </svg>
+          Pesan Sekarang
+        </a>
 
-      <!-- Hamburger Mobile -->
-      <button id="menu-btn" class="md:hidden flex items-center" aria-label="Menu">
-        <svg id="icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-        <svg id="icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
+        <!-- Hamburger -->
+        <button id="menu-btn" class="md:hidden" aria-label="Buka menu">
+          <svg id="icon-open"  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="icon-close" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
 
     </div><!-- /flex row -->
 
-    <!-- MOBILE MENU -->
-    <div id="mobile-menu">
-      <div class="flex flex-col gap-1 px-2 py-3">
-        <a href="<?= BASE_URL ?>/"          class="mob-link mob-close">🏠 Home</a>
-        <a href="<?= BASE_URL ?>/#tentang"  class="mob-link mob-close">💐 Tentang</a>
-        <a href="<?= BASE_URL ?>/#layanan"  class="mob-link mob-close">🌸 Layanan</a>
+    <!-- ── MOBILE MENU ── -->
+    <div id="mobile-menu" role="dialog" aria-label="Mobile navigation">
 
-        <!-- Produk accordion -->
-        <div>
-          <button class="mob-acc-btn mob-link justify-between" onclick="toggleMobAcc(this)">
-            <span>🛍️ Produk</span>
-            <svg class="acc-arrow w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </button>
-          <div class="mob-acc-content pl-4 mt-1">
+      <a href="<?= BASE_URL ?>/" class="mob-link mob-close">
+        <span>🏠</span> Beranda
+      </a>
+      <a href="<?= BASE_URL ?>/#tentang" class="mob-link mob-close">
+        <span>🌿</span> Tentang
+      </a>
+      <a href="<?= BASE_URL ?>/#layanan" class="mob-link mob-close">
+        <span>💐</span> Layanan
+      </a>
+
+      <!-- Produk accordion -->
+      <div>
+        <button class="mob-acc-btn mob-link" onclick="toggleAcc(this)">
+          <span>🛍️</span>
+          <span>Produk</span>
+          <svg class="acc-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div class="mob-acc-content">
+          <div class="pl-3 border-l-2 ml-5 mb-1" style="border-color:rgba(212,137,154,.25)">
             <?php foreach ($desktop_tree as $node):
-              $hk = !empty($node['children']); ?>
-              <?php if ($hk): ?>
+              $hasKids = !empty($node['children']); ?>
+              <?php if ($hasKids): ?>
               <div>
-                <button class="mob-acc-btn mob-link justify-between text-sm" onclick="toggleMobAcc(this)">
-                  <span><?= e($node['name']) ?></span>
-                  <svg class="acc-arrow w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button class="mob-acc-btn mob-link text-sm" onclick="toggleAcc(this)">
+                  <?= e($node['name']) ?>
+                  <svg class="acc-chevron w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                   </svg>
                 </button>
-                <div class="mob-acc-content pl-3 border-l border-[#F5C518]/15 ml-4">
-                  <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
-                     class="block px-3 py-1.5 text-xs font-bold text-[#F5C518]/55 hover:text-[#F5C518] mob-close">
-                    Lihat semua <?= e($node['name']) ?> →
-                  </a>
-                  <?php foreach ($node['children'] as $ch): ?>
-                  <a href="<?= BASE_URL ?>/<?= e($ch['slug']) ?>/"
-                     class="block px-3 py-2 text-sm text-white/55 hover:text-[#F5C518] transition mob-close">
-                    <?= e($ch['name']) ?>
-                  </a>
-                  <?php endforeach; ?>
+                <div class="mob-acc-content">
+                  <div class="pl-2 border-l ml-4" style="border-color:rgba(212,137,154,.15)">
+                    <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
+                       class="mob-sub-link all-link mob-close">
+                      Lihat semua →
+                    </a>
+                    <?php foreach ($node['children'] as $ch): ?>
+                    <a href="<?= BASE_URL ?>/<?= e($ch['slug']) ?>/"
+                       class="mob-sub-link mob-close">
+                      <?= e($ch['name']) ?>
+                    </a>
+                    <?php endforeach; ?>
+                  </div>
                 </div>
               </div>
               <?php else: ?>
-              <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/" class="mob-link text-sm mob-close">
+              <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
+                 class="mob-sub-link mob-close">
                 <?= e($node['name']) ?>
               </a>
               <?php endif; ?>
             <?php endforeach; ?>
           </div>
         </div>
-
-        <a href="<?= BASE_URL ?>/#area"      class="mob-link mob-close">📍 Area Kirim</a>
-        <a href="<?= BASE_URL ?>/#testimoni" class="mob-link mob-close">⭐ Testimoni</a>
-        <a href="<?= BASE_URL ?>/#faq"       class="mob-link mob-close">❓ FAQ</a>
-
-        <a href="<?= e($wa_url) ?>" target="_blank"
-           class="mt-2 mx-1 flex items-center justify-center gap-2 font-bold text-[#0B1F4A] py-3 rounded-full transition hover:brightness-110"
-           style="background:#F5C518;">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
-          </svg>
-          Pesan via WhatsApp
-        </a>
       </div>
-    </div>
+
+      <a href="<?= BASE_URL ?>/#area"      class="mob-link mob-close"><span>📍</span> Area Kirim</a>
+      <a href="<?= BASE_URL ?>/#testimoni" class="mob-link mob-close"><span>⭐</span> Testimoni</a>
+      <a href="<?= BASE_URL ?>/#faq"       class="mob-link mob-close"><span>❓</span> FAQ</a>
+
+      <hr class="mob-divider">
+
+      <a href="<?= e($wa_url) ?>" target="_blank"
+         class="nav-cta justify-center mt-1" style="border-radius:14px;">
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
+        </svg>
+        Pesan via WhatsApp
+      </a>
+
+    </div><!-- /mobile-menu -->
 
   </div>
 </nav>
 </div><!-- /navbar-wrap -->
 
 <script>
-// ── Scroll handler ───────────────────────────────────────────────
-const wrap   = document.getElementById('navbar-wrap');
-const topbar = document.getElementById('topbar');
+/* ── Scroll: topbar hide + navbar snap ke atas ── */
+const navWrap = document.getElementById('navbar-wrap');
+const topbar  = document.getElementById('topbar');
+const TB_H    = 37; // tinggi topbar desktop (px)
+
 window.addEventListener('scroll', () => {
-  const s = window.scrollY > 50;
-  wrap.classList.toggle('scrolled', s);
-  topbar?.classList.toggle('hide', s);
+  const isDesktop = window.innerWidth >= 768;
+  const threshold = isDesktop ? TB_H : 10;
+  const scrolled  = window.scrollY > threshold;
+  navWrap.classList.toggle('scrolled', scrolled);
+  if (isDesktop) topbar?.classList.toggle('hide', scrolled);
 }, { passive: true });
 
-// ── Hamburger toggle ─────────────────────────────────────────────
-const menuBtn    = document.getElementById('menu-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-const navbar     = document.getElementById('navbar');
-const iconOpen   = document.getElementById('icon-open');
-const iconClose  = document.getElementById('icon-close');
+/* ── Hamburger ── */
+const menuBtn     = document.getElementById('menu-btn');
+const mobileMenu  = document.getElementById('mobile-menu');
+const iconOpen    = document.getElementById('icon-open');
+const iconClose   = document.getElementById('icon-close');
 
 menuBtn.addEventListener('click', () => {
-  const isOpen = mobileMenu.classList.toggle('open');
-  navbar.classList.toggle('menu-open', isOpen);
-  iconOpen.classList.toggle('hidden', isOpen);
-  iconClose.classList.toggle('hidden', !isOpen);
+  const open = mobileMenu.classList.toggle('open');
+  iconOpen.classList.toggle('hidden', open);
+  iconClose.classList.toggle('hidden', !open);
+  document.body.style.overflow = open ? 'hidden' : '';
 });
 
-// Tutup mobile menu
-function closeMobileMenu() {
+function closeMob() {
   mobileMenu.classList.remove('open');
-  navbar.classList.remove('menu-open');
   iconOpen.classList.remove('hidden');
   iconClose.classList.add('hidden');
+  document.body.style.overflow = '';
 }
-document.querySelectorAll('.mob-close').forEach(el => el.addEventListener('click', closeMobileMenu));
+document.querySelectorAll('.mob-close').forEach(el =>
+  el.addEventListener('click', closeMob)
+);
 
-// ── Mobile accordion ─────────────────────────────────────────────
-function toggleMobAcc(btn) {
+/* ── Mobile accordion ── */
+function toggleAcc(btn) {
   const content = btn.nextElementSibling;
   const isOpen  = content.classList.contains('open');
-  const parent  = btn.parentElement.parentElement;
+  // tutup semua sibling accordion di level yang sama
+  const parent = btn.parentElement.parentElement;
   parent.querySelectorAll(':scope > div > .mob-acc-btn').forEach(b => {
     b.classList.remove('open');
     const c = b.nextElementSibling;
     if (c) c.classList.remove('open');
   });
-  if (!isOpen) { btn.classList.add('open'); content.classList.add('open'); }
+  if (!isOpen) {
+    btn.classList.add('open');
+    content.classList.add('open');
+  }
 }
+
+/* ── Smooth scroll anchor ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
 </script>
