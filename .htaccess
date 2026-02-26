@@ -1,0 +1,14 @@
+Options -Indexes
+RewriteEngine On
+
+# Admin area
+RewriteRule ^admin/?$ admin/index.php [L]
+RewriteRule ^admin/(.+)$ admin/$1 [L]
+
+# Static assets — pass through
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Route everything else to index.php
+RewriteRule ^ index.php [L]
