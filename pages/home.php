@@ -1127,8 +1127,7 @@ foreach ($sub_cats as $sc) {
   </div><!-- /rounded wrapper -->
   </div><!-- /max-width -->
 
-</section>
-<!-- ============================================================
+</section><!-- ============================================================
      PRODUK SECTION — Tab Filter + Card Elegan
      Tema: Elegan & Mewah | ivory/rose/blush/cream
 ============================================================ -->
@@ -1157,13 +1156,10 @@ foreach (db()->query("
     $all_products[] = $p;
 }
 
-/* ── Tab: hanya root category yang punya produk ── */
-$rootsWithProd = [];
-foreach ($all_products as $p) $rootsWithProd[$p['root_cat_id']] = true;
-
+/* ── Tab: semua root category, ada produk atau tidak ── */
 $tab_cats = [];
 foreach ($catMap as $c) {
-    if ((int)($c['parent_id'] ?? 0) === 0 && isset($rootsWithProd[$c['id']])) {
+    if ((int)($c['parent_id'] ?? 0) === 0) {
         $tab_cats[] = $c;
     }
 }
@@ -1174,7 +1170,6 @@ $subsMap = [];
 foreach ($catMap as $c) {
     $pid = (int)($c['parent_id'] ?? 0);
     if ($pid === 0) continue;
-    // hitung produk
     $cnt = count(array_filter($all_products, fn($p) => $p['cat_id'] == $c['id']));
     if ($cnt > 0) {
         $c['prod_count'] = $cnt;
@@ -1188,16 +1183,18 @@ foreach ($all_products as $p) {
     $countByRoot[$p['root_cat_id']] = ($countByRoot[$p['root_cat_id']] ?? 0) + 1;
 }
 
-/* ── Split tabs: main (8 pertama) vs extra (sisanya) ── */
-$TAB_MAX   = 8;
-$tabsMain  = array_slice($tab_cats, 0, $TAB_MAX);
-$tabsExtra = array_slice($tab_cats, $TAB_MAX);
-$hasExtra  = count($tabsExtra) > 0;
+/* ── Semua tab tampil langsung ── */
+$tabsMain  = $tab_cats;
+$tabsExtra = [];
+$hasExtra  = false;
+
+/* ── Konstanta card: 8 ditampilkan dulu ── */
+$CARD_INIT = 8;
 ?>
 
 <style>
 :root {
-  --blush: #F2C4CE; --rose: #D4899A; --dusty: #C8788A;
+  --blush: #F2C4CE; --rose: #D4899A; --dusty: #C8778A;
   --cream: #FAF5EE; --ivory: #FDF9F4; --muted: #8C6B72; --dark: #2C1A1E;
 }
 #produk { background: var(--cream); position: relative; overflow: hidden; }
@@ -1229,102 +1226,84 @@ $hasExtra  = count($tabsExtra) > 0;
 /* ════════════════════
    TAB PILLS
 ════════════════════ */
-.tabs-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
+.tabs-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
 
-/* Container tab extra — TERTUTUP default via max-height:0 */
+/* Container tab extra */
 #tabs-extra {
-  max-height: 0;
-  overflow: hidden;
+  max-height:0; overflow:hidden;
   transition: max-height .45s cubic-bezier(.4,0,.2,1), opacity .35s ease;
-  opacity: 0;
+  opacity:0;
 }
-#tabs-extra.open {
-  max-height: 300px;   /* cukup besar untuk semua tab */
-  opacity: 1;
-}
-/* Wrapper flex di dalam extra */
-#tabs-extra-inner {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding-top: 8px;
-}
+#tabs-extra.open { max-height:300px; opacity:1; }
+#tabs-extra-inner { display:flex; flex-wrap:wrap; gap:8px; padding-top:8px; }
 
 .produk-tab {
-  display: inline-flex; align-items: center; gap: 5px;
-  font: 500 12.5px/1 'Jost',sans-serif; letter-spacing:.04em;
-  color: var(--muted); background: #fff;
-  border: 1px solid rgba(212,137,154,.22);
-  padding: 8px 18px; border-radius: 100px;
-  cursor: pointer; white-space: nowrap;
-  transition: all .2s ease; user-select: none;
+  display:inline-flex; align-items:center; gap:5px;
+  font:500 12.5px/1 'Jost',sans-serif; letter-spacing:.04em;
+  color:var(--muted); background:#fff;
+  border:1px solid rgba(212,137,154,.22);
+  padding:8px 18px; border-radius:100px;
+  cursor:pointer; white-space:nowrap;
+  transition:all .2s ease; user-select:none;
 }
-.produk-tab:hover  { border-color:var(--rose); color:var(--dusty); background:rgba(242,196,206,.1); }
+.produk-tab:hover { border-color:var(--rose); color:var(--dusty); background:rgba(242,196,206,.1); }
 .produk-tab.active {
-  background: linear-gradient(135deg,var(--blush),var(--dusty));
-  border-color: transparent; color: #fff;
-  box-shadow: 0 4px 14px rgba(200,120,138,.3);
+  background:linear-gradient(135deg,var(--blush),var(--dusty));
+  border-color:transparent; color:#fff;
+  box-shadow:0 4px 14px rgba(200,120,138,.3);
 }
 .tab-count {
   display:inline-flex; align-items:center; justify-content:center;
   min-width:18px; height:18px; padding:0 4px; border-radius:100px;
   font-size:10px; font-weight:600;
   background:rgba(212,137,154,.15); color:var(--dusty);
-  transition: background .2s, color .2s;
+  transition:background .2s,color .2s;
 }
 .produk-tab.active .tab-count { background:rgba(255,255,255,.25); color:#fff; }
-
-/* Chevron sub-dropdown */
 .tab-chevron {
   width:12px; height:12px; opacity:.55; flex-shrink:0;
-  transition: transform .2s;
+  transition:transform .2s;
 }
 .produk-tab-wrap.open .tab-chevron { transform:rotate(180deg); }
-.produk-tab.active .tab-chevron    { opacity:.85; }
+.produk-tab.active .tab-chevron { opacity:.85; }
 
-/* Tombol lihat semua */
 .tab-show-more {
-  display: inline-flex; align-items: center; gap: 6px;
-  font: 600 12px/1 'Jost',sans-serif; letter-spacing:.03em;
-  color: var(--dusty); background: none;
-  border: 1.5px dashed rgba(212,137,154,.4);
-  padding: 7px 16px; border-radius: 100px;
-  cursor: pointer; white-space: nowrap;
-  transition: border-color .2s, background .2s, color .2s;
+  display:inline-flex; align-items:center; gap:6px;
+  font:600 12px/1 'Jost',sans-serif; letter-spacing:.03em;
+  color:var(--dusty); background:none;
+  border:1.5px dashed rgba(212,137,154,.4);
+  padding:7px 16px; border-radius:100px;
+  cursor:pointer; white-space:nowrap;
+  transition:border-color .2s,background .2s,color .2s;
 }
 .tab-show-more:hover { border-color:var(--rose); background:rgba(242,196,206,.12); color:var(--dark); }
 .tab-show-more .sm-chevron { width:12px; height:12px; transition:transform .3s; flex-shrink:0; }
 .tab-show-more.open .sm-chevron { transform:rotate(180deg); }
 
 /* Sub-dropdown */
-.produk-tab-wrap { position: relative; }
+.produk-tab-wrap { position:relative; }
 .tab-sub-dd {
-  display: none; position: absolute;
-  top: calc(100% + 8px); left: 0;
-  min-width: 205px; background: #fff;
-  border: 1px solid rgba(212,137,154,.2);
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(44,26,30,.1);
-  padding: 7px; z-index: 200;
-  animation: ddIn .17s ease;
+  display:none; position:absolute;
+  top:calc(100% + 8px); left:0;
+  min-width:210px; background:#fff;
+  border:1px solid rgba(212,137,154,.2);
+  border-radius:16px;
+  box-shadow:0 12px 40px rgba(44,26,30,.1);
+  padding:7px; z-index:200;
+  animation:ddIn .17s ease;
 }
 @keyframes ddIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
-.produk-tab-wrap.open .tab-sub-dd { display: block; }
+.produk-tab-wrap.open .tab-sub-dd { display:block; }
 
 .tab-sub-item {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  padding: 8px 13px; border-radius: 10px;
-  font: 500 12.5px/1 'Jost',sans-serif;
-  color: var(--dark); cursor: pointer;
-  background: none; border: none; width: 100%; text-align: left;
-  transition: background .15s, color .15s; white-space: nowrap;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:8px 13px; border-radius:10px;
+  font:500 12.5px/1 'Jost',sans-serif;
+  color:var(--dark); cursor:pointer;
+  background:none; border:none; width:100%; text-align:left;
+  transition:background .15s,color .15s; white-space:nowrap;
 }
-.tab-sub-item:hover  { background:rgba(242,196,206,.18); color:var(--dusty); }
+.tab-sub-item:hover { background:rgba(242,196,206,.18); color:var(--dusty); }
 .tab-sub-item.active { background:rgba(242,196,206,.1); color:var(--dusty); font-weight:600; }
 .sub-count {
   font-size:10px; color:var(--muted);
@@ -1338,12 +1317,25 @@ $hasExtra  = count($tabsExtra) > 0;
 
 .produk-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
 
+/* Wrapper slide-down untuk card extra */
+#cards-extra-wrap {
+  max-height:0; overflow:hidden;
+  transition: max-height .6s cubic-bezier(.4,0,.2,1), opacity .45s ease;
+  opacity:0;
+}
+#cards-extra-wrap.open { max-height:9999px; opacity:1; }
+/* Grid di dalam wrapper extra */
+#cards-extra-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
+  padding-top:20px;
+}
+
 .prod-card {
   background:#fff; border-radius:18px; overflow:hidden;
   border:1px solid rgba(212,137,154,.12);
   transition:transform .3s,box-shadow .3s,border-color .3s;
   display:flex; flex-direction:column;
-  animation: cardFadeIn .32s ease both;
+  animation:cardFadeIn .32s ease both;
 }
 .prod-card:hover { transform:translateY(-5px); box-shadow:0 16px 48px rgba(44,26,30,.1); border-color:rgba(212,137,154,.3); }
 
@@ -1381,7 +1373,21 @@ $hasExtra  = count($tabsExtra) > 0;
 }
 .prod-btn:hover { transform:translateY(-1px); box-shadow:0 6px 18px rgba(200,120,138,.38); color:#fff; text-decoration:none; }
 
-/* Empty */
+/* Tombol lihat semua / sembunyikan */
+.cards-show-more-wrap { text-align:center; margin-top:28px; }
+.cards-show-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  font:600 13px/1 'Jost',sans-serif; letter-spacing:.06em;
+  color:var(--dusty); background:#fff;
+  border:1.5px solid rgba(212,137,154,.35);
+  padding:12px 28px; border-radius:100px;
+  cursor:pointer; transition:all .25s ease;
+}
+.cards-show-btn:hover { border-color:var(--rose); background:rgba(242,196,206,.08); color:var(--dark); box-shadow:0 4px 16px rgba(212,137,154,.15); }
+.cards-show-btn .csb-chevron { width:14px; height:14px; transition:transform .3s; flex-shrink:0; }
+.cards-show-btn.open .csb-chevron { transform:rotate(180deg); }
+
+/* Empty state */
 .produk-empty { grid-column:1/-1; text-align:center; padding:60px 20px; }
 .produk-empty-icon { font-size:48px; margin-bottom:14px; opacity:.4; }
 .produk-empty-text { font:400 20px/1 'Cormorant Garamond',serif; color:var(--muted); }
@@ -1400,9 +1406,11 @@ $hasExtra  = count($tabsExtra) > 0;
 .produk-cta-btn:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(200,120,138,.42); color:#fff; text-decoration:none; }
 
 /* Responsive */
-@media(max-width:1023px) { .produk-grid { grid-template-columns:repeat(3,1fr); gap:16px; } }
+@media(max-width:1023px) {
+  .produk-grid, #cards-extra-grid { grid-template-columns:repeat(3,1fr); gap:16px; }
+}
 @media(max-width:767px) {
-  .produk-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
+  .produk-grid, #cards-extra-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
   .prod-info   { padding:12px 12px 14px; }
   .prod-name   { font-size:14px; }
   .prod-price  { font-size:15px; }
@@ -1422,7 +1430,7 @@ $hasExtra  = count($tabsExtra) > 0;
         <h2 class="produk-title">Produk <em>Pilihan</em></h2>
       </div>
       <p style="font:400 13px/1.7 'Jost',sans-serif;color:var(--muted);max-width:280px;text-align:right;padding-bottom:4px">
-        Setiap rangkaian dibuat dengan bunga segar pilihan, siap diantar ke seluruh Tangerang.
+        Setiap rangkaian dibuat dengan bunga segar pilihan, siap diantar ke seluruh wilayah.
       </p>
     </div>
 
@@ -1432,11 +1440,9 @@ $hasExtra  = count($tabsExtra) > 0;
       <div class="produk-divider-line"></div>
     </div>
 
-    <!-- ════════════════════════════
+    <!-- ════════════════
          TABS
-    ════════════════════════════ -->
-
-    <!-- Baris utama: Semua + maks 8 tab -->
+    ════════════════ -->
     <div class="tabs-row" style="margin-bottom:0">
 
       <!-- Tab Semua -->
@@ -1452,17 +1458,23 @@ $hasExtra  = count($tabsExtra) > 0;
         $hs  = !empty($sub);
         $id  = (int)$tc['id'];
       ?>
-      <div class="produk-tab-wrap" <?= $hs ? 'id="wrap-'.$id.'"' : '' ?>>
+      <div class="produk-tab-wrap"<?= $hs ? ' id="wrap-'.$id.'"' : '' ?>>
         <button class="produk-tab" onclick="<?= $hs ? 'toggleSub(event,'.$id.')' : 'filterProduk(\''.$id.'\',this,null)' ?>">
           <?= e($tc['name']) ?> <span class="tab-count"><?= $rc ?></span>
-          <?php if($hs): ?><svg class="tab-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg><?php endif; ?>
+          <?php if($hs): ?>
+          <svg class="tab-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+          <?php endif; ?>
         </button>
         <?php if($hs): ?>
         <div class="tab-sub-dd" id="subdrop-<?= $id ?>">
-          <button class="tab-sub-item" onclick="filterProduk('root-<?= $id ?>',this,<?= $id ?>)">Semua <?= e($tc['name']) ?><span class="sub-count"><?= $rc ?></span></button>
+          <button class="tab-sub-item" onclick="filterProduk('root-<?= $id ?>',this,<?= $id ?>)">
+            Semua <?= e($tc['name']) ?><span class="sub-count"><?= $rc ?></span>
+          </button>
           <hr style="border:none;border-top:1px solid rgba(212,137,154,.1);margin:5px 4px">
           <?php foreach($sub as $ch): ?>
-          <button class="tab-sub-item" onclick="filterProduk('<?= $ch['id'] ?>',this,<?= $id ?>)"><?= e($ch['name']) ?><span class="sub-count"><?= $ch['prod_count'] ?></span></button>
+          <button class="tab-sub-item" onclick="filterProduk('<?= $ch['id'] ?>',this,<?= $id ?>)">
+            <?= e($ch['name']) ?><span class="sub-count"><?= $ch['prod_count'] ?></span>
+          </button>
           <?php endforeach; ?>
         </div>
         <?php endif; ?>
@@ -1470,16 +1482,14 @@ $hasExtra  = count($tabsExtra) > 0;
       <?php endforeach; ?>
 
       <?php if($hasExtra): ?>
-      <button class="tab-show-more" id="btn-show-more" onclick="toggleExtra(this)">
+      <button class="tab-show-more" id="btn-show-more" onclick="toggleTabsExtra(this)">
         +<?= count($tabsExtra) ?> kategori lainnya
         <svg class="sm-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
       </button>
       <?php endif; ?>
-
     </div>
 
     <?php if($hasExtra): ?>
-    <!-- Baris extra: tertutup default, slide down saat dibuka -->
     <div id="tabs-extra">
       <div id="tabs-extra-inner">
         <?php foreach($tabsExtra as $tc):
@@ -1488,17 +1498,23 @@ $hasExtra  = count($tabsExtra) > 0;
           $hs  = !empty($sub);
           $id  = (int)$tc['id'];
         ?>
-        <div class="produk-tab-wrap" <?= $hs ? 'id="wrap-'.$id.'"' : '' ?>>
+        <div class="produk-tab-wrap"<?= $hs ? ' id="wrap-'.$id.'"' : '' ?>>
           <button class="produk-tab" onclick="<?= $hs ? 'toggleSub(event,'.$id.')' : 'filterProduk(\''.$id.'\',this,null)' ?>">
             <?= e($tc['name']) ?> <span class="tab-count"><?= $rc ?></span>
-            <?php if($hs): ?><svg class="tab-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg><?php endif; ?>
+            <?php if($hs): ?>
+            <svg class="tab-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            <?php endif; ?>
           </button>
           <?php if($hs): ?>
           <div class="tab-sub-dd" id="subdrop-<?= $id ?>">
-            <button class="tab-sub-item" onclick="filterProduk('root-<?= $id ?>',this,<?= $id ?>)">Semua <?= e($tc['name']) ?><span class="sub-count"><?= $rc ?></span></button>
+            <button class="tab-sub-item" onclick="filterProduk('root-<?= $id ?>',this,<?= $id ?>)">
+              Semua <?= e($tc['name']) ?><span class="sub-count"><?= $rc ?></span>
+            </button>
             <hr style="border:none;border-top:1px solid rgba(212,137,154,.1);margin:5px 4px">
             <?php foreach($sub as $ch): ?>
-            <button class="tab-sub-item" onclick="filterProduk('<?= $ch['id'] ?>',this,<?= $id ?>)"><?= e($ch['name']) ?><span class="sub-count"><?= $ch['prod_count'] ?></span></button>
+            <button class="tab-sub-item" onclick="filterProduk('<?= $ch['id'] ?>',this,<?= $id ?>)">
+              <?= e($ch['name']) ?><span class="sub-count"><?= $ch['prod_count'] ?></span>
+            </button>
             <?php endforeach; ?>
           </div>
           <?php endif; ?>
@@ -1508,20 +1524,24 @@ $hasExtra  = count($tabsExtra) > 0;
     </div>
     <?php endif; ?>
 
-    <!-- ════════════════════════════
+    <!-- ════════════════
          PRODUK GRID
-    ════════════════════════════ -->
+    ════════════════ -->
+
+    <!-- 8 card pertama — selalu tampil -->
     <div class="produk-grid" id="produk-grid" style="margin-top:28px">
-      <?php foreach($all_products as $i => $prod):
+      <?php
+      $init_shown = array_slice($all_products, 0, $CARD_INIT);
+      foreach($init_shown as $i => $prod):
         $img     = imgUrl($prod['image'], 'product');
         $wa_text = urlencode("Halo, saya tertarik memesan *{$prod['name']}* seharga ".rupiah($prod['price']).". Apakah masih tersedia?");
       ?>
       <div class="prod-card"
-           data-cat="<?= e($prod['cat_id']) ?>"
-           data-root="<?= e($prod['root_cat_id']) ?>"
-           style="animation-delay:<?= ($i%4)*.06 ?>s">
+           data-cat="<?= (int)$prod['cat_id'] ?>"
+           data-root="<?= (int)$prod['root_cat_id'] ?>"
+           style="animation-delay:<?= ($i % 4) * .06 ?>s">
         <div class="prod-img-wrap">
-          <img src="<?= e($img) ?>" alt="<?= e($prod['name']) ?> Tangerang" loading="lazy">
+          <img src="<?= e($img) ?>" alt="<?= e($prod['name']) ?>" loading="lazy">
           <div class="prod-img-overlay"></div>
           <?php if(!empty($prod['cat_name'])): ?>
           <span class="prod-cat-badge"><?= e($prod['cat_name']) ?></span>
@@ -1529,7 +1549,7 @@ $hasExtra  = count($tabsExtra) > 0;
         </div>
         <div class="prod-info">
           <h3 class="prod-name"><?= e($prod['name']) ?></h3>
-          <p class="prod-desc"><?= !empty($prod['description']) ? e($prod['description']) : 'Bunga segar berkualitas tinggi, siap diantar ke seluruh Tangerang.' ?></p>
+          <p class="prod-desc"><?= !empty($prod['description']) ? e($prod['description']) : 'Bunga segar berkualitas tinggi, siap diantar ke seluruh wilayah.' ?></p>
           <div class="prod-footer">
             <div>
               <div class="prod-price-label">Mulai dari</div>
@@ -1545,10 +1565,61 @@ $hasExtra  = count($tabsExtra) > 0;
       <?php endforeach; ?>
     </div>
 
+    <?php
+    $extra_products = array_slice($all_products, $CARD_INIT);
+    if(!empty($extra_products)):
+    ?>
+    <!-- Card extra — slide down saat tombol diklik -->
+    <div id="cards-extra-wrap">
+      <div id="cards-extra-grid">
+        <?php foreach($extra_products as $i => $prod):
+          $img     = imgUrl($prod['image'], 'product');
+          $wa_text = urlencode("Halo, saya tertarik memesan *{$prod['name']}* seharga ".rupiah($prod['price']).". Apakah masih tersedia?");
+        ?>
+        <div class="prod-card"
+             data-cat="<?= (int)$prod['cat_id'] ?>"
+             data-root="<?= (int)$prod['root_cat_id'] ?>"
+             style="animation-delay:<?= ($i % 4) * .06 ?>s">
+          <div class="prod-img-wrap">
+            <img src="<?= e($img) ?>" alt="<?= e($prod['name']) ?>" loading="lazy">
+            <div class="prod-img-overlay"></div>
+            <?php if(!empty($prod['cat_name'])): ?>
+            <span class="prod-cat-badge"><?= e($prod['cat_name']) ?></span>
+            <?php endif; ?>
+          </div>
+          <div class="prod-info">
+            <h3 class="prod-name"><?= e($prod['name']) ?></h3>
+            <p class="prod-desc"><?= !empty($prod['description']) ? e($prod['description']) : 'Bunga segar berkualitas tinggi, siap diantar ke seluruh wilayah.' ?></p>
+            <div class="prod-footer">
+              <div>
+                <div class="prod-price-label">Mulai dari</div>
+                <div class="prod-price"><?= rupiah($prod['price']) ?></div>
+              </div>
+              <a href="<?= e($wa_url) ?>?text=<?= $wa_text ?>" target="_blank" class="prod-btn" onclick="event.stopPropagation()">
+                <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
+                Pesan
+              </a>
+            </div>
+          </div>
+        </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+
+    <!-- Tombol lihat semua -->
+    <div class="cards-show-more-wrap" id="cards-show-more-wrap">
+      <button class="cards-show-btn" id="cards-show-btn" onclick="toggleCardsExtra(this)">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        Lihat Semua <?= count($all_products) ?> Produk
+        <svg class="csb-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+    </div>
+    <?php endif; ?>
+
     <!-- CTA -->
     <div class="produk-cta-wrap">
       <p class="produk-cta-text">Tidak menemukan yang kamu cari? Konsultasi langsung dengan kami 🌸</p>
-      <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin melihat katalog bunga lengkap Toko Bunga Tangerang.') ?>"
+      <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin melihat katalog bunga lengkap.') ?>"
          target="_blank" class="produk-cta-btn">
         <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
         Lihat Katalog Lengkap
@@ -1559,19 +1630,53 @@ $hasExtra  = count($tabsExtra) > 0;
 </section>
 
 <script>
-/* ── Toggle baris extra ── */
-function toggleExtra(btn) {
+/* ─────────────────────────────────────────────
+   TOGGLE TABS EXTRA (kategori lebih dari 8)
+───────────────────────────────────────────── */
+function toggleTabsExtra(btn) {
   var el  = document.getElementById('tabs-extra');
   var now = el.classList.contains('open');
   el.classList.toggle('open', !now);
   btn.classList.toggle('open', !now);
-  /* Update label — childNodes[0] adalah text node */
   btn.childNodes[0].textContent = now
     ? '+<?= count($tabsExtra) ?> kategori lainnya '
     : 'Sembunyikan ';
 }
 
-/* ── Toggle sub-dropdown ── */
+/* ─────────────────────────────────────────────
+   TOGGLE CARDS EXTRA (slide down / slide up)
+───────────────────────────────────────────── */
+function toggleCardsExtra(btn) {
+  var wrap = document.getElementById('cards-extra-wrap');
+  var now  = wrap.classList.contains('open');
+
+  if (!now) {
+    /* Buka: trigger animasi card satu per satu */
+    wrap.classList.add('open');
+    btn.classList.add('open');
+    btn.innerHTML = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg> Sembunyikan <svg class="csb-chevron open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>';
+
+    /* Re-trigger animasi kartu yang baru muncul */
+    document.querySelectorAll('#cards-extra-grid .prod-card').forEach(function(card, i) {
+      card.style.animation = 'none';
+      card.offsetWidth; /* reflow */
+      card.style.animation = 'cardFadeIn .32s ease ' + (i % 4 * 0.06) + 's both';
+    });
+
+  } else {
+    /* Tutup: scroll naik dulu, lalu collapse */
+    document.getElementById('produk-grid').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setTimeout(function() {
+      wrap.classList.remove('open');
+    }, 300);
+    btn.classList.remove('open');
+    btn.innerHTML = '<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg> Lihat Semua <?= count($all_products) ?> Produk <svg class="csb-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>';
+  }
+}
+
+/* ─────────────────────────────────────────────
+   TOGGLE SUB-DROPDOWN
+───────────────────────────────────────────── */
 function toggleSub(e, id) {
   e.stopPropagation();
   var wrap = document.getElementById('wrap-' + id);
@@ -1583,51 +1688,78 @@ document.addEventListener('click', function() {
   document.querySelectorAll('.produk-tab-wrap.open').forEach(function(w){ w.classList.remove('open'); });
 });
 
-/* ── Filter produk ── */
+/* ─────────────────────────────────────────────
+   FILTER PRODUK
+   Saat filter aktif: semua card (init + extra) ikut difilter.
+   Extra wrap dibuka otomatis jika ada hasil di sana.
+───────────────────────────────────────────── */
 function filterProduk(catId, btn, parentId) {
-  /* reset semua tab */
+  /* Reset semua tab */
   document.querySelectorAll('.produk-tab').forEach(function(t){
-    t.classList.remove('active'); t.setAttribute('aria-selected','false');
+    t.classList.remove('active');
   });
   document.querySelectorAll('.tab-sub-item').forEach(function(s){ s.classList.remove('active'); });
 
   if (btn.classList.contains('produk-tab')) {
-    btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+    btn.classList.add('active');
   } else {
     btn.classList.add('active');
     if (parentId) {
       var pw = document.getElementById('wrap-' + parentId);
-      if (pw) { var pt = pw.querySelector('.produk-tab'); if(pt){ pt.classList.add('active'); } }
+      if (pw) { var pt = pw.querySelector('.produk-tab'); if (pt) pt.classList.add('active'); }
     }
   }
   document.querySelectorAll('.produk-tab-wrap.open').forEach(function(w){ w.classList.remove('open'); });
 
-  /* filter kartu */
-  var delay = 0;
-  document.querySelectorAll('#produk-grid .prod-card').forEach(function(card) {
+  /* Kumpulkan SEMUA card (init + extra) */
+  var allCards = Array.from(document.querySelectorAll('.prod-card'));
+  var delay    = 0;
+  var hasInExtra = false;
+
+  allCards.forEach(function(card) {
     var match = false;
-    if      (catId === 'semua')         match = true;
-    else if (catId.indexOf('root-')===0) match = card.dataset.root === catId.replace('root-','');
-    else                                match = card.dataset.cat  === String(catId);
+    if      (catId === 'semua')              match = true;
+    else if (catId.indexOf('root-') === 0)   match = card.dataset.root === catId.replace('root-','');
+    else                                     match = card.dataset.cat  === String(catId);
 
     if (match) {
       card.style.display = 'flex';
       card.style.animation = 'none';
-      card.offsetWidth; /* reflow */
+      card.offsetWidth;
       card.style.animation = 'cardFadeIn .3s ease ' + delay + 's both';
       delay += 0.05;
+
+      /* Cek apakah card ini ada di dalam extra wrap */
+      if (card.closest('#cards-extra-grid')) hasInExtra = true;
     } else {
       card.style.display = 'none';
     }
   });
 
-  /* empty state */
+  /* Jika ada hasil di extra, buka extra wrap otomatis */
+  var extraWrap = document.getElementById('cards-extra-wrap');
+  var showBtn   = document.getElementById('cards-show-btn');
+  if (extraWrap) {
+    if (hasInExtra || catId === 'semua') {
+      extraWrap.classList.add('open');
+      if (showBtn) showBtn.style.display = 'none'; /* sembunyikan tombol saat filter aktif */
+    }
+    /* Kalau balik ke semua, kembalikan tombol */
+    if (catId === 'semua') {
+      extraWrap.classList.remove('open');
+      if (showBtn) showBtn.style.display = '';
+    }
+  }
+
+  /* Empty state */
   var grid = document.getElementById('produk-grid');
   var ex   = grid.querySelector('.produk-empty');
   if (ex) ex.remove();
-  var vis  = Array.from(document.querySelectorAll('#produk-grid .prod-card')).filter(function(c){ return c.style.display !== 'none'; });
+  var vis = allCards.filter(function(c){ return c.style.display !== 'none'; });
   if (vis.length === 0) {
-    grid.insertAdjacentHTML('beforeend','<div class="produk-empty"><div class="produk-empty-icon">🌸</div><p class="produk-empty-text">Belum ada produk di kategori ini</p></div>');
+    grid.insertAdjacentHTML('beforeend',
+      '<div class="produk-empty"><div class="produk-empty-icon">🌸</div><p class="produk-empty-text">Belum ada produk di kategori ini</p></div>'
+    );
   }
 }
 </script>
