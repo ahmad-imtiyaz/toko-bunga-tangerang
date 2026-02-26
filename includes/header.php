@@ -236,7 +236,7 @@ tailwind.config = {
   "name":"<?= e($site_name) ?>","description":"<?= e($meta_desc) ?>",
   "url":"<?= BASE_URL ?>","telephone":"<?= e(setting('phone_display')) ?>",
   "address":{"@type":"PostalAddress","streetAddress":"<?= e(setting('address')) ?>",
-    "addressLocality":"Grogol","addressRegion":"DKI Jakarta","addressCountry":"ID"},
+    "addressLocality":"Tangerang","addressRegion":"Tangerang","addressCountry":"ID"},
   "openingHours":"Mo-Su 07:00-21:00","priceRange":"Rp300.000 - Rp1.500.000"
 }
 </script>
@@ -296,18 +296,18 @@ tailwind.config = {
                 $desktop_tree[] = ['name'=>$par['name'],'slug'=>$par['slug'],'children'=>$nav_children[$par['id']]??[]];
             } else {
               $desktop_tree = [
-                ['name'=>'Bunga Papan','slug'=>'bunga-papan-jakarta-utara','children'=>[
-                  ['name'=>'Happy Wedding','slug'=>'bunga-papan-happy-wedding-jakarta-utara'],
-                  ['name'=>'Duka Cita','slug'=>'bunga-papan-duka-cita-jakarta-utara'],
-                  ['name'=>'Selamat & Sukses','slug'=>'bunga-papan-selamat-sukses-jakarta-utara'],
+                ['name'=>'Bunga Papan','slug'=>'bunga-papan-tangerang','children'=>[
+                  ['name'=>'Happy Wedding','slug'=>'bunga-papan-happy-wedding-tangerang'],
+                  ['name'=>'Duka Cita','slug'=>'bunga-papan-duka-cita-tangerang'],
+                  ['name'=>'Selamat & Sukses','slug'=>'bunga-papan-selamat-sukses-tangerang'],
                 ]],
-                ['name'=>'Hand Bouquet','slug'=>'hand-bouquet-jakarta-utara','children'=>[
-                  ['name'=>'Anniversary','slug'=>'hand-bouquet-anniversary-jakarta-utara'],
-                  ['name'=>'Birthday','slug'=>'hand-bouquet-birthday-jakarta-utara'],
-                  ['name'=>'Graduation','slug'=>'hand-bouquet-graduation-jakarta-utara'],
+                ['name'=>'Hand Bouquet','slug'=>'hand-bouquet-tangerang','children'=>[
+                  ['name'=>'Anniversary','slug'=>'hand-bouquet-anniversary-tangerang'],
+                  ['name'=>'Birthday','slug'=>'hand-bouquet-birthday-tangerang'],
+                  ['name'=>'Graduation','slug'=>'hand-bouquet-graduation-tangerang'],
                 ]],
-                ['name'=>'Bunga Meja','slug'=>'bunga-meja-jakarta-utara','children'=>[]],
-                ['name'=>'Standing Flowers','slug'=>'standing-flowers-jakarta-utara','children'=>[]],
+                ['name'=>'Bunga Meja','slug'=>'bunga-meja-tangerang','children'=>[]],
+                ['name'=>'Standing Flowers','slug'=>'standing-flowers-tangerang','children'=>[]],
               ];
             }
             foreach ($desktop_tree as $node):

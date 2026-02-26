@@ -1,6 +1,6 @@
 <?php
 $wa_url  = setting('whatsapp_url');
-$wa_msg  = urlencode('Halo, saya ingin memesan bunga dari Toko Bunga Grogol. Mohon info lebih lanjut.');
+$wa_msg  = urlencode('Halo, saya ingin memesan bunga dari Toko Bunga Tangerang. Mohon info lebih lanjut.');
 $wa_full = $wa_url . '?text=' . $wa_msg;
 $cats    = db()->query("SELECT name, slug FROM categories WHERE status='active' ORDER BY id LIMIT 10")->fetchAll();
 $locs    = db()->query("SELECT name, slug FROM locations WHERE status='active' ORDER BY id")->fetchAll();
@@ -104,7 +104,7 @@ $locs    = db()->query("SELECT name, slug FROM locations WHERE status='active' O
     <!-- Bottom bar -->
     <div class="border-t border-white/10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-400">
       <p>© <?= date('Y') ?> <?= e(setting('site_name')) ?>. Hak cipta dilindungi.</p>
-      <p>Website Florist Grogol Terpercaya | Pengiriman 24 Jam</p>
+      <p>Website Florist Tangerang Terpercaya | Pengiriman 24 Jam</p>
     </div>
   </div>
 </footer>

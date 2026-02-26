@@ -8,7 +8,7 @@ $admin_user = adminUser();
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="<?= BASE_URL ?>/assets/images/icon.png">
-<title><?= e($page_title) ?> — Admin Toko Bunga Grogol</title>
+<title><?= e($page_title) ?> — Admin Toko Bunga Tangerang</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -46,7 +46,7 @@ tailwind.config = {
     </div>
     <div class="transition duration-300 group-hover:translate-x-0.5">
       <div class="font-serif font-semibold text-sm leading-tight">Admin Panel</div>
-      <div class="text-xs text-gray-400">Toko Bunga Jkt Barat</div>
+      <div class="text-xs text-gray-400">Toko Bunga Tangerang</div>
     </div>
   </div>
 </div>

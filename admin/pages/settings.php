@@ -72,7 +72,7 @@ require __DIR__ . '/../includes/header.php';
       <div>
         <label class="form-label">Meta Title (maks 60 karakter)</label>
         <input type="text" name="meta_title_home" maxlength="60" class="form-input" value="<?= e($s['meta_title_home'] ?? '') ?>">
-        <p class="text-xs text-gray-400 mt-1">Contoh: Toko Bunga Grogol Terpercaya | Kirim Cepat 24 Jam</p>
+        <p class="text-xs text-gray-400 mt-1">Contoh: Toko Bunga Tangerang Terpercaya | Kirim Cepat 24 Jam</p>
       </div>
       <div>
         <label class="form-label">Meta Description (140-155 karakter)</label>

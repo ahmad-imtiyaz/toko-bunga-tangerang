@@ -22,7 +22,7 @@ if ($uri === '' || $uri === 'home') {
     exit;
 }
 
-// Kategori produk — /karangan-bunga-papan-jakarta-utara/ etc
+// Kategori produk — /karangan-bunga-papan-tangerang/ etc
 $stmt = db()->prepare("SELECT * FROM categories WHERE slug = ? AND status = 'active' LIMIT 1");
 $stmt->execute([$uri]);
 $category = $stmt->fetch();

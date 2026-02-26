@@ -5,11 +5,11 @@
 define('DB_HOST',   'localhost');
 define('DB_USER',   'root');
 define('DB_PASS',   '');
-define('DB_NAME',   'tokobungagrogol');
+define('DB_NAME',   'tokobungatangerang');
 define('DB_CHARSET','utf8mb4');
 
-define('BASE_URL',  'http://localhost/TOKOBUNGAGROGOL');
-define('SITE_NAME', 'Toko Bunga Grogol');
+define('BASE_URL',  'http://localhost/TOKOBUNGATangerang');
+define('SITE_NAME', 'Toko Bunga Tangerang');
 
 // Upload path
 define('UPLOAD_DIR', __DIR__ . '/../uploads/');
@@ -85,7 +85,7 @@ function e(string $str): string {
 // ============================================================
 function waLink(string $message = ''): string {
     $wa = setting('whatsapp_number', '6281322991131');
-    $msg = urlencode($message ?: 'Halo, saya ingin memesan bunga dari Toko Bunga Grogol.');
+    $msg = urlencode($message ?: 'Halo, saya ingin memesan bunga dari Toko Bunga Tangerang.');
     return "https://wa.me/{$wa}?text={$msg}";
 }
 

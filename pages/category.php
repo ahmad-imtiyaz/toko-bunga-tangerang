@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 
-$meta_title    = $category['meta_title']    ?: 'Toko Bunga Grogol - ' . $category['name'];
+$meta_title    = $category['meta_title']    ?: 'Toko Bunga Tangerang - ' . $category['name'];
 $meta_desc     = $category['meta_description'] ?: '';
-$meta_keywords = $category['name'] . ', toko bunga Grogol, florist Grogol';
+$meta_keywords = $category['name'] . ', toko bunga Tangerang, florist Tangerang';
 
 $stmt = db()->prepare("SELECT p.*, c.name as cat_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.category_id = ? AND p.status='active' ORDER BY p.id");
 $stmt->execute([$category['id']]);
@@ -178,18 +178,18 @@ require __DIR__ . '/../includes/header.php';
       <!-- Overline badge -->
       <div class="reveal reveal-1 inline-flex items-center gap-2 bg-[#F5C518]/10 border border-[#F5C518]/25 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-[#F5C518] mb-6">
         <span class="w-1.5 h-1.5 rounded-full bg-[#F5C518] animate-pulse inline-block"></span>
-        Florist Terpercaya Grogol
+        Florist Terpercaya Tangerang
       </div>
 
       <!-- Judul -->
       <h1 class="reveal reveal-2 font-serif text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight mb-5">
         <?= e($category['name']) ?><br>
-        <span style="color:#F5C518;">di Grogol</span>
+        <span style="color:#F5C518;">di Tangerang</span>
       </h1>
 
       <!-- Deskripsi -->
       <p class="reveal reveal-3 text-white/55 text-base md:text-lg leading-relaxed mb-8 max-w-lg">
-        <?= !empty($category['meta_description']) ? e($category['meta_description']) : 'Toko bunga Grogol menyediakan ' . e(strtolower($category['name'])) . ' berkualitas tinggi dengan bunga segar pilihan. Pesan sekarang, kirim cepat ke seluruh Grogol.' ?>
+        <?= !empty($category['meta_description']) ? e($category['meta_description']) : 'Toko bunga Tangerang menyediakan ' . e(strtolower($category['name'])) . ' berkualitas tinggi dengan bunga segar pilihan. Pesan sekarang, kirim cepat ke seluruh Tangerang.' ?>
       </p>
 
       <!-- Stats row -->
@@ -212,7 +212,7 @@ require __DIR__ . '/../includes/header.php';
 
       <!-- CTA -->
       <div class="reveal reveal-4 flex flex-wrap gap-3">
-        <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin memesan ' . $category['name'] . ' di Grogol.') ?>"
+        <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin memesan ' . $category['name'] . ' di Tangerang.') ?>"
            target="_blank"
            class="inline-flex items-center gap-2.5 font-bold text-[#0B1F4A] px-7 py-3.5 rounded-full no-underline transition hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(245,197,24,.45)]"
            style="background:#F5C518;">
@@ -294,7 +294,7 @@ require __DIR__ . '/../includes/header.php';
 
         <div class="relative overflow-hidden aspect-[3/4]">
           <img src="<?= e($img) ?>"
-               alt="<?= e($prod['name']) ?> Grogol"
+               alt="<?= e($prod['name']) ?> Tangerang"
                class="cat-prod-img w-full h-full object-cover"
                loading="lazy">
 
@@ -383,7 +383,7 @@ require __DIR__ . '/../includes/header.php';
           Tentang Layanan
         </div>
         <h2 class="text-2xl md:text-3xl font-black mb-5 leading-tight">
-          <?= e($category['name']) ?> Terbaik<br>di Grogol
+          <?= e($category['name']) ?> Terbaik<br>di Tangerang
         </h2>
 
         <?php if (!empty($category['content'])): ?>
@@ -393,7 +393,7 @@ require __DIR__ . '/../includes/header.php';
         <?php endif; ?>
 
         <p class="text-white/50 text-[15px] leading-relaxed mb-8">
-          Kami sebagai <strong>florist Grogol</strong> terpercaya menyediakan <?= e(strtolower($category['name'])) ?> berkualitas tinggi dengan harga terjangkau. Setiap rangkaian bunga dibuat oleh tim florist profesional menggunakan bunga segar pilihan.
+          Kami sebagai <strong>florist Tangerang</strong> terpercaya menyediakan <?= e(strtolower($category['name'])) ?> berkualitas tinggi dengan harga terjangkau. Setiap rangkaian bunga dibuat oleh tim florist profesional menggunakan bunga segar pilihan.
         </p>
 
         <h3 class="text-xl font-black mb-4">Mengapa Memilih Kami?</h3>
@@ -401,7 +401,7 @@ require __DIR__ . '/../includes/header.php';
           <?php
           $keunggulan = [
             'Bunga 100% segar berkualitas premium',
-            'Pengiriman cepat 2–4 jam ke seluruh Grogol',
+            'Pengiriman cepat 2–4 jam ke seluruh Tangerang',
             'Harga transparan mulai ' . rupiah($min_price),
             'Desain custom sesuai keinginan Anda',
             'Melayani pesanan mendadak 24 jam',
@@ -432,7 +432,7 @@ require __DIR__ . '/../includes/header.php';
             <h3 class="font-serif font-black text-white text-lg">Area Pengiriman</h3>
           </div>
           <p class="text-white/40 text-[13px] mb-4 leading-relaxed">
-            Kami melayani pengiriman <?= e(strtolower($category['name'])) ?> ke seluruh kecamatan di Grogol:
+            Kami melayani pengiriman <?= e(strtolower($category['name'])) ?> ke seluruh kecamatan di Tangerang:
           </p>
           <div class="flex flex-wrap gap-2">
             <?php foreach ($locations as $l): ?>

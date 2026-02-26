@@ -45,7 +45,7 @@ require __DIR__ . '/../includes/header.php';
             <?php endfor; ?>
           </select>
         </div>
-        <div><label class="form-label">Lokasi</label><input type="text" name="location" class="form-input" value="<?= e($edit['location'] ?? '') ?>" placeholder="Kelapa Gading, Grogol"></div>
+        <div><label class="form-label">Lokasi</label><input type="text" name="location" class="form-input" value="<?= e($edit['location'] ?? '') ?>" placeholder="Tangerang"></div>
         <div><label class="form-label">Urutan Tampil</label><input type="number" name="urutan" class="form-input" value="<?= (int)($edit['urutan'] ?? 0) ?>"></div>
         <div>
           <label class="form-label">Status</label>

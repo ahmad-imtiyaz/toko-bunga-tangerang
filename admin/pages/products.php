@@ -111,7 +111,7 @@ require __DIR__ . '/../includes/header.php';
           </div>
           <?php endif; ?>
           <input type="file" name="image" accept="image/*" class="form-input text-sm">
-          <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP. Max 2MB. Rename: nama-produk-jakarta-utara.jpg</p>
+          <p class="text-xs text-gray-400 mt-1">Format: JPG, PNG, WebP. Max 2MB. Rename: nama-produk-tangerang.jpg</p>
         </div>
         <div>
           <label class="form-label">Status</label>
