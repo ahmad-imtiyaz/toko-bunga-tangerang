@@ -3279,133 +3279,354 @@ function filterProduk(catId, btn, parentId) {
   }
 </style>
 
-<!-- ============================================================
-     FAQ SECTION
-============================================================ -->
+<?php
+/* ================================================================
+   FAQ SECTION — Chat Bubble Style (WhatsApp Vibes)
+   Tema: ivory / rose / blush / cream
+   Pertanyaan = bubble kiri (customer), Jawaban = bubble kanan (toko)
+   Animasi: typing dots → bubble muncul + percikan bunga
+================================================================ */
+?>
+
+<!-- FAQ Schema SEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    <?php foreach ($faqs as $i => $faq): ?>
+    {
+      "@type": "Question",
+      "name": "<?= addslashes($faq['question']) ?>",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "<?= addslashes($faq['answer']) ?>"
+      }
+    }<?= $i < count($faqs)-1 ? ',' : '' ?>
+    <?php endforeach; ?>
+  ]
+}
+</script>
+
+<style>
+#faq {
+  --blush: #F2C4CE;
+  --rose:  #D4899A;
+  --dusty: #C8778A;
+  --cream: #FAF5EE;
+  --ivory: #FDF9F4;
+  --soft:  #F7EEF0;
+  --muted: #8C6B72;
+  --dark:  #2C1A1E;
+  --chat-bg: #EDE0D4;
+}
+
+.faq-chat-window {
+  background: var(--chat-bg);
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(242,196,206,.35) 0%, transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(212,137,154,.2) 0%, transparent 40%);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(44,26,30,.12), 0 4px 16px rgba(212,137,154,.15);
+}
+
+.faq-chat-topbar {
+  background: linear-gradient(135deg, var(--rose), var(--dusty));
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.faq-chat-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.faq-online-dot {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #4ADE80;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.4);
+  animation: faq-blink 2s ease-in-out infinite;
+}
+@keyframes faq-blink {
+  0%,100% { opacity: 1; } 50% { opacity: .4; }
+}
+
+.faq-chat-body {
+  padding: 20px 16px;
+  min-height: 360px;
+  max-height: 520px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  scroll-behavior: smooth;
+}
+.faq-chat-body::-webkit-scrollbar { width: 4px; }
+.faq-chat-body::-webkit-scrollbar-thumb { background: rgba(212,137,154,.35); border-radius: 4px; }
+
+.faq-bubble {
+  max-width: 78%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font-size: 13px;
+  line-height: 1.65;
+  position: relative;
+  animation: faq-pop .3s cubic-bezier(.34,1.56,.64,1) both;
+  word-break: break-word;
+}
+@keyframes faq-pop {
+  from { transform: scale(.75) translateY(8px); opacity: 0; }
+  to   { transform: scale(1)   translateY(0);   opacity: 1; }
+}
+
+.faq-bubble-q {
+  align-self: flex-start;
+  background: #fff;
+  color: var(--dark);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(44,26,30,.08);
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+  border: 1.5px solid rgba(212,137,154,.15);
+}
+.faq-bubble-q:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 6px 18px rgba(212,137,154,.2);
+  border-color: rgba(212,137,154,.35);
+}
+.faq-bubble-q::before {
+  content: '';
+  position: absolute;
+  left: -8px; bottom: 8px;
+  border: 8px solid transparent;
+  border-right-color: #fff;
+  border-left: 0;
+  filter: drop-shadow(-2px 1px 2px rgba(44,26,30,.06));
+}
+
+.faq-bubble-a {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #fce4ec, #f8d7e3);
+  color: var(--dark);
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 8px rgba(212,137,154,.2);
+}
+.faq-bubble-a::after {
+  content: '';
+  position: absolute;
+  right: -8px; bottom: 8px;
+  border: 8px solid transparent;
+  border-left-color: #f8d7e3;
+  border-right: 0;
+}
+
+.faq-time {
+  font-size: 10px; color: var(--muted); opacity: .65;
+  display: block; text-align: right; margin-top: 4px;
+}
+.faq-bubble-q .faq-time { text-align: left; }
+.faq-check { font-size: 11px; color: var(--rose); }
+
+.faq-typing {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #fce4ec, #f8d7e3);
+  border-radius: 18px;
+  border-bottom-right-radius: 4px;
+  padding: 12px 18px;
+  display: none;
+  gap: 5px;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(212,137,154,.2);
+  animation: faq-pop .25s ease both;
+}
+.faq-typing.show { display: flex; }
+.faq-typing span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--dusty);
+  animation: faq-dot-bounce .9s ease-in-out infinite;
+}
+.faq-typing span:nth-child(2) { animation-delay: .15s; }
+.faq-typing span:nth-child(3) { animation-delay: .30s; }
+@keyframes faq-dot-bounce {
+  0%,80%,100% { transform: translateY(0);   opacity: .5; }
+  40%         { transform: translateY(-6px); opacity: 1;  }
+}
+
+.faq-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff;
+  border: 1.5px solid rgba(212,137,154,.22);
+  border-radius: 100px;
+  padding: 7px 14px;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--dark);
+  cursor: pointer;
+  transition: all .22s ease;
+  white-space: nowrap;
+  text-align: left;
+}
+.faq-chip:hover {
+  background: linear-gradient(135deg, #fff8f9, #fce4ec);
+  border-color: var(--rose); color: var(--dusty);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212,137,154,.2);
+}
+.faq-chip.used { opacity: .4; pointer-events: none; }
+
+@keyframes faq-petal-burst {
+  0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--bx),var(--by)) rotate(var(--br)) scale(0); opacity: 0; }
+}
+.faq-petal-el {
+  position: fixed; pointer-events: none; z-index: 9999;
+  animation: faq-petal-burst .8s cubic-bezier(.2,.8,.4,1) forwards;
+}
+
+@keyframes faq-bg-float {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: .2; } 90% { opacity: .1; }
+  100% { transform: translateY(-90px) rotate(35deg); opacity: 0; }
+}
+.faq-bg-petal {
+  position: absolute; pointer-events: none;
+  animation: faq-bg-float 8s ease-in-out infinite;
+}
+
+.faq-chips-wrap {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 16px;
+  background: rgba(242,196,206,.12);
+  border-top: 1px solid rgba(212,137,154,.18);
+  max-height: 160px;
+  overflow-y: auto;
+}
+</style>
+
 <section id="faq" class="py-20 relative overflow-hidden"
-         style="background: #081729;">
+         style="background: var(--ivory, #FDF9F4);">
 
-  <!-- Dekorasi top line -->
   <div class="absolute top-0 left-0 w-full h-px"
-       style="background: linear-gradient(90deg, transparent, rgba(245,197,24,.3), transparent);"></div>
-
-  <!-- Glow kiri -->
-  <div class="absolute top-1/2 left-0 -translate-y-1/2 w-72 h-72 rounded-full pointer-events-none"
-       style="background: radial-gradient(circle, rgba(245,197,24,.06) 0%, transparent 70%); filter: blur(60px);"></div>
+       style="background: linear-gradient(90deg, transparent, rgba(212,137,154,.4), transparent);"></div>
+  <div id="faq-bg-petals" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+  <div class="absolute -right-20 top-20 w-72 h-72 rounded-full pointer-events-none"
+       style="background: radial-gradient(circle, rgba(242,196,206,.25) 0%, transparent 70%); filter: blur(55px);"></div>
+  <div class="absolute -left-16 bottom-16 w-64 h-64 rounded-full pointer-events-none"
+       style="background: radial-gradient(circle, rgba(200,119,138,.12) 0%, transparent 70%); filter: blur(50px);"></div>
 
   <div class="relative z-10 max-w-7xl mx-auto px-4">
 
-    <div class="grid md:grid-cols-2 gap-12 lg:gap-20 items-start">
+    <div class="text-center mb-14">
+      <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase mb-5"
+           style="background: rgba(212,137,154,.12); border: 1px solid rgba(212,137,154,.25); color: var(--dusty);">
+        <span class="inline-block w-1.5 h-1.5 rounded-full" style="background: var(--rose);"></span>
+        Ada Pertanyaan?
+      </div>
+      <h2 class="font-serif text-3xl md:text-4xl font-black mb-3" style="color: var(--dark);">
+        Pertanyaan yang
+        <span style="background: linear-gradient(135deg, var(--rose), var(--dusty)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+          Sering Ditanyakan
+        </span>
+      </h2>
+      <p class="text-[15px] max-w-md mx-auto" style="color: var(--muted);">
+        Ketuk pertanyaan di bawah chat untuk melihat jawaban kami 🌸
+      </p>
+    </div>
 
-      <!-- ══════════════════════════════
-           KIRI — Headline + CTA
-      ══════════════════════════════ -->
-      <div class="md:sticky md:top-28">
+    <div class="grid lg:grid-cols-[1fr_300px] gap-8 items-start max-w-5xl mx-auto">
 
-        <!-- Overline -->
-        <div class="inline-flex items-center gap-2 bg-[#F5C518]/10 border border-[#F5C518]/25 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-[#F5C518] mb-6">
-          <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#F5C518]"></span>
-          Ada Pertanyaan?
+      <!-- Chat Window -->
+      <div class="faq-chat-window">
+        <div class="faq-chat-topbar">
+          <div class="faq-chat-avatar">🌸</div>
+          <div class="flex-1">
+            <div class="font-bold text-white text-sm leading-tight">Toko Bunga — CS</div>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <div class="faq-online-dot"></div>
+              <span class="text-white/70 text-[11px]">Online sekarang</span>
+            </div>
+          </div>
+          <div class="text-white/60 text-[11px]">💬 FAQ</div>
         </div>
 
-        <h2 class="font-serif text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-5">
-          Pertanyaan yang<br>
-          <span style="color: #F5C518;">Sering Ditanyakan</span>
-        </h2>
-
-        <p class="text-white/50 text-[15px] leading-relaxed mb-8 max-w-sm">
-          Temukan jawaban atas pertanyaan umum seputar layanan, pengiriman, dan pemesanan bunga di Toko Bunga Tangerang.
-        </p>
-
-        <!-- Stats kecil -->
-        <div class="flex items-center gap-6 mb-10 pb-10"
-             style="border-bottom: 1px solid rgba(255,255,255,.07);">
-          <div>
-            <div class="font-serif text-2xl font-black text-white">
-              <?= count($faqs) ?>
-            </div>
-            <div class="text-[10px] font-bold uppercase tracking-widest text-white/35 mt-0.5">
-              <?= count($faqs) > 1 ? 'Pertanyaan' : 'Pertanyaan' ?>
-            </div>
-          </div>
-          <div class="w-px h-10" style="background: rgba(255,255,255,.08);"></div>
-          <div>
-            <div class="font-serif text-2xl font-black text-white">24/7</div>
-            <div class="text-[10px] font-bold uppercase tracking-widest text-white/35 mt-0.5">
-              Siap Bantu
-            </div>
-          </div>
-          <div class="w-px h-10" style="background: rgba(255,255,255,.08);"></div>
-          <div>
-            <div class="font-serif text-2xl font-black text-white">Free</div>
-            <div class="text-[10px] font-bold uppercase tracking-widest text-white/35 mt-0.5">
-              Konsultasi
-            </div>
+        <div class="faq-chat-body" id="faq-chat-body">
+          <div class="faq-bubble faq-bubble-a" style="animation-delay:.1s">
+            Halo! 👋 Ada yang bisa kami bantu? Silakan pilih pertanyaan di bawah ini ya~
+            <span class="faq-time">Sekarang <span class="faq-check">✓✓</span></span>
           </div>
         </div>
 
-        <!-- CTA WA -->
-        <div class="flex flex-col gap-3 items-start">
-          <p class="text-white/40 text-sm">Masih ada pertanyaan lain?</p>
-          <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya punya pertanyaan tentang Toko Bunga Tangerang.') ?>"
+        <div style="padding: 0 16px 8px; display:flex; justify-content:flex-end;">
+          <div class="faq-typing" id="faq-typing">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div class="faq-chips-wrap" id="faq-chips">
+          <?php foreach ($faqs as $i => $faq): ?>
+          <button class="faq-chip"
+                  data-index="<?= $i ?>"
+                  data-q="<?= htmlspecialchars($faq['question'], ENT_QUOTES) ?>"
+                  data-a="<?= htmlspecialchars($faq['answer'], ENT_QUOTES) ?>"
+                  onclick="faqAskQuestion(this)">
+            <span style="color:var(--rose);">🌸</span>
+            <?= e($faq['question']) ?>
+          </button>
+          <?php endforeach; ?>
+        </div>
+      </div>
+
+      <!-- Panel kanan -->
+      <div class="flex flex-col gap-5">
+        <div class="rounded-2xl p-6"
+             style="background:#fff; border:1.5px solid rgba(212,137,154,.18); box-shadow:0 4px 20px rgba(212,137,154,.1);">
+          <div class="text-center mb-4">
+            <div class="text-3xl mb-1">💐</div>
+            <div class="font-serif font-black text-2xl" style="color:var(--dark);"><?= count($faqs) ?></div>
+            <div class="text-[11px] font-bold uppercase tracking-widest mt-0.5" style="color:var(--muted);">Pertanyaan Tersedia</div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 pt-4" style="border-top:1px solid rgba(212,137,154,.15);">
+            <div class="text-center">
+              <div class="font-serif font-black text-xl" style="color:var(--dark);">24/7</div>
+              <div class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--muted);">Siap Bantu</div>
+            </div>
+            <div class="text-center">
+              <div class="font-serif font-black text-xl" style="color:var(--dark);">Free</div>
+              <div class="text-[10px] font-bold uppercase tracking-widest" style="color:var(--muted);">Konsultasi</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl p-6 text-center"
+             style="background: linear-gradient(135deg, #fce4ec, #f8d7e3); border: 1.5px solid rgba(212,137,154,.25);">
+          <p class="text-sm font-semibold mb-1" style="color:var(--dark);">Tidak menemukan jawaban?</p>
+          <p class="text-[12px] mb-4" style="color:var(--muted);">Hubungi kami langsung via WhatsApp</p>
+          <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya punya pertanyaan tentang Toko Bunga.') ?>"
              target="_blank"
-             class="inline-flex items-center gap-2.5 font-bold text-[#0B1F4A] px-6 py-3.5 rounded-full no-underline transition hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(245,197,24,.4)]"
-             style="background: #F5C518;">
+             class="inline-flex items-center gap-2 font-bold text-sm text-white px-5 py-3 rounded-full no-underline"
+             style="background: linear-gradient(135deg, var(--rose), var(--dusty)); box-shadow: 0 8px 20px rgba(212,137,154,.35);"
+             onmouseover="this.style.transform='translateY(-2px)'"
+             onmouseout="this.style.transform=''">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
               <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
             </svg>
-            Tanya via WhatsApp
+            Chat WhatsApp
           </a>
         </div>
 
-      </div>
-
-      <!-- ══════════════════════════════
-           KANAN — Accordion FAQ
-      ══════════════════════════════ -->
-      <div class="space-y-3">
-
-        <?php foreach ($faqs as $i => $faq): ?>
-        <div class="faq-item rounded-2xl overflow-hidden cursor-pointer"
-             style="background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);"
-             onclick="toggleFaqNew(this)">
-
-          <!-- Trigger -->
-          <div class="flex items-start gap-4 px-5 py-4 md:px-6 md:py-5">
-
-            <!-- Nomor -->
-            <span class="faq-num">
-              <?= str_pad($i + 1, 2, '0', STR_PAD_LEFT) ?>
-            </span>
-
-            <!-- Pertanyaan -->
-            <span class="flex-1 font-semibold text-white text-sm md:text-[15px] leading-snug pr-2">
-              <?= e($faq['question']) ?>
-            </span>
-
-            <!-- Icon -->
-            <svg class="faq-icon w-5 h-5 mt-0.5" style="color: rgba(245,197,24,.5);"
-                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </div>
-
-          <!-- Answer body -->
-          <div class="faq-body">
-            <div class="faq-body-inner">
-              <div class="px-5 pb-5 md:px-6 md:pb-6 pl-[52px]"
-                   style="border-top: 1px solid rgba(255,255,255,.06);">
-                <p class="text-white/55 text-[13px] leading-[1.85] pt-4">
-                  <?= e($faq['answer']) ?>
-                </p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <?php endforeach; ?>
-
+        <button onclick="faqResetChat()"
+                class="text-[12px] font-semibold text-center w-full py-2 rounded-xl transition"
+                style="color:var(--muted); background:rgba(212,137,154,.08); border:1px solid rgba(212,137,154,.18);"
+                onmouseover="this.style.background='rgba(212,137,154,.16)'"
+                onmouseout="this.style.background='rgba(212,137,154,.08)'">
+          🔄 Reset Percakapan
+        </button>
       </div>
 
     </div>
@@ -3413,204 +3634,427 @@ function filterProduk(catId, btn, parentId) {
 </section>
 
 <script>
-function toggleFaqNew(item) {
-  const body    = item.querySelector('.faq-body');
-  const isOpen  = item.classList.contains('open');
+(function () {
+  const petals   = ['🌸','🌺','🌷','🌼','🪷','🌹','💐'];
+  const chatBody = document.getElementById('faq-chat-body');
+  const typing   = document.getElementById('faq-typing');
 
-  // Tutup semua
-  document.querySelectorAll('.faq-item.open').forEach(el => {
-    el.classList.remove('open');
-    el.querySelector('.faq-body').classList.remove('open');
-  });
-
-  // Buka yang diklik (kalau belum open)
-  if (!isOpen) {
-    item.classList.add('open');
-    body.classList.add('open');
+  function nowTime() {
+    const d = new Date();
+    return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
   }
-}
 
-// Buka item pertama by default
-document.addEventListener('DOMContentLoaded', function() {
-  const first = document.querySelector('.faq-item');
-  if (first) toggleFaqNew(first);
-});
+  function burst(cx, cy, count) {
+    for (let i = 0; i < count; i++) {
+      const el   = document.createElement('span');
+      const icon = petals[Math.floor(Math.random() * petals.length)];
+      const ang  = (Math.PI * 2 / count) * i + (Math.random() - .5) * .7;
+      const dist = 45 + Math.random() * 55;
+      el.className = 'faq-petal-el';
+      el.textContent = icon;
+      el.style.cssText = `
+        left:${cx}px; top:${cy}px;
+        --bx:${Math.cos(ang)*dist}px;
+        --by:${Math.sin(ang)*dist - 18}px;
+        --br:${(Math.random()-.5)*320}deg;
+        font-size:${12+Math.random()*9}px;
+        animation-delay:${i*28}ms;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 900 + i * 28);
+    }
+  }
+
+  function scrollChat() {
+    setTimeout(() => { chatBody.scrollTop = chatBody.scrollHeight; }, 50);
+  }
+
+  function addBubble(type, text, delay) {
+    return new Promise(res => {
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = 'faq-bubble faq-bubble-' + type;
+        const check = type === 'a' ? '<span class="faq-check">✓✓</span>' : '';
+        div.innerHTML = text + '<span class="faq-time">' + nowTime() + ' ' + check + '</span>';
+        chatBody.appendChild(div);
+        scrollChat();
+        res();
+      }, delay);
+    });
+  }
+
+  window.faqAskQuestion = async function(chip) {
+    if (chip.classList.contains('used')) return;
+    chip.classList.add('used');
+
+    const q    = chip.dataset.q;
+    const a    = chip.dataset.a;
+    const rect = chip.getBoundingClientRect();
+    burst(rect.left + rect.width/2, rect.top + rect.height/2, 7);
+
+    await addBubble('q', q, 0);
+
+    typing.classList.add('show');
+    scrollChat();
+
+    await new Promise(res => setTimeout(res, 1300));
+    typing.classList.remove('show');
+    await addBubble('a', a, 0);
+
+    const cbRect = chatBody.getBoundingClientRect();
+    burst(cbRect.right - 60, cbRect.bottom - 40, 6);
+  };
+
+  window.faqResetChat = function () {
+    chatBody.querySelectorAll('.faq-bubble:not(:first-child)').forEach(b => b.remove());
+    typing.classList.remove('show');
+    document.querySelectorAll('#faq-chips .faq-chip').forEach(c => c.classList.remove('used'));
+  };
+
+  (function () {
+    const wrap = document.getElementById('faq-bg-petals');
+    if (!wrap) return;
+    for (let i = 0; i < 10; i++) {
+      const el  = document.createElement('span');
+      el.className = 'faq-bg-petal';
+      el.textContent = petals[i % petals.length];
+      const dur = 7 + Math.random() * 5;
+      el.style.cssText =
+        'left:' + (3+Math.random()*94) + '%;' +
+        'top:'  + (5+Math.random()*88) + '%;' +
+        'font-size:' + (10+Math.random()*11) + 'px;' +
+        'animation-duration:' + dur + 's;' +
+        'animation-delay:-' + (Math.random()*dur) + 's;';
+      wrap.appendChild(el);
+    }
+  })();
+})();
 </script>
 
-<!-- ============================================================
-     CTA BANNER SECTION
-============================================================ -->
 <?php
 /* ================================================================
-   CTA SECTION — Cinematic Banner
-   Background foto bunga + overlay navy gelap
-   Teks dramatis di tengah + dua tombol
+   CTA SECTION — Luxury Ivory Elegan
+   Tema: ivory / rose / blush / cream
+   Foto bunga "melayang" di tengah, teks mengapit, sangat feminine
 ================================================================ */
 ?>
 
 <style>
-  /* Parallax subtle di scroll */
-  .cta-bg {
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    transition: filter .3s ease;
-  }
+#cta-section {
+  --blush: #F2C4CE;
+  --rose:  #D4899A;
+  --dusty: #C8778A;
+  --cream: #FAF5EE;
+  --ivory: #FDF9F4;
+  --muted: #8C6B72;
+  --dark:  #2C1A1E;
+}
 
-  /* Shimmer animasi pada garis gold */
-  @keyframes shimmer-line {
-    0%   { background-position: -200% center; }
-    100% { background-position: 200% center; }
-  }
-  .gold-shimmer-line {
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(245,197,24,.8) 40%,
-      rgba(255,220,80,1) 50%,
-      rgba(245,197,24,.8) 60%,
-      transparent 100%
-    );
-    background-size: 200% auto;
-    animation: shimmer-line 3s linear infinite;
-  }
+/* ── Shimmer garis rose ── */
+@keyframes cta-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.cta-shimmer-line {
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(212,137,154,.6) 40%,
+    rgba(242,196,206,1)  50%,
+    rgba(212,137,154,.6) 60%,
+    transparent 100%
+  );
+  background-size: 200% auto;
+  animation: cta-shimmer 3.5s linear infinite;
+}
 
-  /* Teks headline gradient gold */
-  .cta-headline {
-    background: linear-gradient(135deg, #FFFFFF 0%, #F5C518 50%, #FFE066 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+/* ── Foto oval melayang ── */
+.cta-photo-wrap {
+  position: relative;
+  width: 320px;
+  height: 420px;
+  flex-shrink: 0;
+}
+@media (max-width: 1023px) {
+  .cta-photo-wrap { width: 260px; height: 340px; }
+}
+@media (max-width: 767px) {
+  .cta-photo-wrap { width: 200px; height: 260px; margin: 0 auto; }
+}
 
-  /* Particle bunga kecil melayang */
-  @keyframes petal-float {
-    0%   { transform: translateY(0) rotate(0deg);   opacity: 0; }
-    10%  { opacity: .6; }
-    90%  { opacity: .3; }
-    100% { transform: translateY(-120px) rotate(180deg); opacity: 0; }
-  }
-  .petal {
-    position: absolute;
-    font-size: 18px;
-    animation: petal-float linear infinite;
-    pointer-events: none;
-    user-select: none;
-  }
+.cta-photo-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 60% 40% 55% 45% / 50% 50% 50% 50%;
+  display: block;
+  position: relative;
+  z-index: 2;
+  box-shadow:
+    0 30px 70px rgba(212,137,154,.3),
+    0 10px 30px rgba(44,26,30,.12);
+  animation: cta-float 5s ease-in-out infinite;
+}
+@keyframes cta-float {
+  0%,100% { transform: translateY(0px) rotate(-1deg); }
+  50%      { transform: translateY(-14px) rotate(1deg); }
+}
+
+/* Frame dekoratif di belakang foto */
+.cta-photo-frame {
+  position: absolute;
+  inset: -14px;
+  border-radius: 60% 40% 55% 45% / 50% 50% 50% 50%;
+  border: 1.5px dashed rgba(212,137,154,.35);
+  z-index: 1;
+  animation: cta-float 5s ease-in-out infinite;
+  animation-delay: -.5s;
+}
+.cta-photo-frame2 {
+  position: absolute;
+  inset: -28px;
+  border-radius: 55% 45% 60% 40% / 45% 55% 45% 55%;
+  border: 1px solid rgba(242,196,206,.2);
+  z-index: 0;
+  animation: cta-float 6s ease-in-out infinite;
+  animation-delay: -1s;
+}
+
+/* Badge mengambang di foto */
+.cta-photo-badge {
+  position: absolute;
+  z-index: 10;
+  background: #fff;
+  border: 1.5px solid rgba(212,137,154,.2);
+  border-radius: 100px;
+  padding: 8px 14px;
+  display: flex; align-items: center; gap: 7px;
+  box-shadow: 0 8px 24px rgba(212,137,154,.2);
+  animation: cta-badge-float 4s ease-in-out infinite;
+  white-space: nowrap;
+}
+@keyframes cta-badge-float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* ── Petal melayang bg ── */
+@keyframes cta-petal {
+  0%   { transform: translateY(0) rotate(0deg) scale(1);   opacity: 0; }
+  8%   { opacity: .35; }
+  92%  { opacity: .15; }
+  100% { transform: translateY(-130px) rotate(50deg) scale(.6); opacity: 0; }
+}
+@keyframes cta-petal-sway {
+  0%,100% { margin-left: 0; }
+  50%      { margin-left: 20px; }
+}
+.cta-petal {
+  position: absolute; pointer-events: none;
+  animation: cta-petal 8s ease-in-out infinite,
+             cta-petal-sway 4s ease-in-out infinite;
+}
+
+/* ── Trust badge pill ── */
+.cta-trust {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(212,137,154,.08);
+  border: 1px solid rgba(212,137,154,.2);
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 11px; font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .03em;
+}
+
+/* ── CTA primary button ── */
+.cta-btn-primary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  background: linear-gradient(135deg, var(--rose), var(--dusty));
+  color: #fff;
+  font-weight: 700; font-size: 15px;
+  padding: 16px 32px;
+  border-radius: 100px;
+  text-decoration: none;
+  box-shadow: 0 12px 32px rgba(212,137,154,.4);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.cta-btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 42px rgba(212,137,154,.5);
+}
+
+/* ── CTA secondary button ── */
+.cta-btn-secondary {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: #fff;
+  color: var(--dark);
+  font-weight: 600; font-size: 14px;
+  padding: 15px 28px;
+  border-radius: 100px;
+  text-decoration: none;
+  border: 1.5px solid rgba(212,137,154,.3);
+  box-shadow: 0 4px 16px rgba(212,137,154,.1);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.cta-btn-secondary:hover {
+  transform: translateY(-3px);
+  border-color: var(--rose);
+  box-shadow: 0 10px 28px rgba(212,137,154,.2);
+}
+
+/* ── Ornamen teks italic serif ── */
+.cta-ornament {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  color: var(--rose);
+  opacity: .55;
+  font-size: 13px;
+  letter-spacing: .04em;
+}
 </style>
 
 <!-- ============================================================
-     CTA CINEMATIC SECTION
+     CTA SECTION
 ============================================================ -->
-<section class="relative overflow-hidden" style="min-height: 520px;">
+<section id="cta-section" class="relative overflow-hidden py-20 md:py-28"
+         style="background: var(--ivory, #FDF9F4);">
 
-  <!-- Background foto bunga dengan parallax -->
-  <div class="cta-bg absolute inset-0"
-       style="background-image: url('<?= BASE_URL ?>/assets/images/banner.png');"></div>
-
-  <!-- Overlay gradient navy berlapis — dramatis -->
-  <div class="absolute inset-0"
-       style="background: linear-gradient(160deg,
-         rgba(8,23,41,.92) 0%,
-         rgba(11,31,74,.85) 40%,
-         rgba(8,23,41,.95) 100%
-       );"></div>
-
-  <!-- Overlay grain texture subtle -->
-  <div class="absolute inset-0 opacity-[0.04]"
-       style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 stitchTiles=%22stitch%22/></filter><rect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%221%22/></svg>');"></div>
-
-  <!-- Garis gold atas -->
+  <!-- Shimmer line atas -->
   <div class="absolute top-0 left-0 w-full h-[2px]">
-    <div class="gold-shimmer-line w-full h-full"></div>
+    <div class="cta-shimmer-line w-full h-full"></div>
   </div>
-
-  <!-- Garis gold bawah -->
+  <!-- Shimmer line bawah -->
   <div class="absolute bottom-0 left-0 w-full h-[2px]">
-    <div class="gold-shimmer-line w-full h-full"></div>
+    <div class="cta-shimmer-line w-full h-full"></div>
   </div>
 
-  <!-- Petals melayang (dekoratif) -->
-  <span class="petal" style="left:8%;  bottom:0; animation-duration:8s;  animation-delay:0s;">🌸</span>
-  <span class="petal" style="left:22%; bottom:0; animation-duration:11s; animation-delay:2s;">🌺</span>
-  <span class="petal" style="left:45%; bottom:0; animation-duration:9s;  animation-delay:1s; font-size:12px;">✿</span>
-  <span class="petal" style="left:65%; bottom:0; animation-duration:13s; animation-delay:3s;">🌸</span>
-  <span class="petal" style="left:82%; bottom:0; animation-duration:10s; animation-delay:1.5s; font-size:14px;">🌺</span>
-  <span class="petal" style="left:92%; bottom:0; animation-duration:7s;  animation-delay:4s; font-size:11px;">✿</span>
+  <!-- Blob bg -->
+  <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none"
+       style="background: radial-gradient(circle, rgba(242,196,206,.22) 0%, transparent 70%); filter: blur(64px);"></div>
+  <div class="absolute bottom-0 right-1/4 w-80 h-80 rounded-full pointer-events-none"
+       style="background: radial-gradient(circle, rgba(212,137,154,.15) 0%, transparent 70%); filter: blur(56px);"></div>
 
-  <!-- Glow tengah -->
-  <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <div class="w-[500px] h-[300px] rounded-full"
-         style="background: radial-gradient(ellipse, rgba(245,197,24,.08) 0%, transparent 70%); filter: blur(40px);"></div>
-  </div>
+  <!-- Floating petals bg -->
+  <div id="cta-petals" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
 
-  <!-- ── KONTEN ── -->
-  <div class="relative z-10 max-w-4xl mx-auto px-4 py-24 text-center flex flex-col items-center">
+  <!-- Ornamen teks besar transparan -->
+  <div class="absolute left-6 top-1/2 -translate-y-1/2 font-serif font-black text-[140px] leading-none pointer-events-none select-none hidden lg:block"
+       style="color: rgba(212,137,154,.04); white-space: nowrap;">Bunga</div>
+  <div class="absolute right-4 top-1/3 font-serif font-black text-[100px] leading-none pointer-events-none select-none hidden lg:block"
+       style="color: rgba(212,137,154,.04);">🌸</div>
 
-    <!-- Overline badge -->
-    <div class="inline-flex items-center gap-2 bg-[#F5C518]/10 border border-[#F5C518]/25 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-[#F5C518] mb-8">
-      <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#F5C518] animate-pulse"></span>
-      Siap Memesan?
+  <div class="relative z-10 max-w-6xl mx-auto px-4">
+
+    <!-- Layout: teks kiri — foto tengah — teks kanan -->
+    <div class="flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-14">
+
+      <!-- ── Teks Kiri ── -->
+      <div class="flex-1 text-center lg:text-right order-2 lg:order-1">
+
+        <div class="cta-ornament mb-3">— Untuk momen terbaik hidupmu</div>
+
+        <h2 class="font-serif text-3xl md:text-4xl xl:text-5xl font-black leading-tight mb-5"
+            style="color: var(--dark);">
+          Pesan Bunga<br>
+          <span style="background: linear-gradient(135deg, var(--rose), var(--dusty)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+            Segar & Indah
+          </span>
+        </h2>
+
+        <p class="text-[15px] leading-relaxed mb-7 max-w-xs lg:ml-auto" style="color: var(--muted);">
+          Rangkaian bunga segar terbaik, dikirim tepat waktu ke seluruh wilayah Tangerang.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 justify-center lg:justify-end">
+          <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin memesan bunga!') ?>"
+             target="_blank" class="cta-btn-primary">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+              <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
+            </svg>
+            Pesan via WhatsApp
+          </a>
+          <a href="tel:<?= e(setting('whatsapp_number')) ?>" class="cta-btn-secondary">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"
+                 style="stroke: var(--rose);">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/>
+            </svg>
+            Telepon Langsung
+          </a>
+        </div>
+
+      </div>
+
+      <!-- ── Foto Tengah ── -->
+      <div class="cta-photo-wrap order-1 lg:order-2">
+        <div class="cta-photo-frame2"></div>
+        <div class="cta-photo-frame"></div>
+        <img src="<?= BASE_URL ?>/assets/images/cta.jpg" alt="Bunga Segar">
+
+        <!-- Badge atas kiri -->
+        <div class="cta-photo-badge" style="top: -10px; left: -20px; animation-delay: 0s;">
+          <span style="font-size:18px;">🌸</span>
+          <div>
+            <div class="font-bold text-[12px]" style="color:var(--dark);">100% Segar</div>
+            <div class="text-[10px]" style="color:var(--muted);">Dijamin</div>
+          </div>
+        </div>
+
+        <!-- Badge kanan bawah -->
+        <div class="cta-photo-badge" style="bottom: 10px; right: -24px; animation-delay: -2s;">
+          <span style="font-size:18px;">⚡</span>
+          <div>
+            <div class="font-bold text-[12px]" style="color:var(--dark);">Kirim 2–4 Jam</div>
+            <div class="text-[10px]" style="color:var(--muted);">Se-Tangerang</div>
+          </div>
+        </div>
+
+        <!-- Badge bintang -->
+        <div class="cta-photo-badge" style="bottom: 90px; left: -28px; animation-delay: -1.2s; padding: 6px 12px;">
+          <span style="color:#F59E0B; font-size:13px;">★★★★★</span>
+          <div class="font-bold text-[11px]" style="color:var(--dark);">5.0</div>
+        </div>
+      </div>
+
+      <!-- ── Teks Kanan ── -->
+      <div class="flex-1 text-center lg:text-left order-3">
+
+        <div class="cta-ornament mb-3">Percayakan pada kami —</div>
+
+        <h2 class="font-serif text-3xl md:text-4xl xl:text-5xl font-black leading-tight mb-5"
+            style="color: var(--dark);">
+          Pengiriman<br>
+          <span style="background: linear-gradient(135deg, var(--rose), var(--dusty)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+            Tepat Waktu
+          </span>
+        </h2>
+
+        <p class="text-[15px] leading-relaxed mb-7 max-w-xs" style="color: var(--muted);">
+          Kami melayani 24 jam, 7 hari seminggu. Bunga tiba dalam kondisi segar dan cantik.
+        </p>
+
+        <!-- Trust badges -->
+        <div class="flex flex-col gap-2.5 items-center lg:items-start">
+          <span class="cta-trust">✓ &nbsp;Respon Cepat</span>
+          <span class="cta-trust">✓ &nbsp;Bunga Segar Dijamin</span>
+          <span class="cta-trust">✓ &nbsp;Buka 24 Jam</span>
+          <span class="cta-trust">✓ &nbsp;Pengiriman Tepat Waktu</span>
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- Headline dramatis -->
-    <h2 class="cta-headline font-serif text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6 max-w-2xl">
-      Pesan Bunga Segar<br>Untuk Momen Spesialmu
-    </h2>
-
-    <!-- Garis dekoratif -->
-    <div class="flex items-center gap-4 mb-6">
-      <div class="h-px w-16 md:w-24" style="background: rgba(245,197,24,.3);"></div>
-      <span class="text-[#F5C518] text-lg">✦</span>
-      <div class="h-px w-16 md:w-24" style="background: rgba(245,197,24,.3);"></div>
-    </div>
-
-    <p class="text-white/60 text-base md:text-lg leading-relaxed mb-10 max-w-xl">
-      Hubungi kami sekarang dan dapatkan bunga segar terbaik dengan pengiriman cepat ke seluruh Tangerang.
-    </p>
-
-    <!-- Tombol CTA -->
-    <div class="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-
-      <!-- WA — utama gold -->
-      <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin memesan bunga dari Toko Bunga Tangerang!') ?>"
-         target="_blank"
-         class="inline-flex items-center justify-center gap-2.5 font-bold text-[#0B1F4A] px-8 py-4 rounded-full no-underline transition hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(245,197,24,.5)] text-[15px]"
-         style="background: #F5C518;">
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
-        </svg>
-        Pesan Sekarang via WhatsApp
-      </a>
-
-      <!-- Telepon — outline -->
-      <a href="tel:<?= e(setting('whatsapp_number')) ?>"
-         class="inline-flex items-center justify-center gap-2.5 font-semibold text-white px-8 py-4 rounded-full no-underline transition hover:-translate-y-1 hover:bg-white/20 text-[15px]"
-         style="border: 1.5px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); backdrop-filter: blur(8px);">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.948V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/>
-        </svg>
-        Telepon Langsung
-      </a>
-
-    </div>
-
-    <!-- Trust badges bawah -->
-    <div class="flex flex-wrap items-center justify-center gap-4 mt-10">
-      <div class="flex items-center gap-1.5 text-white/35 text-[11px] font-semibold">
-        <span class="text-[#F5C518]">✓</span> Respon Cepat
-      </div>
-      <div class="w-px h-3 bg-white/15"></div>
-      <div class="flex items-center gap-1.5 text-white/35 text-[11px] font-semibold">
-        <span class="text-[#F5C518]">✓</span> Bunga Segar Dijamin
-      </div>
-      <div class="w-px h-3 bg-white/15"></div>
-      <div class="flex items-center gap-1.5 text-white/35 text-[11px] font-semibold">
-        <span class="text-[#F5C518]">✓</span> Pengiriman Tepat Waktu
-      </div>
-      <div class="w-px h-3 bg-white/15"></div>
-      <div class="flex items-center gap-1.5 text-white/35 text-[11px] font-semibold">
-        <span class="text-[#F5C518]">✓</span> Buka 24 Jam
+    <!-- Overline badge tengah bawah -->
+    <div class="flex justify-center mt-14">
+      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full"
+           style="background:#fff; border:1.5px solid rgba(212,137,154,.2); box-shadow:0 4px 20px rgba(212,137,154,.12);">
+        <span class="text-lg">🌺</span>
+        <span class="text-[13px] font-semibold" style="color:var(--dark);">
+          Terpercaya melayani Tangerang sejak 10+ tahun
+        </span>
+        <span class="text-lg">🌸</span>
       </div>
     </div>
 
@@ -3620,14 +4064,24 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php require __DIR__ . '/../includes/footer.php'; ?>
 
 <script>
-//lain
-function toggleFaq(btn) {
-  const answer = btn.nextElementSibling;
-  const icon   = btn.querySelector('.faq-icon');
-  answer.classList.toggle('hidden');
-  icon.style.transform = answer.classList.contains('hidden') ? '' : 'rotate(180deg)';
-}
-
-
-
+/* ── Floating petals CTA ── */
+(function () {
+  const wrap   = document.getElementById('cta-petals');
+  if (!wrap) return;
+  const icons  = ['🌸','🌺','🌷','🌼','🪷','🌹'];
+  for (let i = 0; i < 14; i++) {
+    const el  = document.createElement('span');
+    el.className = 'cta-petal';
+    el.textContent = icons[i % icons.length];
+    const dur  = 7 + Math.random() * 6;
+    const sway = 3 + Math.random() * 3;
+    el.style.cssText =
+      'left:'        + (2 + Math.random() * 96) + '%;' +
+      'top:'         + (5 + Math.random() * 88) + '%;' +
+      'font-size:'   + (11 + Math.random() * 13) + 'px;' +
+      'animation-duration:' + dur + 's,' + sway + 's;' +
+      'animation-delay:-'   + (Math.random() * dur) + 's,-' + (Math.random() * sway) + 's;';
+    wrap.appendChild(el);
+  }
+})();
 </script>
