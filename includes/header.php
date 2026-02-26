@@ -50,7 +50,7 @@ tailwind.config = {
       colors: {
         blush:  { DEFAULT:'#F2C4CE', dark:'#D4899A' },
         dusty:  { DEFAULT:'#C8788A' },
-        cream:  { DEFAULT:'#FAF5EE' },
+        cream:  { DEFAULT:'#FAF5EE', dark:'#F0E8DA' },
         ivory:  { DEFAULT:'#FDF9F4' },
         rose:   { DEFAULT:'#D4899A' },
         muted:  { DEFAULT:'#8C6B72' },
@@ -64,6 +64,7 @@ tailwind.config = {
   }
 }
 </script>
+
 <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
 
 <style>
@@ -71,15 +72,24 @@ tailwind.config = {
    CSS VARIABLES
 ════════════════════════════════════════ */
 :root {
-  --blush:   #F2C4CE;
-  --rose:    #D4899A;
-  --dusty:   #C8788A;
-  --cream:   #FAF5EE;
-  --ivory:   #FDF9F4;
-  --muted:   #8C6B72;
-  --dark:    #2C1A1E;
-  --gold:    #C9A96E;
+  --blush:  #F2C4CE;
+  --rose:   #D4899A;
+  --dusty:  #C8788A;
+  --cream:  #FAF5EE;
+  --ivory:  #FDF9F4;
+  --muted:  #8C6B72;
+  --dark:   #2C1A1E;
 }
+
+body {
+  font-family: 'Jost', sans-serif;
+  background: var(--ivory);
+  color: var(--dark);
+}
+h1,h2,h3,.font-serif { font-family: 'Cormorant Garamond', serif; }
+
+/* Scroll offset */
+section[id] { scroll-margin-top: 90px; }
 
 /* ════════════════════════════════════════
    TOP BAR
@@ -90,64 +100,33 @@ tailwind.config = {
   font-size: 11px;
   font-weight: 500;
   letter-spacing: .04em;
-  color: rgba(255,255,255,.55);
-  padding: 8px 0;
-  transition: max-height .4s ease, opacity .3s ease;
-  overflow: hidden;
-  max-height: 40px;
+  color: rgba(255,255,255,.5);
+  padding: 7px 0;
 }
-#topbar.hide { max-height: 0; opacity: 0; pointer-events: none; }
-#topbar a { color: var(--blush); transition: color .2s; }
+#topbar a { color: var(--blush); text-decoration: none; transition: color .2s; }
 #topbar a:hover { color: #fff; }
 .topbar-sep { color: rgba(255,255,255,.2); margin: 0 10px; }
 
 /* ════════════════════════════════════════
-   NAVBAR WRAPPER — fixed, full-width
-════════════════════════════════════════ */
-#navbar-wrap {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 50;
-  /* Mobile: tidak ada topbar, langsung dari top:0 */
-  transform: translateY(0);
-  transition: box-shadow .4s ease;
-}
-
-/* Desktop: geser ke bawah topbar (37px) */
-@media (min-width: 768px) {
-  #navbar-wrap {
-    transform: translateY(37px);
-    transition: transform .4s cubic-bezier(.4,0,.2,1), box-shadow .4s ease;
-  }
-  #navbar-wrap.scrolled {
-    transform: translateY(0);
-    box-shadow: 0 4px 32px rgba(44,26,30,.10);
-  }
-}
-
-/* Mobile scrolled: cukup tambah shadow */
-@media (max-width: 767px) {
-  #navbar-wrap.scrolled {
-    box-shadow: 0 4px 20px rgba(44,26,30,.08);
-  }
-}
-
-/* ════════════════════════════════════════
-   NAVBAR — solid ivory, border bawah rose
+   NAVBAR — sticky, solid ivory
 ════════════════════════════════════════ */
 #navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   font-family: 'Jost', sans-serif;
   background: var(--ivory);
-  border-bottom: 1px solid rgba(212,137,154,.22);
-  transition: background .3s ease, border-color .3s ease;
+  border-bottom: 1px solid rgba(212,137,154,.2);
+  transition: box-shadow .3s ease, background .3s ease;
 }
-#navbar-wrap.scrolled #navbar {
+#navbar.scrolled {
   background: #fff;
-  border-bottom-color: rgba(212,137,154,.30);
+  box-shadow: 0 2px 24px rgba(44,26,30,.08);
+  border-bottom-color: rgba(212,137,154,.3);
 }
 
 /* ════════════════════════════════════════
-   BRAND / LOGO
+   BRAND
 ════════════════════════════════════════ */
 .nav-brand {
   display: flex;
@@ -157,22 +136,28 @@ tailwind.config = {
   flex-shrink: 0;
   transition: opacity .2s;
 }
-.nav-brand:hover { opacity: .85; }
+.nav-brand:hover { opacity: .82; }
+
 .nav-logo-ring {
-  width: 38px; height: 38px;
+  width: 40px; height: 40px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid rgba(212,137,154,.35);
-  box-shadow: 0 2px 12px rgba(212,137,154,.2);
+  border: 2px solid rgba(212,137,154,.3);
+  box-shadow: 0 2px 10px rgba(212,137,154,.18);
   flex-shrink: 0;
+  transition: box-shadow .3s;
 }
-.nav-logo-ring img { width: 100%; height: 100%; object-fit: cover; }
+.nav-brand:hover .nav-logo-ring {
+  box-shadow: 0 0 14px rgba(212,137,154,.45), 0 0 28px rgba(212,137,154,.2);
+}
+.nav-logo-ring img { width:100%; height:100%; object-fit:cover; }
+
 .nav-brand-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--dark);
-  line-height: 1.1;
+  line-height: 1.15;
 }
 .nav-brand-sub {
   font-size: 10px;
@@ -189,90 +174,68 @@ tailwind.config = {
 .nav-link {
   font-size: 13px;
   font-weight: 500;
-  letter-spacing: .04em;
+  letter-spacing: .03em;
   color: var(--dark);
-  padding: 6px 14px;
-  border-radius: 100px;
+  padding: 7px 13px;
+  border-radius: 10px;
   text-decoration: none;
   white-space: nowrap;
-  transition: color .2s, background .2s;
-  position: relative;
+  transition: background .2s, color .2s;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 50%; right: 50%;
-  height: 1.5px;
-  background: var(--rose);
-  border-radius: 2px;
-  transition: left .25s ease, right .25s ease;
-}
-.nav-link:hover,
-.nav-link.active {
-  color: var(--dusty);
-}
-.nav-link:hover::after,
-.nav-link.active::after {
-  left: 14px; right: 14px;
-}
+.nav-link:hover  { background: rgba(242,196,206,.2);  color: var(--dusty); }
+.nav-link.active { background: rgba(242,196,206,.15); color: var(--dusty); font-weight: 600; }
 
 /* ════════════════════════════════════════
-   DROPDOWN — DESKTOP
+   DESKTOP DROPDOWN
 ════════════════════════════════════════ */
-.nav-dropdown         { position: relative; }
-.nav-dropdown-btn     { cursor: pointer; background: none; border: none; }
+.nav-dropdown { position: relative; }
 
 .nav-dropdown-menu {
   display: none;
   position: absolute;
-  top: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(100% + 6px);
+  left: 0;
   min-width: 220px;
   background: #fff;
   border: 1px solid rgba(212,137,154,.18);
-  border-radius: 18px;
-  box-shadow: 0 16px 48px rgba(44,26,30,.12);
-  padding: 8px;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(44,26,30,.11);
+  padding: 7px;
   z-index: 999;
-  animation: ddFadeIn .18s ease;
+  animation: ddIn .17s ease;
 }
-@keyframes ddFadeIn {
-  from { opacity:0; transform:translateX(-50%) translateY(-8px); }
-  to   { opacity:1; transform:translateX(-50%) translateY(0); }
+@keyframes ddIn {
+  from { opacity:0; transform:translateY(-6px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 .nav-dropdown:hover .nav-dropdown-menu,
 .nav-dropdown:focus-within .nav-dropdown-menu { display: block; }
 
-/* Arrow indicator on dropdown btn */
-.nav-dropdown-btn .dd-arrow {
-  display: inline-block;
-  transition: transform .2s;
-}
-.nav-dropdown:hover .dd-arrow { transform: rotate(180deg); }
+.nav-dropdown:hover .dd-chevron,
+.nav-dropdown:focus-within .dd-chevron { transform: rotate(180deg); }
+.dd-chevron { transition: transform .2s; display: inline-block; }
 
 /* Nested submenu */
 .nav-sub-dropdown { position: relative; }
 .nav-sub-menu {
   display: none;
   position: absolute;
-  top: -8px;
-  left: calc(100% + 6px);
-  min-width: 210px;
+  top: -7px;
+  left: calc(100% + 5px);
+  min-width: 215px;
   background: #fff;
   border: 1px solid rgba(212,137,154,.18);
-  border-radius: 18px;
-  box-shadow: 0 16px 48px rgba(44,26,30,.12);
-  padding: 8px;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(44,26,30,.11);
+  padding: 7px;
   z-index: 1000;
-  animation: ddFadeInR .18s ease;
-}
-@keyframes ddFadeInR {
-  from { opacity:0; transform:translateY(-6px); }
-  to   { opacity:1; transform:translateY(0); }
+  animation: ddIn .17s ease;
 }
 @media (max-width: 1100px) {
-  .nav-sub-menu { left: auto; right: calc(100% + 6px); }
+  .nav-sub-menu { left: auto; right: calc(100% + 5px); }
 }
 .nav-sub-dropdown:hover .nav-sub-menu,
 .nav-sub-dropdown:focus-within .nav-sub-menu { display: block; }
@@ -282,8 +245,8 @@ tailwind.config = {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 14px;
-  border-radius: 12px;
+  padding: 9px 13px;
+  border-radius: 11px;
   font-size: 13px;
   font-weight: 500;
   color: var(--dark);
@@ -292,10 +255,10 @@ tailwind.config = {
   transition: background .15s, color .15s;
   cursor: pointer;
 }
-.dd-item:hover { background: rgba(242,196,206,.18); color: var(--dusty); }
-.dd-item.active { color: var(--dusty); font-weight: 600; }
-.dd-item .dd-sub-arrow { margin-left: auto; opacity: .4; transition: opacity .15s; }
-.dd-item:hover .dd-sub-arrow { opacity: 1; }
+.dd-item:hover       { background: rgba(242,196,206,.18); color: var(--dusty); }
+.dd-item.active      { color: var(--dusty); font-weight: 600; }
+.dd-item .sub-arrow  { margin-left: auto; opacity: .35; transition: opacity .15s; }
+.dd-item:hover .sub-arrow { opacity: 1; }
 
 /* ════════════════════════════════════════
    CTA BUTTON
@@ -305,43 +268,44 @@ tailwind.config = {
   align-items: center;
   gap: 8px;
   font-family: 'Jost', sans-serif;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: .05em;
+  letter-spacing: .04em;
   color: #fff;
   background: linear-gradient(135deg, var(--blush) 0%, var(--dusty) 100%);
   padding: 10px 20px;
   border-radius: 100px;
   text-decoration: none;
   flex-shrink: 0;
-  box-shadow: 0 4px 18px rgba(200,120,138,.3);
+  box-shadow: 0 4px 16px rgba(200,120,138,.28);
   transition: transform .25s, box-shadow .25s;
 }
 .nav-cta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(200,120,138,.45);
+  box-shadow: 0 8px 24px rgba(200,120,138,.42);
   color: #fff;
   text-decoration: none;
 }
 
 /* ════════════════════════════════════════
-   HAMBURGER — hanya tampil di mobile
+   HAMBURGER — mobile only
 ════════════════════════════════════════ */
 #menu-btn {
-  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px; height: 38px;
   border-radius: 10px;
   border: 1px solid rgba(212,137,154,.25);
   background: rgba(242,196,206,.1);
-  display: flex; align-items: center; justify-content: center;
   color: var(--dark);
   cursor: pointer;
   transition: background .2s, border-color .2s;
 }
 #menu-btn:hover {
   background: rgba(242,196,206,.25);
-  border-color: rgba(212,137,154,.45);
+  border-color: rgba(212,137,154,.4);
 }
-/* Sembunyikan di desktop — override Tailwind md:hidden jika perlu */
 @media (min-width: 768px) {
   #menu-btn { display: none !important; }
 }
@@ -350,12 +314,10 @@ tailwind.config = {
    MOBILE MENU
 ════════════════════════════════════════ */
 #mobile-menu {
-  display: none;
+  border-top: 1px solid rgba(212,137,154,.12);
   background: #fff;
-  border-top: 1px solid rgba(212,137,154,.15);
-  padding: 12px 16px 20px;
+  padding: 10px 12px 18px;
 }
-#mobile-menu.open { display: block; }
 
 .mob-link {
   display: flex;
@@ -368,11 +330,11 @@ tailwind.config = {
   color: var(--dark);
   text-decoration: none;
   width: 100%;
-  transition: background .15s, color .15s;
-  cursor: pointer;
   background: none;
   border: none;
   text-align: left;
+  cursor: pointer;
+  transition: background .15s, color .15s;
 }
 .mob-link:hover { background: rgba(242,196,206,.15); color: var(--dusty); }
 
@@ -383,54 +345,69 @@ tailwind.config = {
   transition: max-height .3s ease;
 }
 .mob-acc-content.open { max-height: 900px; }
-.mob-acc-btn .acc-chevron { transition: transform .25s; margin-left: auto; opacity: .45; }
+.mob-acc-btn .acc-chevron {
+  margin-left: auto;
+  opacity: .4;
+  transition: transform .25s, opacity .2s;
+}
 .mob-acc-btn.open .acc-chevron { transform: rotate(180deg); opacity: 1; }
 
 .mob-sub-link {
   display: block;
-  padding: 9px 14px 9px 20px;
+  padding: 8px 14px 8px 18px;
   font-size: 13px;
-  font-weight: 400;
   color: var(--muted);
   text-decoration: none;
-  border-radius: 10px;
+  border-radius: 9px;
   transition: background .15s, color .15s;
 }
 .mob-sub-link:hover { background: rgba(242,196,206,.12); color: var(--dusty); }
-.mob-sub-link.all-link {
+.mob-sub-link.see-all {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .06em;
-  color: var(--rose);
   text-transform: uppercase;
-  padding-bottom: 4px;
-  padding-top: 8px;
+  color: var(--rose);
+  padding-top: 10px;
 }
 
-/* Ornament divider */
 .mob-divider {
   border: none;
   border-top: 1px solid rgba(212,137,154,.12);
-  margin: 8px 0;
+  margin: 8px 2px;
 }
 
 /* ════════════════════════════════════════
-   SCROLL OFFSET
+   UTILITIES
 ════════════════════════════════════════ */
-section[id] { scroll-margin-top: 80px; }
-@media (min-width: 768px) {
-  section[id] { scroll-margin-top: 110px; }
+.line-clamp-2 {
+  display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; overflow: hidden;
 }
+.prose p  { margin-bottom: 1rem; line-height: 1.75; }
+.prose ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+.prose li { margin-bottom: .5rem; }
+.prose a  { color: var(--dusty); text-decoration: underline; }
+.card-hover { transition: transform .2s ease, box-shadow .2s ease; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,.07); }
 
-/* ════════════════════════════════════════
-   BODY PADDING TOP — beri ruang navbar
-════════════════════════════════════════ */
-/* Mobile: hanya navbar (68px) */
-body { padding-top: 68px; }
-/* Desktop: topbar (37px) + navbar (68px) = 105px */
-@media (min-width: 768px) {
-  body { padding-top: 105px; }
+/* Form */
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: .625rem .875rem;
+  border: 1px solid #D1D5DB; border-radius: .5rem;
+  font-size: .875rem; outline: none;
+  transition: border-color .15s, box-shadow .15s; background: white;
 }
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 3px rgba(212,137,154,.15);
+}
+.form-label {
+  display: block; font-size: .8125rem;
+  font-weight: 600; color: var(--dark); margin-bottom: .375rem;
+}
+.badge-active   { background: #D1FAE5; color: #065F46; }
+.badge-inactive { background: #FEE2E2; color: #991B1B; }
 </style>
 
 <script type="application/ld+json">
@@ -444,16 +421,14 @@ body { padding-top: 68px; }
 }
 </script>
 </head>
-<body class="font-sans text-floral antialiased" style="background:var(--ivory)">
+<body class="font-sans antialiased">
 
 <!-- ════════════════════════════
      TOP BAR
 ════════════════════════════ -->
 <div id="topbar" class="hidden md:block">
-  <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-    <span>
-      📍 <?= e(setting('address')) ?>
-    </span>
+  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+    <span>📍 <?= e(setting('address')) ?></span>
     <span>
       🌸 <?= e(setting('jam_buka')) ?>
       <span class="topbar-sep">|</span>
@@ -463,14 +438,12 @@ body { padding-top: 68px; }
 </div>
 
 <!-- ════════════════════════════
-     NAVBAR WRAP (fixed)
+     NAVBAR — sticky
 ════════════════════════════ -->
-<div id="navbar-wrap">
-<nav id="navbar" role="navigation" aria-label="Main navigation">
-  <div class="max-w-7xl mx-auto px-4 md:px-6">
+<nav id="navbar" role="navigation" aria-label="Navigasi utama">
+  <div class="max-w-7xl mx-auto px-4">
 
-    <!-- ── Row utama ── -->
-    <div class="flex items-center justify-between h-[64px] md:h-[68px]">
+    <div class="flex items-center justify-between h-16 md:h-20">
 
       <!-- Logo -->
       <a href="<?= BASE_URL ?>/" class="nav-brand">
@@ -484,22 +457,18 @@ body { padding-top: 68px; }
       </a>
 
       <!-- Desktop menu -->
-      <div class="hidden md:flex items-center gap-1">
+      <div class="hidden md:flex items-center gap-0.5 text-sm">
 
         <a href="<?= BASE_URL ?>/"
            class="nav-link <?= $current_slug==='' ? 'active':'' ?>">Beranda</a>
-
-        <a href="<?= BASE_URL ?>/#tentang"
-           class="nav-link">Tentang</a>
-
-        <a href="<?= BASE_URL ?>/#layanan"
-           class="nav-link">Layanan</a>
+        <a href="<?= BASE_URL ?>/#tentang"   class="nav-link">Tentang</a>
+        <a href="<?= BASE_URL ?>/#layanan"   class="nav-link">Layanan</a>
 
         <!-- Produk dropdown -->
         <div class="nav-dropdown">
-          <button class="nav-dropdown-btn nav-link flex items-center gap-1.5" aria-haspopup="true">
+          <button class="nav-link flex items-center gap-1.5 focus:outline-none" aria-haspopup="true">
             Produk
-            <svg class="dd-arrow w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="dd-chevron w-3.5 h-3.5 opacity-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
             </svg>
           </button>
@@ -526,16 +495,17 @@ body { padding-top: 68px; }
               ];
             }
             foreach ($desktop_tree as $node):
-              $hasChildren = !empty($node['children']);
+              $hasKids = !empty($node['children']);
             ?>
-              <?php if ($hasChildren): ?>
+              <?php if ($hasKids): ?>
               <div class="nav-sub-dropdown">
-                <div class="dd-item" role="menuitem">
+                <div class="dd-item">
                   <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
-                     class="flex-1 <?= $current_slug===$node['slug']?'text-dusty font-semibold':'' ?>">
+                     class="flex-1 <?= $current_slug===$node['slug']?'font-semibold':'' ?>"
+                     style="text-decoration:none;color:inherit">
                     <?= e($node['name']) ?>
                   </a>
-                  <svg class="dd-sub-arrow w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="sub-arrow w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                   </svg>
                 </div>
@@ -566,7 +536,8 @@ body { padding-top: 68px; }
 
       <!-- CTA + Hamburger -->
       <div class="flex items-center gap-3">
-        <a href="<?= e($wa_url) ?>" target="_blank" rel="noopener" class="nav-cta hidden md:inline-flex">
+        <a href="<?= e($wa_url) ?>" target="_blank" rel="noopener"
+           class="nav-cta hidden md:inline-flex">
           <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
             <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
@@ -574,42 +545,37 @@ body { padding-top: 68px; }
           Pesan Sekarang
         </a>
 
-        <!-- Hamburger -->
-        <button id="menu-btn" class="md:hidden" aria-label="Buka menu">
-          <svg id="icon-open"  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-          <svg id="icon-close" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        <button id="menu-btn" aria-label="Buka menu">
+          <svg id="icon-open"  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg id="icon-close" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
         </button>
       </div>
 
-    </div><!-- /flex row -->
+    </div><!-- /row -->
 
-    <!-- ── MOBILE MENU ── -->
-    <div id="mobile-menu" role="dialog" aria-label="Mobile navigation">
+    <!-- MOBILE MENU -->
+    <div id="mobile-menu" class="md:hidden hidden">
 
-      <a href="<?= BASE_URL ?>/" class="mob-link mob-close">
-        <span>🏠</span> Beranda
-      </a>
-      <a href="<?= BASE_URL ?>/#tentang" class="mob-link mob-close">
-        <span>🌿</span> Tentang
-      </a>
-      <a href="<?= BASE_URL ?>/#layanan" class="mob-link mob-close">
-        <span>💐</span> Layanan
-      </a>
+      <a href="<?= BASE_URL ?>/"           class="mob-link mob-close"><span>🏠</span> Beranda</a>
+      <a href="<?= BASE_URL ?>/#tentang"   class="mob-link mob-close"><span>🌿</span> Tentang</a>
+      <a href="<?= BASE_URL ?>/#layanan"   class="mob-link mob-close"><span>💐</span> Layanan</a>
 
-      <!-- Produk accordion -->
       <div>
         <button class="mob-acc-btn mob-link" onclick="toggleAcc(this)">
-          <span>🛍️</span>
-          <span>Produk</span>
+          <span>🛍️</span><span>Produk</span>
           <svg class="acc-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
           </svg>
         </button>
         <div class="mob-acc-content">
-          <div class="pl-3 border-l-2 ml-5 mb-1" style="border-color:rgba(212,137,154,.25)">
+          <div class="pl-3 ml-5 border-l-2" style="border-color:rgba(212,137,154,.22)">
             <?php foreach ($desktop_tree as $node):
-              $hasKids = !empty($node['children']); ?>
-              <?php if ($hasKids): ?>
+              $hasKids2 = !empty($node['children']); ?>
+              <?php if ($hasKids2): ?>
               <div>
                 <button class="mob-acc-btn mob-link text-sm" onclick="toggleAcc(this)">
                   <?= e($node['name']) ?>
@@ -618,25 +584,19 @@ body { padding-top: 68px; }
                   </svg>
                 </button>
                 <div class="mob-acc-content">
-                  <div class="pl-2 border-l ml-4" style="border-color:rgba(212,137,154,.15)">
+                  <div class="pl-2 ml-3 border-l" style="border-color:rgba(212,137,154,.15)">
                     <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
-                       class="mob-sub-link all-link mob-close">
-                      Lihat semua →
-                    </a>
+                       class="mob-sub-link see-all mob-close">Lihat semua →</a>
                     <?php foreach ($node['children'] as $ch): ?>
                     <a href="<?= BASE_URL ?>/<?= e($ch['slug']) ?>/"
-                       class="mob-sub-link mob-close">
-                      <?= e($ch['name']) ?>
-                    </a>
+                       class="mob-sub-link mob-close"><?= e($ch['name']) ?></a>
                     <?php endforeach; ?>
                   </div>
                 </div>
               </div>
               <?php else: ?>
               <a href="<?= BASE_URL ?>/<?= e($node['slug']) ?>/"
-                 class="mob-sub-link mob-close">
-                <?= e($node['name']) ?>
-              </a>
+                 class="mob-sub-link mob-close"><?= e($node['name']) ?></a>
               <?php endif; ?>
             <?php endforeach; ?>
           </div>
@@ -662,37 +622,29 @@ body { padding-top: 68px; }
 
   </div>
 </nav>
-</div><!-- /navbar-wrap -->
 
 <script>
-/* ── Scroll: topbar hide + navbar snap ke atas ── */
-const navWrap = document.getElementById('navbar-wrap');
-const topbar  = document.getElementById('topbar');
-const TB_H    = 37; // tinggi topbar desktop (px)
-
+/* ── Navbar scroll shadow ── */
 window.addEventListener('scroll', () => {
-  const isDesktop = window.innerWidth >= 768;
-  const threshold = isDesktop ? TB_H : 10;
-  const scrolled  = window.scrollY > threshold;
-  navWrap.classList.toggle('scrolled', scrolled);
-  if (isDesktop) topbar?.classList.toggle('hide', scrolled);
+  document.getElementById('navbar')
+    .classList.toggle('scrolled', window.scrollY > 10);
 }, { passive: true });
 
-/* ── Hamburger ── */
-const menuBtn     = document.getElementById('menu-btn');
-const mobileMenu  = document.getElementById('mobile-menu');
-const iconOpen    = document.getElementById('icon-open');
-const iconClose   = document.getElementById('icon-close');
+/* ── Hamburger toggle ── */
+const menuBtn    = document.getElementById('menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const iconOpen   = document.getElementById('icon-open');
+const iconClose  = document.getElementById('icon-close');
 
 menuBtn.addEventListener('click', () => {
-  const open = mobileMenu.classList.toggle('open');
-  iconOpen.classList.toggle('hidden', open);
-  iconClose.classList.toggle('hidden', !open);
-  document.body.style.overflow = open ? 'hidden' : '';
+  const isHidden = mobileMenu.classList.toggle('hidden');
+  iconOpen.classList.toggle('hidden', !isHidden);
+  iconClose.classList.toggle('hidden', isHidden);
+  document.body.style.overflow = !isHidden ? 'hidden' : '';
 });
 
 function closeMob() {
-  mobileMenu.classList.remove('open');
+  mobileMenu.classList.add('hidden');
   iconOpen.classList.remove('hidden');
   iconClose.classList.add('hidden');
   document.body.style.overflow = '';
@@ -705,29 +657,30 @@ document.querySelectorAll('.mob-close').forEach(el =>
 function toggleAcc(btn) {
   const content = btn.nextElementSibling;
   const isOpen  = content.classList.contains('open');
-  // tutup semua sibling accordion di level yang sama
-  const parent = btn.parentElement.parentElement;
-  parent.querySelectorAll(':scope > div > .mob-acc-btn').forEach(b => {
-    b.classList.remove('open');
-    const c = b.nextElementSibling;
-    if (c) c.classList.remove('open');
-  });
-  if (!isOpen) {
-    btn.classList.add('open');
-    content.classList.add('open');
-  }
+  btn.parentElement.parentElement
+    .querySelectorAll(':scope > div > .mob-acc-btn')
+    .forEach(b => {
+      b.classList.remove('open');
+      const c = b.nextElementSibling;
+      if (c) c.classList.remove('open');
+    });
+  if (!isOpen) { btn.classList.add('open'); content.classList.add('open'); }
 }
 
-/* ── Smooth scroll anchor ── */
+/* ── Smooth scroll ── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const href = a.getAttribute('href');
     if (href === '#') return;
     const target = document.querySelector(href);
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  });
+});
+
+/* ── Image fallback ── */
+document.querySelectorAll('img').forEach(img => {
+  img.addEventListener('error', () => {
+    img.src = 'https://images.unsplash.com/photo-1487530811015-780780dde0e4?w=400&h=300&fit=crop';
   });
 });
 </script>
