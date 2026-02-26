@@ -72,44 +72,296 @@ require __DIR__ . '/../includes/header.php';
 @keyframes pin-pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,137,154,.5)}50%{box-shadow:0 0 0 8px rgba(212,137,154,0)}}
 .pin-dot{animation:pin-pulse 2s ease infinite}
 
-/* ━━━ LAYANAN MASONRY ━━━ */
-.layanan-masonry{columns:2;column-gap:14px}
-@media(min-width:768px){.layanan-masonry{columns:3}}
-@media(min-width:1024px){.layanan-masonry{columns:4}}
-.layanan-masonry-item{break-inside:avoid;margin-bottom:14px;display:block}
-.lm-card{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;display:block;text-decoration:none}
-.lm-card.h-sm{height:200px}.lm-card.h-md{height:260px}.lm-card.h-lg{height:320px}.lm-card.h-xl{height:380px}
-.lm-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .7s cubic-bezier(.4,0,.2,1)}
-.lm-card:hover .lm-bg{transform:scale(1.08)}
-.lm-bg-fallback{position:absolute;inset:0;transition:transform .7s cubic-bezier(.4,0,.2,1)}
-.lm-card:hover .lm-bg-fallback{transform:scale(1.05)}
-.lm-overlay-default{position:absolute;inset:0;background:linear-gradient(to top,rgba(44,26,30,.88) 0%,rgba(44,26,30,.35) 45%,transparent 100%)}
-.lm-overlay-hover{position:absolute;inset:0;opacity:0;background:linear-gradient(160deg,rgba(242,196,206,.18) 0%,rgba(44,26,30,.8) 55%,rgba(44,26,30,.97) 100%);transition:opacity .4s ease}
-.lm-card:hover .lm-overlay-hover{opacity:1}
-.lm-bottom{position:absolute;bottom:0;left:0;right:0;padding:20px 18px 18px;z-index:10}
-.lm-detail{overflow:hidden;max-height:0;opacity:0;transform:translateY(8px);transition:max-height .45s cubic-bezier(.4,0,.2,1),opacity .35s ease .05s,transform .35s ease .05s}
-.lm-card:hover .lm-detail{max-height:200px;opacity:1;transform:translateY(0)}
-.lm-name{font-family:'Playfair Display',Georgia,serif;font-weight:800;color:#fff;line-height:1.2;transition:color .25s ease}
-.lm-card:hover .lm-name{color:var(--blush)}
-.lm-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(242,196,206,.6);margin-bottom:6px}
-.lm-rose-line{height:2px;width:0;background:linear-gradient(90deg,var(--rose),var(--blush));border-radius:2px;margin-bottom:12px;transition:width .45s cubic-bezier(.4,0,.2,1) .05s}
-.lm-card:hover .lm-rose-line{width:36px}
-.lm-sub-link{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;padding:4px 0;transition:color .15s ease}
-.lm-sub-link:hover{color:var(--blush)}
-.lm-sub-dot{width:4px;height:4px;border-radius:50%;background:rgba(242,196,206,.4);flex-shrink:0;transition:background .15s ease}
-.lm-sub-link:hover .lm-sub-dot{background:var(--blush)}
-.lm-chip{position:absolute;top:14px;right:14px;z-index:10;display:flex;align-items:center;gap:5px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#fff;background:linear-gradient(135deg,var(--dusty),var(--rose));padding:4px 10px;border-radius:999px;opacity:0;transform:translateY(-4px);transition:opacity .3s ease .1s,transform .3s ease .1s;pointer-events:none}
-.lm-card:hover .lm-chip{opacity:1;transform:translateY(0)}
-.lm-icon{position:absolute;top:14px;left:14px;z-index:10;font-size:22px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3));transition:transform .3s ease}
-.lm-card:hover .lm-icon{transform:scale(1.2) rotate(-5deg)}
-.lm-card::after{content:'';position:absolute;inset:0;border-radius:20px;border:1.5px solid transparent;transition:border-color .35s ease;pointer-events:none;z-index:20}
-.lm-card:hover::after{border-color:rgba(212,137,154,.4)}
-.lm-grad-0{background:linear-gradient(135deg,#f7e8ec,#f2c4ce)}
-.lm-grad-1{background:linear-gradient(135deg,#f5dce0,#edb5c0)}
-.lm-grad-2{background:linear-gradient(135deg,#fdf0f2,#f2c4ce)}
-.lm-grad-3{background:linear-gradient(135deg,#f0d4da,#d4899a)}
-.lm-num{font-family:'Playfair Display',Georgia,serif;font-size:64px;font-weight:900;color:rgba(212,137,154,.08);line-height:1;position:absolute;bottom:-10px;right:12px;pointer-events:none;transition:color .3s ease;user-select:none}
-.lm-card:hover .lm-num{color:rgba(212,137,154,.14)}
+/* ━━━ PINTEREST MASONRY LAYANAN (UPDATED) ━━━ */
+.pin-grid {
+  columns: 2;
+  column-gap: 10px;
+}
+@media(min-width: 640px) { .pin-grid { columns: 3; column-gap: 12px; } }
+@media(min-width: 1024px) { .pin-grid { columns: 4; column-gap: 14px; } }
+
+.pin-item {
+  break-inside: avoid;
+  margin-bottom: 12px;
+  display: block;
+  position: relative;
+}
+
+/* ── Card shell ── */
+.pin-card {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  --card-h: 220px;
+  height: var(--card-h);
+  transform: translateZ(0);
+  transition: transform .45s cubic-bezier(.34,1.56,.64,1), box-shadow .45s ease;
+  will-change: transform, box-shadow;
+  box-shadow: 0 4px 20px rgba(44,26,30,.1);
+}
+.pin-card:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 20px 60px rgba(200,119,138,.38), 0 4px 16px rgba(44,26,30,.12);
+}
+
+/* ── Background layers ── */
+.pin-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform .7s cubic-bezier(.4,0,.2,1), filter .5s ease;
+}
+.pin-card:hover .pin-bg {
+  transform: scale(1.1);
+  filter: brightness(.85) saturate(1.1);
+}
+
+/* Fallback gradient bg */
+.pin-bg-grad {
+  position: absolute;
+  inset: 0;
+  transition: transform .7s cubic-bezier(.4,0,.2,1);
+}
+.pin-card:hover .pin-bg-grad {
+  transform: scale(1.06);
+}
+
+/* ── Overlay layers ── */
+.pin-ov-base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(44,26,30,.92) 0%, rgba(44,26,30,.5) 40%, rgba(44,26,30,.08) 75%, transparent 100%);
+  transition: background .4s ease;
+}
+.pin-card:hover .pin-ov-base {
+  background: linear-gradient(to top, rgba(44,26,30,.97) 0%, rgba(44,26,30,.75) 45%, rgba(200,119,138,.15) 72%, transparent 100%);
+}
+
+/* Blush shimmer on hover */
+.pin-ov-shimmer {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 20%, rgba(242,196,206,.22) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+.pin-card:hover .pin-ov-shimmer { opacity: 1; }
+
+/* ── Top badges ── */
+.pin-eyebrow {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: rgba(253,249,244,.85);
+  background: rgba(44,26,30,.45);
+  backdrop-filter: blur(10px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  transition: background .25s ease, color .25s ease;
+}
+.pin-card:hover .pin-eyebrow {
+  background: linear-gradient(135deg, var(--dusty), var(--rose));
+  color: #fff;
+  border-color: transparent;
+}
+
+.pin-sub-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 6;
+  font-size: 9px;
+  font-weight: 800;
+  color: rgba(242,196,206,.7);
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity .3s ease .1s, transform .3s ease .1s;
+}
+.pin-card:hover .pin-sub-badge { opacity: 1; transform: translateX(0); }
+
+/* ── Bottom content ── */
+.pin-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0 16px 16px;
+  z-index: 5;
+}
+
+.pin-accent-line {
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blush), var(--rose));
+  border-radius: 2px;
+  margin-bottom: 8px;
+  transition: width .4s cubic-bezier(.4,0,.2,1) .05s;
+}
+.pin-card:hover .pin-accent-line { width: 32px; }
+
+.pin-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 6px;
+  transition: color .2s ease;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+
+  line-clamp: 2; /* tambahkan ini */
+  overflow: hidden;
+}
+.pin-card:hover .pin-name { color: var(--blush); }
+
+/* ── Sub-categories reveal ── */
+.pin-subs {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    max-height .5s cubic-bezier(.4,0,.2,1),
+    opacity .35s ease .06s,
+    transform .35s ease .06s;
+}
+.pin-card:hover .pin-subs {
+  max-height: 160px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pin-sub-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,.55);
+  padding: 2.5px 0;
+  text-decoration: none;
+  transition: color .15s ease, gap .2s ease;
+}
+.pin-sub-item:hover { color: var(--blush); gap: 9px; }
+.pin-sub-item::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(242,196,206,.35);
+  flex-shrink: 0;
+  transition: background .15s ease, width .2s ease, height .2s ease;
+}
+.pin-sub-item:hover::before { background: var(--blush); width: 5px; height: 5px; }
+
+/* ── No-sub CTA ── */
+.pin-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: #fff;
+  background: linear-gradient(135deg, var(--dusty), var(--rose));
+  border-radius: 999px;
+  padding: 5px 13px;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity .3s ease .08s, transform .3s ease .08s;
+  text-decoration: none;
+}
+.pin-card:hover .pin-cta { opacity: 1; transform: translateY(0); }
+
+/* ── Decorative large number ── */
+.pin-bignum {
+  position: absolute;
+  bottom: -8px;
+  right: 10px;
+  font-family: 'Playfair Display', serif;
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  color: rgba(242,196,206,.05);
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+  transition: color .35s ease, font-size .35s ease;
+}
+.pin-card:hover .pin-bignum {
+  color: rgba(242,196,206,.12);
+  font-size: 80px;
+}
+
+/* ── Icon center for no-image cards ── */
+.pin-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  font-size: 36px;
+  filter: drop-shadow(0 2px 12px rgba(0,0,0,.25));
+  z-index: 2;
+  opacity: .35;
+  transition: opacity .35s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+}
+.pin-card:hover .pin-icon {
+  opacity: 0;
+  transform: translate(-50%, -60%) scale(.6);
+}
+
+/* ── Sparkle corner ── */
+.pin-sparkle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: conic-gradient(from 200deg, rgba(242,196,206,.2) 0deg, transparent 60deg);
+  border-radius: 0 22px 0 100%;
+  transition: width .4s ease, height .4s ease, opacity .4s ease;
+  opacity: .6;
+  pointer-events: none;
+}
+.pin-card:hover .pin-sparkle { width: 120px; height: 120px; opacity: 1; }
+
+/* ── Card border glow ── */
+.pin-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  border: 1.5px solid transparent;
+  transition: border-color .35s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+.pin-card:hover::after { border-color: rgba(212,137,154,.45); }
+
+/* ── Gradient fallbacks ── */
+.pg-0 { background: linear-gradient(145deg, #fde8ef, #f2c4ce, #e8a8b8); }
+.pg-1 { background: linear-gradient(145deg, #f5dce0, #edb5c0, #d4899a); }
+.pg-2 { background: linear-gradient(145deg, #fdf0f2, #f7e0e5, #f2c4ce); }
+.pg-3 { background: linear-gradient(145deg, #f0d4da, #d4899a, #c8778a); }
+.pg-4 { background: linear-gradient(145deg, #fce4eb, #f2c4ce, #eaaebb); }
+.pg-5 { background: linear-gradient(145deg, #f9e8ed, #e8b8c5, #d4899a); }
 
 /* ━━━ ZIGZAG PINTEREST PRODUK ━━━ */
 .zzrow{display:grid;grid-template-columns:320px 1fr;gap:0;align-items:stretch}
@@ -122,7 +374,6 @@ require __DIR__ . '/../includes/header.php';
   .zzrow.rev .zz-rail,.zzrow .zz-rail{order:2}
 }
 
-/* Category card — organic Pinterest */
 .zz-cat{
   position:relative;overflow:hidden;min-height:300px;
   display:flex;flex-direction:column;justify-content:flex-end;
@@ -145,7 +396,6 @@ require __DIR__ . '/../includes/header.php';
 .zz-cat-num{position:absolute;bottom:-14px;right:14px;z-index:1;font-family:'Playfair Display',serif;font-size:88px;font-weight:900;line-height:1;color:rgba(242,196,206,.06);user-select:none;pointer-events:none;transition:color .35s ease}
 .zz-cat:hover .zz-cat-num{color:rgba(242,196,206,.13)}
 
-/* Chip — satu sisi pill */
 .zz-cat-chip{position:absolute;top:16px;left:0;z-index:4;display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.11em;color:var(--dusty);background:rgba(253,249,244,.93);padding:5px 14px 5px 10px;border-radius:0 999px 999px 0;backdrop-filter:blur(8px);transition:background .2s ease}
 .zzrow.rev .zz-cat .zz-cat-chip{left:auto;right:0;padding:5px 10px 5px 14px;border-radius:999px 0 0 999px}
 .zz-cat:hover .zz-cat-chip{background:rgba(242,196,206,.95)}
@@ -160,7 +410,24 @@ require __DIR__ . '/../includes/header.php';
 .zz-cat-eyebrow{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.13em;color:rgba(242,196,206,.5);margin-bottom:5px}
 .zz-cat-name{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.1rem,1.8vw,1.5rem);font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;transition:color .25s ease}
 .zz-cat:hover .zz-cat-name{color:var(--blush)}
-.zz-cat-desc{font-size:11px;line-height:1.55;color:rgba(255,255,255,.42);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px;max-height:0;opacity:0;transition:max-height .4s ease .05s,opacity .3s ease .05s}
+.zz-cat-desc{
+  font-size:11px;
+  line-height:1.55;
+  color:rgba(255,255,255,.42);
+
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+
+  line-clamp:2; /* tambahkan ini */
+
+  overflow:hidden;
+  margin-bottom:14px;
+
+  max-height:0;
+  opacity:0;
+  transition:max-height .4s ease .05s,opacity .3s ease .05s
+}
 .zz-cat:hover .zz-cat-desc{max-height:50px;opacity:1}
 .zz-cat-cta{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:#fff;background:linear-gradient(135deg,var(--dusty),var(--rose));border-radius:999px;padding:7px 18px;text-decoration:none;opacity:0;transform:translateY(7px);transition:opacity .3s ease .1s,transform .3s ease .1s}
 .zz-cat:hover .zz-cat-cta{opacity:1;transform:translateY(0)}
@@ -201,7 +468,22 @@ require __DIR__ . '/../includes/header.php';
 .zz-pcard:hover .zz-ppill{opacity:1;transform:translateY(0)}
 .zz-pcat{position:absolute;top:8px;left:8px;z-index:2;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--dusty);background:rgba(253,249,244,.93);padding:3px 8px;border-radius:999px;backdrop-filter:blur(6px)}
 .zz-pbody{padding:10px 12px 12px}
-.zz-pname{font-family:'Playfair Display',serif;font-size:12.5px;font-weight:700;color:var(--dark);line-height:1.35;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.zz-pname{
+  font-family:'Playfair Display',serif;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--dark);
+  line-height:1.35;
+  margin-bottom:4px;
+
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+
+  line-clamp:2; /* tambahkan ini */
+
+  overflow:hidden
+}
 .zz-pprice{font-size:11px;font-weight:800;color:var(--rose);margin-bottom:8px}
 .zz-pwa{display:flex;align-items:center;justify-content:center;gap:5px;font-size:9.5px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:#fff;background:linear-gradient(135deg,var(--dusty),var(--rose));border-radius:999px;padding:6px 10px;text-decoration:none;transition:opacity .2s ease}
 .zz-pwa:hover{opacity:.85}
@@ -325,7 +607,7 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
 </div>
 
 
-<!-- ════ LAYANAN MASONRY ════ -->
+<!-- ════ LAYANAN MASONRY — PINTEREST STYLE (UPDATED) ════ -->
 <section class="py-20 relative overflow-hidden" style="background:var(--cream);">
   <div class="absolute top-0 left-0 w-full h-px rose-line"></div>
   <?= renderPetals(10,'🌸🌷🌺🌼') ?>
@@ -342,40 +624,124 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
       </h2>
       <p class="mt-3 max-w-lg mx-auto text-[15px]" style="color:var(--muted);">Semua kebutuhan bunga Anda tersedia dan siap dikirim ke <?= e($location['name']) ?></p>
     </div>
-    <div class="layanan-masonry">
+
+    <div class="pin-grid">
       <?php
-      $heights=['h-md','h-xl','h-lg','h-sm','h-xl','h-md','h-sm','h-lg','h-md','h-xl','h-sm','h-md'];
-      $grads=['lm-grad-0','lm-grad-1','lm-grad-2','lm-grad-3'];
-      foreach($all_cats as $i=>$cat):
-        $has_img=!empty($cat['image']);$subs=$all_cats_subs[$cat['id']]??[];$has_sub=!empty($subs);
-        $height=$heights[$i%count($heights)];$grad=$grads[$i%count($grads)];
-        $num=str_pad($i+1,2,'0',STR_PAD_LEFT);
-        $tag=$has_sub?'div':'a';
-        $href=$has_sub?'':'href="'.BASE_URL.'/'.e($cat['slug']).'/"';
-        $extra=$has_sub?'onclick="toggleLocSub(\'lc-'.$cat['id'].'\',this)"':'';
+      /* Pinterest-style random heights — creates organic flow */
+      $pin_heights = [
+        'h-sm'  => 200,
+        'h-md'  => 265,
+        'h-lg'  => 330,
+        'h-xl'  => 395,
+        'h-xxl' => 460,
+      ];
+      $height_sequence = ['h-xl','h-md','h-lg','h-sm','h-xxl','h-md','h-lg','h-xl','h-sm','h-lg','h-xxl','h-md','h-xl','h-sm','h-lg','h-md'];
+      $pg_classes = ['pg-0','pg-1','pg-2','pg-3','pg-4','pg-5'];
+
+      foreach ($all_cats as $i => $cat):
+        $subs       = $all_cats_subs[$cat['id']] ?? [];
+        $has_sub    = !empty($subs);
+        $has_img    = !empty($cat['image']);
+        $hkey       = $height_sequence[$i % count($height_sequence)];
+        $h_px       = $pin_heights[$hkey];
+        $pg         = $pg_classes[$i % count($pg_classes)];
+        $num        = str_pad($i + 1, 2, '0', STR_PAD_LEFT);
+        $cat_url    = BASE_URL . '/' . e($cat['slug']) . '/';
+        $name_size  = in_array($hkey, ['h-lg','h-xl','h-xxl']) ? 'text-xl' : 'text-base';
+
+        $tag   = $has_sub ? 'div' : 'a';
+        $href  = $has_sub ? '' : 'href="' . $cat_url . '"';
+        $extra = $has_sub ? 'role="button" tabindex="0"' : '';
       ?>
-      <div class="layanan-masonry-item">
-        <<?= $tag ?> <?= $href ?> <?= $extra ?> class="lm-card <?= $height ?>">
-          <?php if($has_img): ?><div class="lm-bg" style="background-image:url('<?= e(imgUrl($cat['image'],'category')) ?>');"></div>
-          <?php else: ?><div class="lm-bg-fallback <?= $grad ?>"><div class="lm-num"><?= $num ?></div></div><?php endif; ?>
-          <div class="lm-overlay-default"></div><div class="lm-overlay-hover"></div>
-          <div class="lm-num"><?= $num ?></div>
-          <?php if(!empty($cat['icon'])): ?><div class="lm-icon"><?= e($cat['icon']) ?></div><?php endif; ?>
-          <div class="lm-chip"><?= $has_sub?'Lihat Pilihan':'Lihat →' ?></div>
-          <div class="lm-bottom">
-            <?php if($has_sub): ?><div class="lm-badge"><span class="w-1 h-1 rounded-full inline-block" style="background:rgba(242,196,206,.5);"></span><?= count($subs) ?> layanan tersedia</div><?php endif; ?>
-            <div class="lm-name <?= in_array($height,['h-lg','h-xl'])?'text-xl':'text-base' ?>"><?= e($cat['name']) ?></div>
-            <div class="lm-rose-line"></div>
-            <div class="lm-detail">
-              <?php if($has_sub): ?>
-              <div class="space-y-0.5 mb-3">
-                <a href="<?= BASE_URL ?>/<?= e($cat['slug']) ?>/" class="lm-sub-link" onclick="event.stopPropagation()"><span class="lm-sub-dot"></span>Lihat semua <?= e($cat['name']) ?></a>
-                <?php foreach(array_slice($subs,0,4) as $sub): ?><a href="<?= BASE_URL ?>/<?= e($sub['slug']) ?>/" class="lm-sub-link" onclick="event.stopPropagation()"><span class="lm-sub-dot"></span><?= e($sub['name']) ?></a><?php endforeach; ?>
-                <?php if(count($subs)>4): ?><span class="lm-sub-link" style="color:rgba(212,137,154,.4);"><span class="lm-sub-dot"></span>+<?= count($subs)-4 ?> lainnya...</span><?php endif; ?>
-              </div>
-              <?php elseif(!empty($cat['description'])): ?><p class="text-[12px] leading-relaxed mb-3 line-clamp-2" style="color:rgba(255,255,255,.55);"><?= e($cat['description']) ?></p><?php endif; ?>
-            </div>
+      <div class="pin-item">
+        <<?= $tag ?> <?= $href ?> <?= $extra ?> class="pin-card" style="--card-h:<?= $h_px ?>px;">
+
+          <!-- Background -->
+          <?php if ($has_img): ?>
+          <div class="pin-bg" style="background-image:url('<?= e(imgUrl($cat['image'], 'category')) ?>');"></div>
+          <?php else: ?>
+          <div class="pin-bg-grad <?= $pg ?>"></div>
+          <?php if (!empty($cat['icon'])): ?>
+          <div class="pin-icon"><?= e($cat['icon']) ?></div>
+          <?php endif; ?>
+          <?php endif; ?>
+
+          <!-- Overlays -->
+          <div class="pin-ov-base"></div>
+          <div class="pin-ov-shimmer"></div>
+          <div class="pin-sparkle"></div>
+          <div class="pin-bignum"><?= $num ?></div>
+
+          <!-- Top badges -->
+          <div class="pin-eyebrow">
+            <?php if ($has_sub): ?>
+            <span style="width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;opacity:.6;flex-shrink:0;"></span>
+            <?= count($subs) ?> layanan
+            <?php else: ?>
+            <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            Lihat
+            <?php endif; ?>
           </div>
+          <?php if ($has_sub): ?>
+          <div class="pin-sub-badge"><?= count($subs) ?> sub</div>
+          <?php endif; ?>
+
+          <!-- Footer content -->
+          <div class="pin-footer">
+            <div class="pin-accent-line"></div>
+            <div class="pin-name <?= $name_size ?>"><?= e($cat['name']) ?></div>
+
+            <?php if ($has_sub): ?>
+            <!-- Sub-categories reveal -->
+            <div class="pin-subs">
+              <a href="<?= $cat_url ?>" class="pin-sub-item" style="color:rgba(242,196,206,.55);font-weight:800;" onclick="event.stopPropagation()">
+                Semua <?= e($cat['name']) ?> →
+              </a>
+              <?php foreach (array_slice($subs, 0, 5) as $sub): ?>
+              <a href="<?= BASE_URL ?>/<?= e($sub['slug']) ?>/" class="pin-sub-item" onclick="event.stopPropagation()">
+                <?= e($sub['name']) ?>
+              </a>
+              <?php endforeach; ?>
+              <?php if (count($subs) > 5): ?>
+              <span class="pin-sub-item" style="color:rgba(212,137,154,.35);font-style:italic;">
+                +<?= count($subs) - 5 ?> lainnya
+              </span>
+              <?php endif; ?>
+            </div>
+            <?php elseif (!empty($cat['description'])): ?>
+            <!-- Short desc + CTA for leaf categories -->
+            <div class="pin-subs">
+              <p style="
+  font-size:11.5px;
+  line-height:1.5;
+  color:rgba(255,255,255,.45);
+  margin-bottom:10px;
+
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+
+  line-clamp:2;
+
+  overflow:hidden;
+">
+                <?= e($cat['description']) ?>
+              </p>
+              <a href="<?= $cat_url ?>" class="pin-cta" onclick="event.stopPropagation()">
+                <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                Lihat Produk
+              </a>
+            </div>
+            <?php else: ?>
+            <div class="pin-subs">
+              <a href="<?= $cat_url ?>" class="pin-cta" onclick="event.stopPropagation()">
+                <svg width="9" height="9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+                Lihat Produk
+              </a>
+            </div>
+            <?php endif; ?>
+          </div>
+
         </<?= $tag ?>>
       </div>
       <?php endforeach; ?>
