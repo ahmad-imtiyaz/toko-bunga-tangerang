@@ -1353,12 +1353,32 @@ $CARD_INIT = 8;
 
 .prod-info { padding:14px 16px 18px; display:flex; flex-direction:column; flex:1; }
 .prod-name {
-  font:600 15px/1.3 'Cormorant Garamond',serif; color:var(--dark); margin-bottom:6px;
-  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden;
+  font:600 15px/1.3 'Cormorant Garamond',serif;
+  color:var(--dark);
+  margin-bottom:6px;
+
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+
+  -webkit-line-clamp:2;
+  line-clamp:2;
+
+  overflow:hidden;
 }
+
 .prod-desc {
-  font:400 11.5px/1.65 'Jost',sans-serif; color:var(--muted); margin-bottom:12px; flex:1;
-  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden;
+  font:400 11.5px/1.65 'Jost',sans-serif;
+  color:var(--muted);
+  margin-bottom:12px;
+  flex:1;
+
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+
+  -webkit-line-clamp:2;
+  line-clamp:2;
+
+  overflow:hidden;
 }
 .prod-footer { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; }
 .prod-price-label { font:500 9px/1 'Jost',sans-serif; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
@@ -2259,260 +2279,298 @@ function filterProduk(catId, btn, parentId) {
 
 </section>
 
-<!-- ============================================================
-     AREA PENGIRIMAN SECTION
-============================================================ -->
 <?php
 /* ================================================================
-   AREA PENGIRIMAN SECTION — Abstract Pin Map + Card List
-   Pendekatan 2: visual peta abstrak atas + kartu lokasi bawah
-   Responsif mobile & desktop
+   AREA PENGIRIMAN — Pure Card Grid
+   Tema: ivory / rose / blush / cream
 ================================================================ */
 ?>
 
 <style>
-  /* ── Pin pulse animation ── */
-  @keyframes pin-pulse {
-    0%   { transform: scale(1);   opacity: .8; }
-    50%  { transform: scale(1.5); opacity: 0;  }
-    100% { transform: scale(1);   opacity: 0;  }
-  }
-  @keyframes pin-float {
-    0%,100% { transform: translateY(0); }
-    50%      { transform: translateY(-5px); }
-  }
+#area {
+  --blush: #F2C4CE; --rose: #D4899A; --dusty: #C8778A;
+  --ivory: #FDF9F4; --soft: #F7EEF0;
+  --muted: #8C6B72; --dark: #2C1A1E;
+}
+#area { background: var(--soft); overflow: hidden; position: relative; }
+#area::before {
+  content:''; position:absolute; border-radius:50%; pointer-events:none;
+  width:500px; height:500px; top:-100px; right:-100px;
+  background:radial-gradient(circle,rgba(242,196,206,.22) 0%,transparent 70%);
+  filter:blur(60px);
+}
+#area::after {
+  content:''; position:absolute; border-radius:50%; pointer-events:none;
+  width:380px; height:380px; bottom:-80px; left:-60px;
+  background:radial-gradient(circle,rgba(212,137,154,.14) 0%,transparent 70%);
+  filter:blur(50px);
+}
 
-  .pin-ring {
-    animation: pin-pulse 2s ease-out infinite;
-  }
-  .pin-dot {
-    animation: pin-float 3s ease-in-out infinite;
-  }
+/* ── Shimmer line ── */
+@keyframes shimmer-x {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.area-shimmer {
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--blush),var(--rose),var(--blush),transparent);
+  background-size:200% auto;
+  animation:shimmer-x 3.5s linear infinite;
+}
 
-  /* Delay tiap pin beda-beda biar ga seragam */
-  .pin-wrap:nth-child(1) .pin-ring { animation-delay: 0s; }
-  .pin-wrap:nth-child(2) .pin-ring { animation-delay: .4s; }
-  .pin-wrap:nth-child(3) .pin-ring { animation-delay: .8s; }
-  .pin-wrap:nth-child(4) .pin-ring { animation-delay: 1.2s; }
-  .pin-wrap:nth-child(5) .pin-ring { animation-delay: 1.6s; }
-  .pin-wrap:nth-child(6) .pin-ring { animation-delay: 0.2s; }
-  .pin-wrap:nth-child(1) .pin-dot  { animation-delay: 0s; }
-  .pin-wrap:nth-child(2) .pin-dot  { animation-delay: .5s; }
-  .pin-wrap:nth-child(3) .pin-dot  { animation-delay: 1s; }
-  .pin-wrap:nth-child(4) .pin-dot  { animation-delay: 1.5s; }
-  .pin-wrap:nth-child(5) .pin-dot  { animation-delay: .3s; }
-  .pin-wrap:nth-child(6) .pin-dot  { animation-delay: .7s; }
+/* ── Header ── */
+.area-overline {
+  display:inline-flex; align-items:center; gap:8px;
+  font:600 11px/1 'Jost',sans-serif; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--dusty); margin-bottom:16px;
+}
+.area-overline-dot { width:5px; height:5px; border-radius:50%; background:var(--rose); }
+.area-title {
+  font:300 clamp(2rem,4vw,3rem)/1.1 'Cormorant Garamond',serif;
+  color:var(--dark);
+}
+.area-title em { font-style:italic; color:var(--dusty); }
 
-  /* ── Garis koneksi antar pin (SVG) ── */
-  .map-line {
-    stroke-dasharray: 6 4;
-    animation: dash-move 2s linear infinite;
-  }
-  @keyframes dash-move {
-    to { stroke-dashoffset: -20; }
-  }
+/* ════════════════════
+   STATS ROW
+════════════════════ */
+.area-stats-row {
+  display:flex; align-items:center; justify-content:center;
+  gap:0; background:#fff;
+  border:1px solid rgba(212,137,154,.15);
+  border-radius:20px; overflow:hidden;
+  margin-bottom:48px;
+}
+.area-stat {
+  flex:1; padding:20px 12px; text-align:center;
+  position:relative; transition:background .2s;
+}
+.area-stat:hover { background:rgba(242,196,206,.1); }
+.area-stat + .area-stat::before {
+  content:''; position:absolute; left:0; top:20%; bottom:20%;
+  width:1px; background:rgba(212,137,154,.15);
+}
+.area-stat-num {
+  font:700 1.7rem/1 'Cormorant Garamond',serif; color:var(--dusty);
+}
+.area-stat-lbl {
+  font:600 9.5px/1 'Jost',sans-serif; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); margin-top:5px; display:block;
+}
 
-  /* ── Card area hover ── */
-  .area-card {
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-  }
-  .area-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 48px rgba(0,0,0,.4);
-    border-color: rgba(245,197,24,.4) !important;
-  }
-  .area-card:hover .area-pin-icon {
-    background: #F5C518 !important;
-    color: #0B1F4A !important;
-  }
+/* ════════════════════
+   LOCATION CARDS
+════════════════════ */
+.area-grid {
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:14px;
+}
+
+.loc-card {
+  background:#fff;
+  border:1px solid rgba(212,137,154,.15);
+  border-radius:20px;
+  padding:20px;
+  text-decoration:none;
+  display:flex; flex-direction:column; gap:10px;
+  position:relative; overflow:hidden;
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+/* Aksen garis atas tersembunyi */
+.loc-card::before {
+  content:'';
+  position:absolute; top:0; left:10%; right:10%; height:2px;
+  background:linear-gradient(to right, var(--blush), var(--dusty));
+  border-radius:0 0 4px 4px;
+  transform:scaleX(0);
+  transform-origin:center;
+  transition:transform .35s ease;
+}
+/* Blob lembut di pojok */
+.loc-card::after {
+  content:'';
+  position:absolute; bottom:-30px; right:-30px;
+  width:100px; height:100px; border-radius:50%;
+  background:radial-gradient(circle, rgba(242,196,206,.2) 0%, transparent 70%);
+  transition:transform .4s ease;
+  pointer-events:none;
+}
+.loc-card:hover {
+  transform:translateY(-5px);
+  box-shadow:0 16px 44px rgba(44,26,30,.1);
+  border-color:rgba(212,137,154,.35);
+  text-decoration:none;
+}
+.loc-card:hover::before { transform:scaleX(1); }
+.loc-card:hover::after  { transform:scale(1.6); }
+
+/* Icon pin */
+.loc-icon {
+  width:40px; height:40px; border-radius:14px; flex-shrink:0;
+  background:linear-gradient(135deg, rgba(242,196,206,.4), rgba(212,137,154,.15));
+  border:1px solid rgba(212,137,154,.2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+  transition:transform .3s ease, background .3s ease;
+}
+.loc-card:hover .loc-icon {
+  transform:scale(1.1) rotate(-5deg);
+  background:linear-gradient(135deg, var(--blush), rgba(212,137,154,.3));
+}
+
+/* Nama */
+.loc-name {
+  font:700 14px/1.3 'Cormorant Garamond',serif;
+  color:var(--dark);
+  transition:color .2s;
+}
+.loc-card:hover .loc-name { color:var(--dusty); }
+
+/* Sub teks */
+.loc-sub {
+  font:400 11.5px/1.6 'Jost',sans-serif;
+  color:var(--muted); flex:1;
+}
+
+/* Badge estimasi */
+.loc-badge {
+  display:inline-flex; align-items:center; gap:5px;
+  background:rgba(242,196,206,.2);
+  border:1px solid rgba(212,137,154,.2);
+  border-radius:100px; padding:4px 10px;
+  font:600 10px/1 'Jost',sans-serif;
+  color:var(--dusty); width:fit-content;
+  transition:background .2s;
+}
+.loc-card:hover .loc-badge {
+  background:rgba(242,196,206,.4);
+}
+
+/* CTA link di bawah card */
+.loc-cta {
+  display:flex; align-items:center; gap:5px;
+  font:600 11px/1 'Jost',sans-serif; letter-spacing:.04em;
+  color:var(--rose); margin-top:2px;
+  transition:gap .2s, color .2s;
+}
+.loc-card:hover .loc-cta { gap:8px; color:var(--dusty); }
+.loc-cta svg { transition:transform .2s; }
+.loc-card:hover .loc-cta svg { transform:translateX(3px); }
+
+/* ── Footer CTA ── */
+.area-footer { text-align:center; margin-top:48px; }
+.area-footer p {
+  font:400 italic 1.15rem/1.5 'Cormorant Garamond',serif;
+  color:var(--muted); margin-bottom:18px;
+}
+.area-footer-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  font:700 13px/1 'Jost',sans-serif; letter-spacing:.05em;
+  color:#fff; text-decoration:none;
+  background:linear-gradient(135deg, var(--blush), var(--dusty));
+  padding:13px 28px; border-radius:100px;
+  box-shadow:0 5px 18px rgba(200,119,138,.3);
+  transition:transform .25s, box-shadow .25s;
+}
+.area-footer-btn:hover {
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(200,119,138,.42);
+  color:#fff; text-decoration:none;
+}
+
+/* ── Responsive ── */
+@media (max-width:1023px) { .area-grid { grid-template-columns:repeat(3,1fr); } }
+@media (max-width:767px)  { .area-grid { grid-template-columns:repeat(2,1fr); } .loc-card { padding:16px; } }
+@media (max-width:479px)  { .area-grid { grid-template-columns:1fr 1fr; gap:10px; } }
 </style>
 
-<!-- ============================================================
-     AREA PENGIRIMAN SECTION
-============================================================ -->
-<section id="area" class="py-20 relative overflow-hidden"
-         style="background: #081729;">
+<section id="area" class="py-20">
+<div class="area-shimmer"></div>
 
-  <!-- Dekorasi top line -->
-  <div class="absolute top-0 left-0 w-full h-px"
-       style="background: linear-gradient(90deg, transparent, rgba(245,197,24,.3), transparent);"></div>
+<div class="relative z-10 max-w-6xl mx-auto px-4">
 
-  <!-- Background glow -->
-  <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
-       style="background: radial-gradient(circle, rgba(245,197,24,.05) 0%, transparent 65%); filter: blur(40px);"></div>
-
-  <div class="relative z-10 max-w-7xl mx-auto px-4">
-
-    <!-- ── Header ── -->
-    <div class="text-center mb-12">
-      <div class="inline-flex items-center gap-2 bg-[#F5C518]/10 border border-[#F5C518]/25 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-[#F5C518] mb-5">
-        <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#F5C518]"></span>
-        Jangkauan Layanan
-      </div>
-      <h2 class="font-serif text-3xl md:text-4xl font-black text-white mt-2 mb-4">
-        Area Pengiriman Tangerang
-      </h2>
-      <p class="text-white/45 max-w-xl mx-auto text-[15px] leading-relaxed">
-        Kami melayani pengiriman bunga ke seluruh kecamatan di Tangerang dengan cepat dan terpercaya.
-      </p>
+  <!-- Header -->
+  <div class="text-center mb-10">
+    <div class="area-overline justify-center">
+      <span class="area-overline-dot"></span>
+      Jangkauan Layanan
     </div>
-
-    <!-- ════════════════════════════════════
-         VISUAL PETA ABSTRAK
-    ════════════════════════════════════ -->
-    <div class="relative w-full rounded-3xl mb-12 overflow-hidden"
-         style="height: 280px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);">
-
-      <!-- Grid lines latar (efek peta) -->
-      <svg class="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="map-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(245,197,24,.4)" stroke-width=".5"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#map-grid)"/>
-      </svg>
-
-      <!-- Garis koneksi antar pin (SVG overlay) -->
-      <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
-        <!-- Garis-garis koneksi — posisi disesuaikan dengan pin di bawah -->
-        <line class="map-line" x1="14%" y1="42%" x2="34%" y2="62%" stroke="rgba(245,197,24,.25)" stroke-width="1.5"/>
-        <line class="map-line" x1="34%" y1="62%" x2="52%" y2="38%" stroke="rgba(245,197,24,.25)" stroke-width="1.5"/>
-        <line class="map-line" x1="52%" y1="38%" x2="70%" y2="65%" stroke="rgba(245,197,24,.25)" stroke-width="1.5"/>
-        <line class="map-line" x1="34%" y1="62%" x2="20%" y2="76%" stroke="rgba(245,197,24,.15)" stroke-width="1"/>
-        <line class="map-line" x1="52%" y1="38%" x2="78%" y2="48%" stroke="rgba(245,197,24,.15)" stroke-width="1"/>
-      </svg>
-
-      <!-- Pin-pin lokasi -->
-      <!-- Posisi pakai % agar responsif -->
-      <?php
-      // Posisi pin di peta abstrak (% dari kiri & atas)
-      // Top mulai 40%+ agar tidak nabrak badge "Antar 2-4 Jam" di pojok kanan atas
-      $pin_positions = [
-        ['left'=>'14%',  'top'=>'42%'],
-        ['left'=>'34%',  'top'=>'62%'],
-        ['left'=>'52%',  'top'=>'38%'],
-        ['left'=>'70%',  'top'=>'65%'],
-        ['left'=>'20%',  'top'=>'76%'],
-        ['left'=>'78%',  'top'=>'48%'],
-      ];
-      foreach ($locations as $idx => $loc):
-        $pos = $pin_positions[$idx % count($pin_positions)];
-      ?>
-      <div class="pin-wrap absolute z-10 flex flex-col items-center"
-           style="left: <?= $pos['left'] ?>; top: <?= $pos['top'] ?>; transform: translate(-50%,-100%);">
-
-        <!-- Pin icon + float -->
-        <div class="pin-dot relative flex flex-col items-center cursor-pointer group/pin">
-
-          <!-- Tooltip nama lokasi -->
-          <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 whitespace-nowrap
-                      bg-[#0B1F4A] border border-[#F5C518]/30 text-white text-[10px] font-bold
-                      px-2.5 py-1 rounded-full opacity-0 group-hover/pin:opacity-100 transition-opacity duration-200 z-20
-                      pointer-events-none">
-            <?= e($loc['name']) ?>
-          </div>
-
-          <!-- Icon pin -->
-          <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg relative z-10"
-               style="background: #F5C518; border: 2px solid #0B1F4A;">
-            <svg class="w-3.5 h-3.5" fill="#0B1F4A" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-          </div>
-
-          <!-- Tangkai pin -->
-          <div class="w-0.5 h-3" style="background: #F5C518; opacity: .6;"></div>
-        </div>
-
-        <!-- Pulse ring -->
-        <div class="pin-ring absolute w-10 h-10 rounded-full border-2 border-[#F5C518]"
-             style="top: -4px; left: 50%; transform: translateX(-50%);"></div>
-
-      </div>
-      <?php endforeach; ?>
-
-      <!-- Label "Tangerang & Sekitarnya" di tengah bawah -->
-      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
-        <div class="w-1.5 h-1.5 rounded-full bg-[#F5C518] animate-pulse"></div>
-        <span class="text-[11px] font-bold uppercase tracking-widest text-white/30">
-          Tangerang & Sekitarnya
-        </span>
-        <div class="w-1.5 h-1.5 rounded-full bg-[#F5C518] animate-pulse"></div>
-      </div>
-
-      <!-- Delivery badge pojok kanan atas -->
-      <div class="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 rounded-full"
-           style="background: rgba(245,197,24,.1); border: 1px solid rgba(245,197,24,.25);">
-        <span class="text-sm">🛵</span>
-        <span class="text-[11px] font-bold text-[#F5C518]">Antar Kapanpun & Dimanapun</span>
-      </div>
-
-    </div><!-- /peta abstrak -->
-
-    <!-- ════════════════════════════════════
-         KARTU LOKASI
-    ════════════════════════════════════ -->
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      <?php foreach ($locations as $idx => $loc): ?>
-
-      <a href="<?= BASE_URL ?>/<?= e($loc['slug']) ?>/"
-         class="area-card group block rounded-2xl p-5 no-underline"
-         style="background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);">
-
-        <div class="flex items-start gap-3 mb-3">
-          <!-- Pin icon -->
-          <div class="area-pin-icon w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
-               style="background: rgba(245,197,24,.12); border: 1px solid rgba(245,197,24,.2);">
-            <svg class="w-4 h-4 text-[#F5C518]" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-            </svg>
-          </div>
-
-          <div>
-            <div class="font-serif font-bold text-white text-sm leading-tight">
-              <?= e($loc['name']) ?>
-            </div>
-            <!-- Estimasi waktu -->
-            <!-- <div class="text-[10px] font-semibold text-[#F5C518]/70 mt-0.5">
-               2–4 Jam
-            </div> -->
-          </div>
-        </div>
-
-        <!-- Alamat -->
-        <?php if (!empty($loc['address'])): ?>
-        <p class="text-white/40 text-[12px] leading-relaxed line-clamp-2 mb-3">
-          <?= e($loc['address']) ?>
-        </p>
-        <?php endif; ?>
-
-        <!-- CTA -->
-        <div class="flex items-center gap-1 text-[11px] font-bold text-[#F5C518]/60 group-hover:text-[#F5C518] transition-colors duration-200">
-          Lihat layanan di sini
-          <svg class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
-          </svg>
-        </div>
-
-      </a>
-
-      <?php endforeach; ?>
-    </div>
-
-    <!-- ── Footer note ── -->
-    <div class="text-center mt-10">
-      <p class="text-white/35 text-sm">
-        Tidak menemukan area Anda?
-        <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, apakah ada layanan pengiriman ke area saya?') ?>"
-           target="_blank"
-           class="text-[#F5C518] font-semibold hover:underline transition ml-1">
-          Hubungi kami via WhatsApp →
-        </a>
-      </p>
-    </div>
-
+    <h2 class="area-title">
+      Kami Hadir di <em>Seluruh Tangerang</em>
+    </h2>
+    <p class="mt-3 max-w-md mx-auto" style="font:400 14px/1.7 'Jost',sans-serif; color:var(--muted);">
+      Pengiriman bunga ke seluruh wilayah — cepat, aman, dan tepat waktu.
+    </p>
   </div>
+
+  <!-- Stats row -->
+  <div class="area-stats-row max-w-lg mx-auto">
+    <div class="area-stat">
+      <div class="area-stat-num"><?= count($locations) ?>+</div>
+      <span class="area-stat-lbl">Wilayah</span>
+    </div>
+    <div class="area-stat">
+      <div class="area-stat-num">2–4<span style="font-size:1rem">Jam</span></div>
+      <span class="area-stat-lbl">Estimasi Kirim</span>
+    </div>
+    <div class="area-stat">
+      <div class="area-stat-num">24/7</div>
+      <span class="area-stat-lbl">Siap Melayani</span>
+    </div>
+  </div>
+
+  <!-- Location Cards — auto dari database -->
+  <div class="area-grid">
+    <?php
+    $loc_flowers = ['🌸','🌺','🌷','🌼','🪷','🌹','💐','🌻'];
+    foreach ($locations as $idx => $loc):
+      $flower = $loc_flowers[$idx % count($loc_flowers)];
+      $wa_text = urlencode('Halo, saya ingin pesan bunga dengan pengiriman ke ' . $loc['name'] . '. Apakah bisa?');
+    ?>
+    <a href="<?= BASE_URL ?>/<?= e($loc['slug']) ?>/"
+       class="loc-card">
+
+      <div class="flex items-center gap-3">
+        <div class="loc-icon"><?= $flower ?></div>
+        <div class="loc-name"><?= e($loc['name']) ?></div>
+      </div>
+
+      <?php if (!empty($loc['address'])): ?>
+      <div class="loc-sub"><?= e($loc['address']) ?></div>
+      <?php else: ?>
+      <div class="loc-sub">Layanan pengiriman bunga segar tersedia di area ini.</div>
+      <?php endif; ?>
+
+      <div class="loc-badge">
+        <span>⚡</span> Kirim 2–4 Jam
+      </div>
+
+      <div class="loc-cta">
+        Lihat layanan
+        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
+        </svg>
+      </div>
+
+    </a>
+    <?php endforeach; ?>
+  </div>
+
+  <!-- Footer -->
+  <div class="area-footer">
+    <p>Tidak menemukan area Anda? Kami tetap bisa bantu! 🌸</p>
+    <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, apakah ada layanan pengiriman ke area saya?') ?>"
+       target="_blank" class="area-footer-btn">
+      <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
+      </svg>
+      Tanya via WhatsApp
+    </a>
+  </div>
+
+</div>
 </section>
 
 <!-- ============================================================
