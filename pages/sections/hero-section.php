@@ -628,3 +628,5 @@
     <?php endforeach; endfor; ?>
   </div>
 </div>
+
+<!-- perlu di ganti mode terang mode gelap layar harus tetep ikut mode terang -->
