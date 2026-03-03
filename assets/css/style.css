@@ -150,3 +150,41 @@ section[id] {
   0%,100% { transform: translateY(0); }
   50%      { transform: translateY(-3px); }
 }
+/* ── Force Light Mode (ignore OS dark mode) ── */
+:root {
+  color-scheme: light only;
+}
+
+#hero-new,
+#hero-features,
+#hero-ticker-wrap {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  #hero-new,
+  #hero-features,
+  #hero-ticker-wrap {
+    /* Re-declare semua warna agar tidak ikut dark mode browser */
+    background: var(--dark);
+    color: inherit;
+  }
+
+  #hero-features {
+    background: var(--ivory) !important;
+    color: var(--dark) !important;
+  }
+
+  .feature-title {
+    color: var(--dark) !important;
+  }
+
+  .feature-desc {
+    color: var(--muted) !important;
+  }
+
+  .stat-num,
+  .hero-headline {
+    color: #fff !important;
+  }
+}

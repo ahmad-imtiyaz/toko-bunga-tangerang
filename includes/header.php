@@ -37,6 +37,7 @@ if ($base_path && str_starts_with($current_slug, $base_path))
 <meta property="og:description" content="<?= e($meta_desc) ?>">
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="<?= e(BASE_URL) ?>">
+<meta name="color-scheme" content="light only">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
