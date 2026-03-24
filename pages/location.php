@@ -509,6 +509,19 @@ require __DIR__ . '/../includes/header.php';
 .sidebar-acc-content{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .sidebar-acc-content.open{max-height:600px}
 .sidebar-acc-btn.open .acc-chevron{transform:rotate(180deg)}
+
+/* ━━━ LOC CONTENT SEO ━━━ */
+.loc-content h1 { font-family:'Playfair Display',Georgia,serif; font-size:1.9rem; font-weight:900; color:var(--dark); margin-bottom:1rem; margin-top:1.5rem; line-height:1.2; }
+.loc-content h2 { font-family:'Playfair Display',Georgia,serif; font-size:1.45rem; font-weight:800; color:var(--dark); margin-bottom:0.75rem; margin-top:1.25rem; line-height:1.3; }
+.loc-content h3 { font-family:'Playfair Display',Georgia,serif; font-size:1.15rem; font-weight:700; color:var(--dusty); margin-bottom:0.5rem; margin-top:1rem; }
+.loc-content p  { margin-bottom:0.75rem; }
+.loc-content ul { list-style:disc; padding-left:1.5rem; margin-bottom:0.75rem; }
+.loc-content ol { list-style:decimal; padding-left:1.5rem; margin-bottom:0.75rem; }
+.loc-content li { margin-bottom:0.25rem; color:var(--muted); }
+.loc-content strong { color:var(--dark); font-weight:700; }
+.loc-content em { color:var(--dusty); font-style:italic; }
+.loc-content a  { color:var(--dusty); text-decoration:underline; transition:color .2s ease; }
+.loc-content a:hover { color:var(--rose); }
 </style>
 
 <?php
@@ -872,7 +885,7 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
             Toko Bunga <?= e($location['name']) ?><br>
             <span style="background:linear-gradient(135deg,var(--dusty),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Terpercaya & Berpengalaman</span>
           </h2>
-          <?php if(!empty($location['content'])): ?><div class="leading-relaxed text-[15px] mb-5" style="color:var(--muted);"><?= $location['content'] ?></div><?php endif; ?>
+          <?php if(!empty($location['content'])): ?><div class="leading-relaxed text-[15px] mb-5 loc-content" style="color:var(--muted);"><?= $location['content'] ?></div><?php endif; ?>
           <p class="text-[15px] leading-relaxed mb-6" style="color:var(--muted);">Sebagai <strong style="color:var(--dark);">toko bunga <?= e(strtolower($location['name'])) ?></strong> yang telah melayani pelanggan lebih dari 10 tahun, kami memahami setiap momen memerlukan rangkaian bunga yang tepat. Tim florist profesional siap membantu 24 jam.</p>
           <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin memesan bunga di '.$location['name'].'. Mohon info harga dan ketersediaannya.') ?>" target="_blank"
              class="inline-flex items-center gap-2.5 font-bold px-7 py-3.5 rounded-full no-underline transition hover:-translate-y-1"
