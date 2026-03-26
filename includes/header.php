@@ -539,6 +539,10 @@ section[id] { scroll-margin-top: 90px; }
         <a href="<?= BASE_URL ?>/#testimoni" class="nav-link">Testimoni</a>
         <a href="<?= BASE_URL ?>/#faq"       class="nav-link">FAQ</a>
 
+           <a href="<?= BASE_URL ?>/blog/"
+           class="nav-link <?= str_starts_with($current_slug, 'blog') ? 'active' : '' ?>">
+          Blog
+        </a>
       </div>
 
       <!-- CTA + Hamburger -->
@@ -613,6 +617,10 @@ section[id] { scroll-margin-top: 90px; }
       <a href="<?= BASE_URL ?>/#area"      class="mob-link mob-close"><span>📍</span> Area Kirim</a>
       <a href="<?= BASE_URL ?>/#testimoni" class="mob-link mob-close"><span>⭐</span> Testimoni</a>
       <a href="<?= BASE_URL ?>/#faq"       class="mob-link mob-close"><span>❓</span> FAQ</a>
+        <a href="<?= BASE_URL ?>/blog/"
+         class="mob-link mob-close <?= str_starts_with($current_slug, 'blog') ? 'active' : '' ?>">
+        <span>📝</span> Blog
+      </a>
 
       <hr class="mob-divider">
 

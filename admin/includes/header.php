@@ -46,22 +46,27 @@ tailwind.config = {
     </div>
     <div class="transition duration-300 group-hover:translate-x-0.5">
       <div class="font-serif font-semibold text-sm leading-tight">Admin Panel</div>
-      <div class="text-xs text-gray-400">Toko Bunga Tangerang</div>
+      <div class="text-xs text-gray-400">Toko Bunga Jkt Utara</div>
     </div>
   </div>
 </div>
     <!-- Nav -->
     <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
       <?php
-      $nav_items = [
-        ['url' => '',             'icon' => '📊', 'label' => 'Dashboard'],
-        ['url' => 'products',     'icon' => '🌺', 'label' => 'Produk'],
-        ['url' => 'categories',   'icon' => '📂', 'label' => 'Kategori'],
-        ['url' => 'locations',    'icon' => '📍', 'label' => 'Area/Kecamatan'],
-        ['url' => 'testimonials', 'icon' => '⭐', 'label' => 'Testimoni'],
-        ['url' => 'faqs',         'icon' => '❓', 'label' => 'FAQ'],
-        ['url' => 'settings',     'icon' => '⚙️', 'label' => 'Pengaturan'],
-      ];
+     $nav_items = [
+  ['url' => '',               'icon' => '📊', 'label' => 'Dashboard'],
+  ['url' => 'products',       'icon' => '🌺', 'label' => 'Produk'],
+  ['url' => 'categories',     'icon' => '📂', 'label' => 'Kategori'],
+  ['url' => 'locations',      'icon' => '📍', 'label' => 'Area/Kecamatan'],
+  ['url' => 'testimonials',   'icon' => '⭐', 'label' => 'Testimoni'],
+  ['url' => 'faqs',           'icon' => '❓', 'label' => 'FAQ'],
+
+  // ✅ TAMBAHAN BLOG
+  ['url' => 'blog',           'icon' => '📝', 'label' => 'Blog'],
+  ['url' => 'blog-categories','icon' => '📂', 'label' => 'Kategori Blog'],
+
+  ['url' => 'settings',       'icon' => '⚙️', 'label' => 'Pengaturan'],
+];
       $current_page = $current_page ?? '';
       foreach ($nav_items as $item):
         $isActive = ($current_page === $item['url']) ? 'bg-sage text-white' : 'text-gray-300 hover:bg-white/10 hover:text-white';

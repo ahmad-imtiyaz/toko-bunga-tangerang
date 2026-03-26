@@ -27,7 +27,7 @@ if (!isLoggedIn()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="<?= BASE_URL ?>/assets/images/icon.png">
-    <title>Login — Admin Toko Bunga Tangerang</title>
+    <title>Login — Admin Toko Bunga Grogol</title>
     <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -61,7 +61,7 @@ if (!isLoggedIn()) {
          class="w-full h-full object-cover">
   </div>
   <h1 class="font-serif text-2xl font-bold text-navy">Admin Panel</h1>
-  <p class="text-gray-500 text-sm mt-1">Toko Bunga Tangerang</p>
+  <p class="text-gray-500 text-sm mt-1">Toko Bunga Grogol</p>
 </div>
 
         <!-- Login card -->
@@ -113,6 +113,8 @@ switch ($page) {
     case 'locations':    require __DIR__ . '/pages/locations.php';     break;
     case 'testimonials': require __DIR__ . '/pages/testimonials.php'; break;
     case 'faqs':         require __DIR__ . '/pages/faqs.php';         break;
+    case 'blog':             require __DIR__ . '/pages/blog.php'; break;
+    case 'blog-categories':  require __DIR__ . '/pages/blog-categories.php'; break;
     case 'settings':     require __DIR__ . '/pages/settings.php';     break;
     default:             require __DIR__ . '/pages/dashboard.php';    break;
 }
