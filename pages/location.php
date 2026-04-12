@@ -28,6 +28,12 @@ $locations = db()->query("SELECT * FROM locations WHERE status='active' ORDER BY
 $faqs      = db()->query("SELECT * FROM faqs WHERE status='active' ORDER BY urutan LIMIT 6")->fetchAll();
 $wa_url    = setting('whatsapp_url');
 
+// ── Slider kalkulasi ──
+$slider_per_page    = 10;
+$slider_total       = count($locations);
+$slider_pages       = (int)ceil($slider_total / $slider_per_page);
+$slider_active_idx  = array_search($location['id'], array_column($locations, 'id'));
+$slider_active_page = ($slider_active_idx !== false) ? (int)floor($slider_active_idx / $slider_per_page) : 0;
 $all_prices = [];
 foreach ($cats_with_products as $row) foreach ($row['products'] as $p) $all_prices[] = $p['price'];
 $min_price = !empty($all_prices) ? min($all_prices) : 300000;
@@ -895,18 +901,68 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
           </a>
         </div>
 
-        <div class="rounded-2xl p-5" style="background:#fff;border:1px solid rgba(212,137,154,.15);box-shadow:0 4px 20px rgba(212,137,154,.1);">
-          <div class="flex items-center gap-2 mb-4"><span style="color:var(--rose);">📍</span><h3 class="font-serif font-black" style="color:var(--dark);">Area Lainnya</h3></div>
-          <div class="flex flex-wrap gap-2">
-            <?php foreach($locations as $l): ?>
-            <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
-               class="area-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold no-underline transition"
-               style="background:rgba(212,137,154,.08);border:1px solid rgba(212,137,154,.15);color:<?= $l['id']==$location['id']?'var(--dusty)':'var(--muted)' ?>;<?= $l['id']==$location['id']?'background:rgba(212,137,154,.15);border-color:rgba(212,137,154,.4);':'' ?>">
-              <span class="w-1 h-1 rounded-full inline-block flex-shrink-0" style="background:<?= $l['id']==$location['id']?'var(--rose)':'rgba(44,26,30,.2)' ?>;"></span><?= e($l['name']) ?>
-            </a>
-            <?php endforeach; ?>
-          </div>
-        </div>
+     <div class="rounded-2xl p-5" style="background:#fff;border:1px solid rgba(212,137,154,.15);box-shadow:0 4px 20px rgba(212,137,154,.1);">
+  <div class="flex items-center gap-2 mb-4">
+    <span style="color:var(--rose);">📍</span>
+    <h3 class="font-serif font-black" style="color:var(--dark);">Area Lainnya</h3>
+  </div>
+
+  <!-- Halaman-halaman area -->
+  <?php for ($p = 0; $p < $slider_pages; $p++): ?>
+  <div id="blushAreaPage<?= $p ?>"
+       style="display:<?= $p === $slider_active_page ? 'grid' : 'none' ?>;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 6px; min-height: 60px;">
+    <?php
+    $slice = array_slice($locations, $p * $slider_per_page, $slider_per_page);
+    foreach ($slice as $l):
+      $is_active = $l['id'] == $location['id'];
+    ?>
+    <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
+       class="area-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold no-underline transition overflow-hidden"
+       style="background:<?= $is_active ? 'rgba(212,137,154,.15)' : 'rgba(212,137,154,.08)' ?>;
+              border:1px solid <?= $is_active ? 'rgba(212,137,154,.4)' : 'rgba(212,137,154,.15)' ?>;
+              color:<?= $is_active ? 'var(--dusty)' : 'var(--muted)' ?>;
+              min-width:0;">
+      <span class="w-1 h-1 rounded-full inline-block flex-shrink-0"
+            style="background:<?= $is_active ? 'var(--rose)' : 'rgba(44,26,30,.2)' ?>;"></span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">
+        <?= e($l['name']) ?>
+      </span>
+    </a>
+    <?php endforeach; ?>
+  </div>
+  <?php endfor; ?>
+
+  <!-- Navigasi -->
+  <?php if ($slider_pages > 1): ?>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(212,137,154,.12);">
+    <button id="blushAreaPrev" onclick="blushAreaSlider(-1)"
+            style="font-size:11px;padding:4px 11px;border-radius:8px;
+                   border:1px solid rgba(212,137,154,.2);
+                   background:#fff;color:var(--muted);cursor:pointer;">
+      ‹ Prev
+    </button>
+
+    <div style="display:flex;gap:4px;align-items:center;">
+      <?php for ($p = 0; $p < $slider_pages; $p++): ?>
+      <span id="blushAreaDot<?= $p ?>" onclick="blushAreaGoPage(<?= $p ?>)"
+            style="display:inline-block;height:5px;border-radius:3px;cursor:pointer;transition:all .2s;
+                   width:<?= $p === $slider_active_page ? '16px' : '5px' ?>;
+                   background:<?= $p === $slider_active_page ? 'var(--rose)' : 'rgba(212,137,154,.25)' ?>;"></span>
+      <?php endfor; ?>
+    </div>
+
+    <button id="blushAreaNext" onclick="blushAreaSlider(1)"
+            style="font-size:11px;padding:4px 11px;border-radius:8px;
+                   border:1px solid rgba(212,137,154,.2);
+                   background:#fff;color:var(--muted);cursor:pointer;">
+      Next ›
+    </button>
+  </div>
+  <p id="blushAreaInfo" style="text-align:center;font-size:11px;color:rgba(44,26,30,.3);margin-top:5px;"></p>
+  <?php endif; ?>
+</div>
 
         <div class="rounded-2xl p-6 text-center" style="background:linear-gradient(135deg,rgba(212,137,154,.12),rgba(242,196,206,.08));border:1px solid rgba(212,137,154,.2);">
           <div class="text-4xl mb-3">💬</div>
@@ -1015,4 +1071,51 @@ function zzScrollEvt(el,barId) {
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.zz-scroll').forEach(el=>zzScrollEvt(el,el.id+'-bar'));
 });
+/* ── Area slider ── */
+(function() {
+  var perPage = <?= $slider_per_page ?>;
+  var total   = <?= $slider_total ?>;
+  var pages   = <?= $slider_pages ?>;
+  var cur     = <?= $slider_active_page ?>;
+
+  function update() {
+    for (var i = 0; i < pages; i++) {
+      var el = document.getElementById('blushAreaPage' + i);
+      if (el) el.style.display = (i === cur) ? 'grid' : 'none';
+    }
+    for (var i = 0; i < pages; i++) {
+      var dot = document.getElementById('blushAreaDot' + i);
+      if (!dot) continue;
+      dot.style.width      = (i === cur) ? '16px' : '5px';
+      dot.style.background = (i === cur) ? 'var(--rose)' : 'rgba(212,137,154,.25)';
+    }
+    var prev = document.getElementById('blushAreaPrev');
+    var next = document.getElementById('blushAreaNext');
+    if (prev) {
+      prev.disabled      = (cur === 0);
+      prev.style.opacity = (cur === 0) ? '0.35' : '1';
+      prev.style.cursor  = (cur === 0) ? 'not-allowed' : 'pointer';
+      prev.onmouseenter  = function() { if (!prev.disabled) { prev.style.background='rgba(212,137,154,.1)'; prev.style.borderColor='rgba(212,137,154,.4)'; prev.style.color='var(--dusty)'; }};
+      prev.onmouseleave  = function() { prev.style.background='#fff'; prev.style.borderColor='rgba(212,137,154,.2)'; prev.style.color='var(--muted)'; };
+    }
+    if (next) {
+      next.disabled      = (cur === pages - 1);
+      next.style.opacity = (cur === pages - 1) ? '0.35' : '1';
+      next.style.cursor  = (cur === pages - 1) ? 'not-allowed' : 'pointer';
+      next.onmouseenter  = function() { if (!next.disabled) { next.style.background='rgba(212,137,154,.1)'; next.style.borderColor='rgba(212,137,154,.4)'; next.style.color='var(--dusty)'; }};
+      next.onmouseleave  = function() { next.style.background='#fff'; next.style.borderColor='rgba(212,137,154,.2)'; next.style.color='var(--muted)'; };
+    }
+    var info = document.getElementById('blushAreaInfo');
+    if (info) {
+      var start = cur * perPage + 1;
+      var end   = Math.min((cur + 1) * perPage, total);
+      info.textContent = start + '–' + end + ' dari ' + total + ' area';
+    }
+  }
+
+  window.blushAreaSlider  = function(dir) { cur = Math.max(0, Math.min(pages - 1, cur + dir)); update(); };
+  window.blushAreaGoPage  = function(p)   { cur = p; update(); };
+
+  update();
+})();
 </script>
