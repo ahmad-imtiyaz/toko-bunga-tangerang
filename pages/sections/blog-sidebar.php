@@ -185,21 +185,68 @@ $sidebar_products = db()->query("
   </div>
   <?php endif; ?>
 
-  <!-- ── Area Pengiriman ── -->
-  <div style="background:#fff;border:1px solid rgba(212,137,154,.15);border-radius:16px;padding:14px 16px;box-shadow:0 2px 14px rgba(44,26,30,.04);">
-    <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:14px;font-weight:700;color:#2C1A1E;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-      <span>📍</span> Area Pengiriman
-    </h3>
-    <div style="display:flex;flex-direction:column;gap:3px;">
-      <?php foreach ($locations as $l): ?>
-      <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
-         style="font-size:12px;color:rgba(44,26,30,.45);text-decoration:none;padding:4px 0;display:flex;align-items:center;gap:8px;">
-        <span style="width:4px;height:4px;border-radius:50%;background:rgba(212,137,154,.45);flex-shrink:0;display:inline-block;"></span>
-        <?= e($l['name']) ?>
-      </a>
-      <?php endforeach; ?>
-    </div>
+<!-- ── Area Pengiriman ── -->
+<div style="background:#fff;border:1px solid rgba(212,137,154,.15);border-radius:16px;padding:14px 16px;box-shadow:0 2px 14px rgba(44,26,30,.04);">
+  <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:14px;font-weight:700;color:#2C1A1E;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+    <span>📍</span> Area Pengiriman
+  </h3>
+
+  <?php
+  $tng_desk_per_page = 10;
+  $tng_desk_total    = count($locations);
+  $tng_desk_pages    = (int)ceil($tng_desk_total / $tng_desk_per_page);
+  ?>
+
+  <?php for ($p = 0; $p < $tng_desk_pages; $p++): ?>
+  <div id="tngDeskAreaPage<?= $p ?>"
+       style="display:<?= $p === 0 ? 'flex' : 'none' ?>;
+              flex-direction:column;gap:3px; min-height:60px;">
+    <?php
+    $slice = array_slice($locations, $p * $tng_desk_per_page, $tng_desk_per_page);
+    foreach ($slice as $l):
+    ?>
+    <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
+       style="font-size:12px;color:rgba(44,26,30,.45);text-decoration:none;
+              padding:4px 0;display:flex;align-items:center;gap:8px;
+              border-bottom:1px solid rgba(212,137,154,.07);"
+       onmouseenter="this.style.color='#C8778A'"
+       onmouseleave="this.style.color='rgba(44,26,30,.45)'">
+      <span style="width:4px;height:4px;border-radius:50%;background:rgba(212,137,154,.45);
+                   flex-shrink:0;display:inline-block;"></span>
+      <?= e($l['name']) ?>
+    </a>
+    <?php endforeach; ?>
   </div>
+  <?php endfor; ?>
+
+  <?php if ($tng_desk_pages > 1): ?>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(212,137,154,.12);">
+    <button id="tngDeskAreaPrev" onclick="tngDeskAreaSlider(-1)"
+            style="font-size:11px;padding:4px 12px;border-radius:8px;
+                   border:1px solid rgba(212,137,154,.25);background:#fff;
+                   color:rgba(44,26,30,.45);cursor:pointer;">
+      ‹ Prev
+    </button>
+
+    <div style="display:flex;gap:4px;align-items:center;">
+      <?php for ($p = 0; $p < $tng_desk_pages; $p++): ?>
+      <span id="tngDeskAreaDot<?= $p ?>" onclick="tngDeskAreaGoPage(<?= $p ?>)"
+            style="display:inline-block;height:5px;border-radius:3px;cursor:pointer;transition:all .2s;
+                   width:<?= $p === 0 ? '16px' : '5px' ?>;
+                   background:<?= $p === 0 ? '#C8778A' : 'rgba(212,137,154,.25)' ?>;"></span>
+      <?php endfor; ?>
+    </div>
+
+    <button id="tngDeskAreaNext" onclick="tngDeskAreaSlider(1)"
+            style="font-size:11px;padding:4px 12px;border-radius:8px;
+                   border:1px solid rgba(212,137,154,.25);background:#fff;
+                   color:rgba(44,26,30,.45);cursor:pointer;">
+      Next ›
+    </button>
+  </div>
+  <p id="tngDeskAreaInfo" style="text-align:center;font-size:11px;color:rgba(44,26,30,.3);margin-top:5px;"></p>
+  <?php endif; ?>
+</div>
 
 </div>
 
@@ -252,6 +299,53 @@ $sidebar_products = db()->query("
   }
 
   window.slideCatTangerang = function(dir) { goTo(current + dir); };
+})();
+/* Area Pengiriman slider — Tangerang desktop */
+(function(){
+  var perPage = <?= $tng_desk_per_page ?>;
+  var total   = <?= $tng_desk_total ?>;
+  var pages   = <?= $tng_desk_pages ?>;
+  var cur     = 0;
+
+  function update() {
+    for (var i = 0; i < pages; i++) {
+      var el = document.getElementById('tngDeskAreaPage' + i);
+      if (el) el.style.display = (i === cur) ? 'flex' : 'none';
+    }
+    for (var i = 0; i < pages; i++) {
+      var dot = document.getElementById('tngDeskAreaDot' + i);
+      if (!dot) continue;
+      dot.style.width      = (i === cur) ? '16px' : '5px';
+      dot.style.background = (i === cur) ? '#C8778A' : 'rgba(212,137,154,.25)';
+    }
+    var prev = document.getElementById('tngDeskAreaPrev');
+    var next = document.getElementById('tngDeskAreaNext');
+    if (prev) {
+      prev.disabled      = (cur === 0);
+      prev.style.opacity = (cur === 0) ? '0.35' : '1';
+      prev.style.cursor  = (cur === 0) ? 'not-allowed' : 'pointer';
+      prev.onmouseenter  = function() { if (!prev.disabled) { prev.style.background='rgba(212,137,154,.1)'; prev.style.borderColor='rgba(212,137,154,.4)'; prev.style.color='#C8778A'; }};
+      prev.onmouseleave  = function() { prev.style.background='#fff'; prev.style.borderColor='rgba(212,137,154,.25)'; prev.style.color='rgba(44,26,30,.45)'; };
+    }
+    if (next) {
+      next.disabled      = (cur === pages - 1);
+      next.style.opacity = (cur === pages - 1) ? '0.35' : '1';
+      next.style.cursor  = (cur === pages - 1) ? 'not-allowed' : 'pointer';
+      next.onmouseenter  = function() { if (!next.disabled) { next.style.background='rgba(212,137,154,.1)'; next.style.borderColor='rgba(212,137,154,.4)'; next.style.color='#C8778A'; }};
+      next.onmouseleave  = function() { next.style.background='#fff'; next.style.borderColor='rgba(212,137,154,.25)'; next.style.color='rgba(44,26,30,.45)'; };
+    }
+    var info = document.getElementById('tngDeskAreaInfo');
+    if (info) {
+      var start = cur * perPage + 1;
+      var end   = Math.min((cur + 1) * perPage, total);
+      info.textContent = start + '–' + end + ' dari ' + total + ' area';
+    }
+  }
+
+  window.tngDeskAreaSlider  = function(dir) { cur = Math.max(0, Math.min(pages - 1, cur + dir)); update(); };
+  window.tngDeskAreaGoPage  = function(p)   { cur = p; update(); };
+
+  update();
 })();
 </script>
 

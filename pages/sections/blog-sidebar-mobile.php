@@ -131,18 +131,69 @@ $mob_products = db()->query("
     </div>
 
     <!-- Area Pengiriman -->
-    <div style="background:#fff;border:1px solid rgba(212,137,154,.15);border-radius:16px;padding:16px 18px;box-shadow:0 2px 12px rgba(44,26,30,.04);">
-      <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;font-weight:700;color:#2C1A1E;margin-bottom:12px;">📍 Area Pengiriman</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:7px;">
-        <?php foreach ($locations as $l): ?>
-        <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
-           style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:rgba(44,26,30,.5);text-decoration:none;background:rgba(242,196,206,.15);border:1px solid rgba(212,137,154,.2);padding:5px 12px;border-radius:20px;">
-          <span style="width:3px;height:3px;border-radius:50%;background:rgba(212,137,154,.5);display:inline-block;flex-shrink:0;"></span>
-          <?= e($l['name']) ?>
-        </a>
-        <?php endforeach; ?>
-      </div>
+<div style="background:#fff;border:1px solid rgba(212,137,154,.15);border-radius:16px;padding:16px 18px;box-shadow:0 2px 12px rgba(44,26,30,.04);">
+  <h3 style="font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;font-weight:700;color:#2C1A1E;margin-bottom:12px;">📍 Area Pengiriman</h3>
+
+  <?php
+  $tng_mob_per_page = 10;
+  $tng_mob_total    = count($locations);
+  $tng_mob_pages    = (int)ceil($tng_mob_total / $tng_mob_per_page);
+  ?>
+
+  <?php for ($p = 0; $p < $tng_mob_pages; $p++): ?>
+  <div id="tngMobAreaPage<?= $p ?>"
+       style="display:<?= $p === 0 ? 'grid' : 'none' ?>;
+              grid-template-columns:repeat(2,1fr);
+              gap:7px; min-height:60px;">
+    <?php
+    $slice = array_slice($locations, $p * $tng_mob_per_page, $tng_mob_per_page);
+    foreach ($slice as $l):
+    ?>
+    <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
+       style="display:inline-flex;align-items:center;gap:5px;font-size:11px;
+              color:rgba(44,26,30,.5);text-decoration:none;
+              background:rgba(242,196,206,.15);border:1px solid rgba(212,137,154,.2);
+              padding:5px 10px;border-radius:20px;overflow:hidden;min-width:0;"
+       onmouseover="this.style.background='rgba(212,137,154,.2)';this.style.color='#C8778A';"
+       onmouseout="this.style.background='rgba(242,196,206,.15)';this.style.color='rgba(44,26,30,.5)';">
+      <span style="width:3px;height:3px;border-radius:50%;background:rgba(212,137,154,.5);
+                   display:inline-block;flex-shrink:0;"></span>
+      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">
+        <?= e($l['name']) ?>
+      </span>
+    </a>
+    <?php endforeach; ?>
+  </div>
+  <?php endfor; ?>
+
+  <?php if ($tng_mob_pages > 1): ?>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(212,137,154,.12);">
+    <button id="tngMobAreaPrev" onclick="tngMobAreaSlider(-1)"
+            style="font-size:11px;padding:4px 12px;border-radius:8px;
+                   border:1px solid rgba(212,137,154,.25);background:#fff;
+                   color:rgba(44,26,30,.45);cursor:pointer;">
+      ‹ Prev
+    </button>
+
+    <div style="display:flex;gap:4px;align-items:center;">
+      <?php for ($p = 0; $p < $tng_mob_pages; $p++): ?>
+      <span id="tngMobAreaDot<?= $p ?>" onclick="tngMobAreaGoPage(<?= $p ?>)"
+            style="display:inline-block;height:5px;border-radius:3px;cursor:pointer;transition:all .2s;
+                   width:<?= $p === 0 ? '16px' : '5px' ?>;
+                   background:<?= $p === 0 ? '#C8778A' : 'rgba(212,137,154,.25)' ?>;"></span>
+      <?php endfor; ?>
     </div>
+
+    <button id="tngMobAreaNext" onclick="tngMobAreaSlider(1)"
+            style="font-size:11px;padding:4px 12px;border-radius:8px;
+                   border:1px solid rgba(212,137,154,.25);background:#fff;
+                   color:rgba(44,26,30,.45);cursor:pointer;">
+      Next ›
+    </button>
+  </div>
+  <p id="tngMobAreaInfo" style="text-align:center;font-size:11px;color:rgba(44,26,30,.3);margin-top:5px;"></p>
+  <?php endif; ?>
+</div>
 
   </div>
 </div>
@@ -195,6 +246,53 @@ $mob_products = db()->query("
   }
 
   window.slideCatMobTng = function(dir) { goTo(current + dir); };
+})();
+/* Area Pengiriman slider — Tangerang mobile */
+(function(){
+  var perPage = <?= $tng_mob_per_page ?>;
+  var total   = <?= $tng_mob_total ?>;
+  var pages   = <?= $tng_mob_pages ?>;
+  var cur     = 0;
+
+  function update() {
+    for (var i = 0; i < pages; i++) {
+      var el = document.getElementById('tngMobAreaPage' + i);
+      if (el) el.style.display = (i === cur) ? 'grid' : 'none';
+    }
+    for (var i = 0; i < pages; i++) {
+      var dot = document.getElementById('tngMobAreaDot' + i);
+      if (!dot) continue;
+      dot.style.width      = (i === cur) ? '16px' : '5px';
+      dot.style.background = (i === cur) ? '#C8778A' : 'rgba(212,137,154,.25)';
+    }
+    var prev = document.getElementById('tngMobAreaPrev');
+    var next = document.getElementById('tngMobAreaNext');
+    if (prev) {
+      prev.disabled      = (cur === 0);
+      prev.style.opacity = (cur === 0) ? '0.35' : '1';
+      prev.style.cursor  = (cur === 0) ? 'not-allowed' : 'pointer';
+      prev.onmouseenter  = function() { if (!prev.disabled) { prev.style.background='rgba(212,137,154,.1)'; prev.style.borderColor='rgba(212,137,154,.4)'; prev.style.color='#C8778A'; }};
+      prev.onmouseleave  = function() { prev.style.background='#fff'; prev.style.borderColor='rgba(212,137,154,.25)'; prev.style.color='rgba(44,26,30,.45)'; };
+    }
+    if (next) {
+      next.disabled      = (cur === pages - 1);
+      next.style.opacity = (cur === pages - 1) ? '0.35' : '1';
+      next.style.cursor  = (cur === pages - 1) ? 'not-allowed' : 'pointer';
+      next.onmouseenter  = function() { if (!next.disabled) { next.style.background='rgba(212,137,154,.1)'; next.style.borderColor='rgba(212,137,154,.4)'; next.style.color='#C8778A'; }};
+      next.onmouseleave  = function() { next.style.background='#fff'; next.style.borderColor='rgba(212,137,154,.25)'; next.style.color='rgba(44,26,30,.45)'; };
+    }
+    var info = document.getElementById('tngMobAreaInfo');
+    if (info) {
+      var start = cur * perPage + 1;
+      var end   = Math.min((cur + 1) * perPage, total);
+      info.textContent = start + '–' + end + ' dari ' + total + ' area';
+    }
+  }
+
+  window.tngMobAreaSlider  = function(dir) { cur = Math.max(0, Math.min(pages - 1, cur + dir)); update(); };
+  window.tngMobAreaGoPage  = function(p)   { cur = p; update(); };
+
+  update();
 })();
 </script>
 
