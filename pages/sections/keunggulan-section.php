@@ -155,7 +155,6 @@
   border-radius: 16px;
   aspect-ratio: 1 / 1;
   cursor: pointer;
-  /* Shadow yang dramatis */
   box-shadow: 0 8px 24px rgba(44,26,30,.12);
   transition: box-shadow .4s ease;
 }
@@ -214,6 +213,69 @@
 }
 
 /* ════════════════════
+   SEO TEKS BLOCK
+════════════════════ */
+.ku-seo-block {
+  max-width: 1200px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+  position: relative; z-index: 1;
+}
+.ku-seo-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 12px/1 'Jost', sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--dusty);
+  background: rgba(242,196,206,.15);
+  border: 1px solid rgba(212,137,154,.25);
+  padding: 9px 18px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  margin-bottom: 0;
+}
+.ku-seo-toggle-btn:hover {
+  background: rgba(242,196,206,.3);
+  border-color: rgba(212,137,154,.4);
+}
+.ku-seo-toggle-btn svg {
+  transition: transform .3s ease;
+  flex-shrink: 0;
+}
+.ku-seo-toggle-btn.open svg { transform: rotate(180deg); }
+
+.ku-seo-content {
+  display: none;
+  padding: 28px 32px;
+  background: var(--soft);
+  border: 1px solid rgba(212,137,154,.15);
+  border-radius: 16px;
+  margin-top: 12px;
+}
+.ku-seo-content.visible { display: block; }
+
+.ku-seo-content p {
+  font: 400 13.5px/1.9 'Jost', sans-serif;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+.ku-seo-content p:last-child { margin-bottom: 0; }
+.ku-seo-content strong {
+  color: var(--dark);
+  font-weight: 600;
+}
+.ku-seo-content a {
+  color: var(--dusty);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color .2s;
+}
+.ku-seo-content a:hover { color: var(--dark); }
+
+/* ════════════════════
    STATS BAR BAWAH
 ════════════════════ */
 .ku-statsbar {
@@ -233,6 +295,10 @@
   border-right: 1px solid rgba(212,137,154,.12);
   position: relative;
   transition: background .25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .ku-sb-item:last-child { border-right: none; }
 .ku-sb-item:hover { background: rgba(242,196,206,.1); }
@@ -277,10 +343,23 @@
 }
 .ku-btn-ghost:hover { border-color:var(--dusty); background:rgba(242,196,206,.1); color:var(--dark); text-decoration:none; }
 
+/* svg icon kiri kanan */
+.ku-point-icon img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+/* svg icon bawah */
+.ku-sb-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 1023px) {
   .ku-body { grid-template-columns: 1fr; gap: 32px; }
-  .ku-side-right { flex-direction: row; flex-wrap: wrap; }
   .ku-side-right .ku-point, .ku-side-left .ku-point {
     flex-direction: row; text-align: left; border: none; padding: 0;
   }
@@ -292,30 +371,11 @@
   .ku-sb-item:nth-child(2) { border-right: none; }
   .ku-sb-item:nth-child(n+3) { border-top: 1px solid rgba(212,137,154,.12); }
 }
-/* svg icon kiri kanan*/
-.ku-point-icon img {
-  width: 28px;   /* bisa kamu sesuaikan */
-  height: 28px;
-  object-fit: contain;
-}
-/* svg icon bawah */
-.ku-sb-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.ku-sb-icon img {
-  width: 40px;   /* coba 32–40px */
-  height: 40px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
 @media (max-width: 640px) {
   .ku-grid { max-width: 300px; gap: 6px; }
   .ku-grid-badge { width:58px; height:58px; }
   .ku-grid-badge-num { font-size:13px; }
+  .ku-seo-content { padding: 20px 18px; }
 }
 </style>
 
@@ -325,7 +385,7 @@
   <div class="ku-header">
     <div class="ku-overline justify-center">
       <span class="ku-overline-dot"></span>
-      Cerita & Keunggulan Kami
+      Cerita &amp; Keunggulan Kami
     </div>
     <h2 class="ku-title">
       Merangkai Bunga<br>dengan <em>Sepenuh Hati</em>
@@ -344,8 +404,8 @@
     <div class="ku-side ku-side-left">
       <div class="ku-point">
         <div class="ku-point-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/flowers.svg" alt="Flowers Icon">
-</div>
+          <img src="<?= BASE_URL ?>/assets/svg/flowers.svg" alt="Flowers Icon">
+        </div>
         <div class="ku-point-body">
           <div class="ku-point-title">Bunga 100% Segar</div>
           <div class="ku-point-desc">Dipilih langsung dari pasar setiap pagi. Layu sebelum waktunya? Kami ganti tanpa syarat.</div>
@@ -353,17 +413,17 @@
       </div>
       <div class="ku-point">
         <div class="ku-point-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/brush.svg" alt="Brush Icon">
-</div>
+          <img src="<?= BASE_URL ?>/assets/svg/brush.svg" alt="Brush Icon">
+        </div>
         <div class="ku-point-body">
           <div class="ku-point-title">Desain Custom</div>
           <div class="ku-point-desc">Tim florist kami siap membuat rangkaian sesuai keinginan dan budget Anda, gratis konsultasi.</div>
         </div>
       </div>
       <div class="ku-point">
-       <div class="ku-point-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/star.svg" alt="Star Icon">
-</div>
+        <div class="ku-point-icon">
+          <img src="<?= BASE_URL ?>/assets/svg/star.svg" alt="Star Icon">
+        </div>
         <div class="ku-point-body">
           <div class="ku-point-title">Rating 4.9 Bintang</div>
           <div class="ku-point-desc">Dipercaya lebih dari 500 pelanggan setia dalam 10 tahun melayani Tangerang.</div>
@@ -375,27 +435,23 @@
     <div class="ku-grid">
 
       <div class="ku-photo-cell">
-        <img src="<?= BASE_URL ?>/assets/images/pink 1.jpg" alt="Bunga segar" loading="lazy">
+        <img src="<?= BASE_URL ?>/assets/images/pink 1.jpg" alt="Bunga segar Tangerang" loading="lazy">
         <div class="ku-photo-overlay"></div>
-        <!-- <span class="ku-photo-label">Bunga Segar</span> -->
       </div>
 
       <div class="ku-photo-cell">
-        <img src="<?= BASE_URL ?>/assets/images/pink 2.jpg" alt="Hand Bouquet" loading="lazy">
+        <img src="<?= BASE_URL ?>/assets/images/pink 2.jpg" alt="Hand Bouquet Tangerang" loading="lazy">
         <div class="ku-photo-overlay"></div>
-        <!-- <span class="ku-photo-label">Hand Bouquet</span> -->
       </div>
 
       <div class="ku-photo-cell">
-        <img src="<?= BASE_URL ?>/assets/images/pink 3.jpg" alt="Bunga Papan" loading="lazy">
+        <img src="<?= BASE_URL ?>/assets/images/pink 3.jpg" alt="Bunga Papan Tangerang" loading="lazy">
         <div class="ku-photo-overlay"></div>
-        <!-- <span class="ku-photo-label">Bunga Papan</span> -->
       </div>
 
       <div class="ku-photo-cell">
-        <img src="<?= BASE_URL ?>/assets/images/pink 4.jpg" alt="Standing Flower" loading="lazy">
+        <img src="<?= BASE_URL ?>/assets/images/pink 4.jpg" alt="Standing Flower Tangerang" loading="lazy">
         <div class="ku-photo-overlay"></div>
-        <!-- <span class="ku-photo-label">Standing Flower</span> -->
       </div>
 
       <!-- Badge di tengah persilangan -->
@@ -410,26 +466,26 @@
     <div class="ku-side ku-side-right">
       <div class="ku-point">
         <div class="ku-point-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/thunder.svg" alt="Thunder Icon">
-</div>
+          <img src="<?= BASE_URL ?>/assets/svg/thunder.svg" alt="Thunder Icon">
+        </div>
         <div class="ku-point-body">
           <div class="ku-point-title">Kirim 2–4 Jam</div>
           <div class="ku-point-desc">Armada siap antar ke seluruh 12 kecamatan Tangerang, hari yang sama.</div>
         </div>
       </div>
       <div class="ku-point">
-       <div class="ku-point-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/delivery.svg" alt="Delivery Icon">
-</div>
+        <div class="ku-point-icon">
+          <img src="<?= BASE_URL ?>/assets/svg/delivery.svg" alt="Delivery Icon">
+        </div>
         <div class="ku-point-body">
           <div class="ku-point-title">Layanan 24/7</div>
           <div class="ku-point-desc">Terima pesanan kapan saja termasuk malam hari dan hari libur nasional.</div>
         </div>
       </div>
       <div class="ku-point">
-         <div class="ku-point-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/envelope.svg" alt="Envelope Icon">
-</div>
+        <div class="ku-point-icon">
+          <img src="<?= BASE_URL ?>/assets/svg/envelope.svg" alt="Envelope Icon">
+        </div>
         <div class="ku-point-body">
           <div class="ku-point-title">Free Gift Message</div>
           <div class="ku-point-desc">Sertakan kartu ucapan personal di setiap pesanan tanpa biaya tambahan.</div>
@@ -439,33 +495,112 @@
 
   </div>
 
+  <!-- ════════════════════
+       SEO TEXT BLOCK (accordion)
+  ════════════════════ -->
+  <div class="ku-seo-block">
+    <button class="ku-seo-toggle-btn" id="kuSeoBtn" onclick="(function(){var c=document.getElementById('kuSeoContent'),b=document.getElementById('kuSeoBtn');c.classList.toggle('visible');b.classList.toggle('open');b.querySelector('.ku-btn-lbl').textContent=c.classList.contains('visible')?'Sembunyikan Info':'Selengkapnya Tentang Kami';})()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      <span class="ku-btn-lbl">Selengkapnya Tentang Kami</span>
+    </button>
+
+    <div class="ku-seo-content" id="kuSeoContent">
+
+      <p>
+        Selamat datang di <strong><?= e(setting('site_name')) ?></strong> — <strong>toko bunga online Indonesia</strong> yang hadir khusus untuk wilayah Tangerang dan sekitarnya. Sebagai <strong>florist online terpercaya</strong> dengan pengalaman lebih dari 10 tahun, kami telah melayani ribuan pelanggan dengan satu komitmen utama: menghadirkan rangkaian bunga berkualitas tinggi, pengiriman cepat, dan harga yang bersahabat. Pelajari lebih lanjut tentang perjalanan kami di <a href="https://jualbungatangerang.com/#tentang">halaman tentang kami</a>.
+      </p>
+
+      <p>
+        Kami hadir sebagai solusi terbaik bagi Anda yang mencari <strong>buket bunga online same day delivery seluruh Indonesia</strong>. Setiap momen berharga — ulang tahun, pernikahan, wisuda, perpisahan, hari jadi, maupun ungkapan simpati — layak dirayakan dengan bunga indah yang tiba tepat waktu. Mulai dari mawar merah elegan, buket bunga matahari ceria, hingga rangkaian lily putih yang mewah, semuanya tersedia dan siap dikirim dari Tangerang ke seluruh penjuru Indonesia. Cek selengkapnya di <a href="https://jualbungatangerang.com/#layanan">halaman layanan kami</a>.
+      </p>
+
+      <p>
+        Sebagai <strong>toko bunga terdekat online</strong> yang berbasis di Tangerang, kami memahami kebutuhan pelanggan di wilayah Banten dan sekitarnya. Namun lebih dari itu, kami juga beroperasi sebagai <strong>florist nasional kirim ke rumah, kantor &amp; hotel</strong> yang melayani pengiriman ke seluruh kota besar di Indonesia — Jakarta, Surabaya, Bandung, Bali, Medan, Makassar, dan masih banyak lagi. Tidak perlu khawatir soal jarak — cukup pesan dari smartphone Anda, dan kami yang urus selebihnya. Pastikan area Anda sudah terjangkau dengan melihat <a href="https://jualbungatangerang.com/#area">area pengiriman kami</a>.
+      </p>
+
+      <p>
+        Bagi Anda yang membutuhkan bunga segera, layanan <strong>kirim bunga online seluruh Indonesia</strong> kami hadir dengan sistem pemrosesan pesanan yang cepat dan responsif. Begitu pesanan masuk dan pembayaran dikonfirmasi, tim florist kami langsung bekerja menyiapkan rangkaian bunga terbaik untuk Anda. Dengan estimasi waktu pengiriman yang transparan dan layanan fast response, kejutan indah Anda tidak akan terlambat. Kami bangga menjadi pilihan <strong>toko bunga online Indonesia kirim cepat seluruh kota</strong> yang dapat diandalkan kapan pun Anda membutuhkannya.
+      </p>
+
+      <p>
+        Kami mengoperasikan <strong>toko bunga 24 jam online</strong> yang siap menerima pesanan kapan saja — pagi, siang, sore, malam, bahkan dini hari sekalipun. Tim customer service kami selalu siap membantu Anda menemukan pilihan bunga yang paling tepat, termasuk di hari libur nasional dan akhir pekan. Dengan sistem pemesanan yang mudah melalui website kami, Anda bisa memesan dalam hitungan menit tanpa perlu keluar rumah. Ini adalah arti sesungguhnya dari kemudahan berbelanja bunga di era digital.
+      </p>
+
+      <p>
+        Berbeda dengan banyak toko konvensional yang terbatas area, kami hadir sebagai <strong>florist Indonesia murah dan premium</strong> yang tidak mengorbankan kualitas demi harga. Setiap bunga yang masuk ke workshop kami telah melalui seleksi ketat oleh tim florist berpengalaman. Kami bekerja sama dengan supplier bunga segar terpercaya yang menjamin kesegaran dan daya tahan bunga tinggi, sehingga buket yang diterima oleh orang tersayang Anda selalu tampil prima dan mekar sempurna.
+      </p>
+
+      <p>
+        Keunggulan kami sebagai <strong>buket bunga online terbaik kualitas premium</strong> bukan hanya pada tampilan yang memukau, tetapi juga pada perhatian kami terhadap setiap detail — mulai dari pemilihan bunga, teknik merangkai, pemilihan wrapping, hingga pengemasan akhir yang aman untuk pengiriman. Setiap buket dikerjakan dengan penuh cinta dan profesionalisme oleh tim florist kami yang berpengalaman. Ingin tahu apa kata pelanggan kami? Baca langsung <a href="https://jualbungatangerang.com/#testimoni">testimoni pelanggan setia kami</a>.
+      </p>
+
+      <p>
+        Sebagai <strong>toko bunga online harga terjangkau kirim cepat</strong>, kami menyediakan berbagai pilihan harga mulai dari ekonomis hingga premium. Harga mulai Rp 300.000 sudah bisa Anda dapatkan rangkaian bunga segar berkualitas tinggi yang dikerjakan langsung oleh florist profesional kami. Anda bisa menyesuaikan pilihan sesuai budget dan kebutuhan acara — tidak ada minimal order untuk pengiriman dalam kota, dan kami selalu memberikan nilai terbaik untuk setiap rupiah yang Anda keluarkan.
+      </p>
+
+      <p>
+        Kami juga melayani kebutuhan korporat — dekorasi meja resepsionis, pengiriman bunga ucapan selamat untuk mitra bisnis, hingga rangkaian untuk acara internal perusahaan. Dengan jaringan pengiriman yang luas dan armada yang handal, kami siap menangani pesanan dalam jumlah besar dengan harga spesial dan layanan yang tetap profesional. Grand opening, seminar, pelantikan, anniversary perusahaan — semua kebutuhan bunga korporat Anda bisa kami tangani dengan standar terbaik.
+      </p>
+
+      <p>
+        Kami juga terus mengikuti tren desain rangkaian bunga modern agar pilihan yang tersedia selalu relevan dengan selera pelanggan masa kini. Mulai dari buket bergaya Korean style yang kekinian, wrapping premium minimalis yang elegan, bunga papan yang megah, standing flower mewah, hingga hampers bunga kombinasi hadiah spesial — semuanya dapat Anda pesan dengan mudah. Dapatkan inspirasi terbaru dan tips merawat bunga dari <a href="https://jualbungatangerang.com/blog/">blog bunga kami</a> yang selalu diperbarui.
+      </p>
+
+      <p>
+        Kami percaya bahwa bunga adalah bahasa universal yang mampu mewakili berbagai emosi — ucapan selamat, permintaan maaf, rasa rindu, dukungan, hingga ungkapan cinta yang tulus. Karena itu, setiap pesanan yang masuk selalu kami tangani secara istimewa. Tim kami akan memastikan jenis bunga, komposisi warna, kartu ucapan custom, hingga detail pengemasan disiapkan dengan teliti agar pesan yang ingin Anda sampaikan dapat diterima dengan sempurna oleh penerima.
+      </p>
+
+      <p>
+        Bagi pelanggan yang baru pertama kali memesan secara online, proses pemesanan di website kami dibuat sesederhana mungkin. Anda cukup memilih kategori produk, menentukan desain favorit, mengisi alamat tujuan, lalu menyelesaikan pembayaran. Setelah itu, tim kami memproses pesanan dan memberikan update status secara berkala. Masih ada pertanyaan? Kunjungi <a href="https://jualbungatangerang.com/#faq">halaman FAQ kami</a> untuk jawaban lengkap seputar pemesanan, pengiriman, dan metode pembayaran yang tersedia.
+      </p>
+
+      <p>
+        Selain tampilan yang cantik, daya tahan bunga juga menjadi prioritas utama kami. Oleh sebab itu, kami memberikan penanganan khusus mulai dari proses penyimpanan, perakitan, hingga pengiriman menggunakan teknik florist profesional yang menjaga bunga tetap segar lebih lama. Kepuasan pelanggan selalu menjadi alasan utama kami untuk terus berkembang — dan itulah mengapa banyak pelanggan kembali memesan berulang kali serta merekomendasikan layanan kami kepada keluarga, teman, dan rekan kerja mereka.
+      </p>
+
+      <p>
+        Kami juga memahami bahwa setiap pelanggan memiliki kebutuhan yang berbeda-beda. Ada yang membutuhkan buket sederhana namun elegan, ada pula yang mencari rangkaian mewah untuk acara penting dan momen spesial. Karena itu, kami menyediakan layanan konsultasi personal agar setiap pesanan benar-benar sesuai dengan tujuan, karakter penerima, serta anggaran yang Anda siapkan. Dengan bantuan tim florist berpengalaman, Anda tidak perlu bingung menentukan pilihan terbaik.
+      </p>
+
+      <p>
+        Tidak hanya fokus pada keindahan rangkaian, kami juga memperhatikan keamanan selama proses pengiriman. Setiap bunga dikemas dengan rapi menggunakan material pelindung yang sesuai agar tetap aman saat perjalanan. Untuk area Tangerang, Banten, maupun pengiriman ke kota lain di Indonesia, kami berusaha memastikan bunga tiba dalam kondisi segar, utuh, dan siap memberikan kesan terbaik kepada penerima.
+      </p>
+
+      <p>
+        Seiring berkembangnya kebutuhan pelanggan, kami terus meningkatkan kualitas layanan mulai dari kecepatan respon, variasi produk, metode pembayaran, hingga sistem pemesanan yang lebih praktis. Kami ingin setiap orang dapat merasakan mudahnya memesan bunga secara online tanpa rasa khawatir. Ketika Anda membutuhkan hadiah yang berkesan, kejutan romantis, atau ungkapan perhatian yang tulus, florist kami di Tangerang siap membantu mewujudkannya dengan pelayanan terbaik.
+      </p>
+
+    </div>
+  </div>
+  <!-- ════ END SEO TEXT BLOCK ════ -->
+
   <!-- Stats Bar -->
   <div class="ku-statsbar">
     <div class="ku-sb-item">
-     <span class="ku-sb-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/flower.svg" alt="Flower Icon">
-</span>
+      <span class="ku-sb-icon">
+        <img src="<?= BASE_URL ?>/assets/svg/flower.svg" alt="Flower Icon">
+      </span>
       <div class="ku-sb-num">100%</div>
       <span class="ku-sb-lbl">Bunga Segar</span>
     </div>
     <div class="ku-sb-item">
       <span class="ku-sb-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/thunder.svg" alt="Thunder Icon">
-</span>
+        <img src="<?= BASE_URL ?>/assets/svg/thunder.svg" alt="Thunder Icon">
+      </span>
       <div class="ku-sb-num">2–4 Jam</div>
       <span class="ku-sb-lbl">Estimasi Kirim</span>
     </div>
     <div class="ku-sb-item">
-        <span class="ku-sb-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/location.svg" alt="Location Icon">
-</span>
+      <span class="ku-sb-icon">
+        <img src="<?= BASE_URL ?>/assets/svg/location.svg" alt="Location Icon">
+      </span>
       <div class="ku-sb-num">Tangerang</div>
       <span class="ku-sb-lbl">Area Layanan</span>
     </div>
     <div class="ku-sb-item">
-        <span class="ku-sb-icon">
-  <img src="<?= BASE_URL ?>/assets/svg/clock.svg" alt="Clock Icon">
-</span>
+      <span class="ku-sb-icon">
+        <img src="<?= BASE_URL ?>/assets/svg/clock.svg" alt="Clock Icon">
+      </span>
       <div class="ku-sb-num">24/7</div>
       <span class="ku-sb-lbl">Siap Melayani</span>
     </div>
