@@ -78,90 +78,78 @@ require __DIR__ . '/../includes/header.php';
 @keyframes pin-pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,137,154,.5)}50%{box-shadow:0 0 0 8px rgba(212,137,154,0)}}
 .pin-dot{animation:pin-pulse 2s ease infinite}
 
-/* ━━━ PINTEREST MASONRY LAYANAN (UPDATED) ━━━ */
+/* ━━━ UNIFORM GRID LAYANAN ━━━ */
 .pin-grid {
-  columns: 2;
-  column-gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr;        /* mobile: 1 kolom */
+  gap: 12px;
 }
-@media(min-width: 640px) { .pin-grid { columns: 3; column-gap: 12px; } }
-@media(min-width: 1024px) { .pin-grid { columns: 4; column-gap: 14px; } }
+@media(min-width: 640px) { .pin-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+@media(min-width: 1024px) { .pin-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
 
 .pin-item {
-  break-inside: avoid;
-  margin-bottom: 12px;
   display: block;
   position: relative;
 }
 
-/* ── Card shell ── */
+/* ── Card shell — tinggi seragam ── */
 .pin-card {
   position: relative;
-  border-radius: 22px;
+  border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
   display: block;
   text-decoration: none;
-  --card-h: 220px;
-  height: var(--card-h);
+  height: 220px; /* tinggi tetap, semua sama */
   transform: translateZ(0);
   transition: transform .45s cubic-bezier(.34,1.56,.64,1), box-shadow .45s ease;
   will-change: transform, box-shadow;
   box-shadow: 0 4px 20px rgba(44,26,30,.1);
 }
+@media(min-width: 640px) { .pin-card { height: 240px; } }
+@media(min-width: 1024px) { .pin-card { height: 260px; } }
+
 .pin-card:hover {
   transform: translateY(-6px) scale(1.015);
   box-shadow: 0 20px 60px rgba(200,119,138,.38), 0 4px 16px rgba(44,26,30,.12);
 }
-
-/* ── Background layers ── */
+/* ── Background image layer ── */
 .pin-bg {
   position: absolute;
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: transform .7s cubic-bezier(.4,0,.2,1), filter .5s ease;
+  transition: transform .7s cubic-bezier(.4,0,.2,1);
 }
-.pin-card:hover .pin-bg {
-  transform: scale(1.1);
-  filter: brightness(.85) saturate(1.1);
-}
+.pin-card:hover .pin-bg { transform: scale(1.08); }
 
-/* Fallback gradient bg */
 .pin-bg-grad {
   position: absolute;
   inset: 0;
-  transition: transform .7s cubic-bezier(.4,0,.2,1);
-}
-.pin-card:hover .pin-bg-grad {
-  transform: scale(1.06);
 }
 
-/* ── Overlay layers ── */
+/* ── Overlays ── */
 .pin-ov-base {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(44,26,30,.92) 0%, rgba(44,26,30,.5) 40%, rgba(44,26,30,.08) 75%, transparent 100%);
-  transition: background .4s ease;
+  background: linear-gradient(to top, rgba(44,26,30,.9) 0%, rgba(44,26,30,.4) 50%, transparent 100%);
 }
-.pin-card:hover .pin-ov-base {
-  background: linear-gradient(to top, rgba(44,26,30,.97) 0%, rgba(44,26,30,.75) 45%, rgba(200,119,138,.15) 72%, transparent 100%);
-}
-
-/* Blush shimmer on hover */
-.pin-ov-shimmer {
+.pin-ov-shimmer { position: absolute; inset: 0; }
+.pin-sparkle { display: none; }
+.pin-bignum { display: none; }
+.pin-icon {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 70% 20%, rgba(242,196,206,.22) 0%, transparent 60%);
-  opacity: 0;
-  transition: opacity .5s ease;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -60%);
+  font-size: 36px;
+  opacity: .4;
+  pointer-events: none;
 }
-.pin-card:hover .pin-ov-shimmer { opacity: 1; }
 
-/* ── Top badges ── */
+/* ── Top badge ── */
 .pin-eyebrow {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 12px; left: 12px;
   z-index: 6;
   display: inline-flex;
   align-items: center;
@@ -170,112 +158,55 @@ require __DIR__ . '/../includes/header.php';
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .09em;
-  color: rgba(253,249,244,.85);
+  color: rgba(253,249,244,.9);
   background: rgba(44,26,30,.45);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.12);
-  transition: background .25s ease, color .25s ease;
 }
-.pin-card:hover .pin-eyebrow {
-  background: linear-gradient(135deg, var(--dusty), var(--rose));
-  color: #fff;
-  border-color: transparent;
-}
+.pin-sub-badge { display: none; }
 
-.pin-sub-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 6;
-  font-size: 9px;
-  font-weight: 800;
-  color: rgba(242,196,206,.7);
-  opacity: 0;
-  transform: translateX(4px);
-  transition: opacity .3s ease .1s, transform .3s ease .1s;
-}
-.pin-card:hover .pin-sub-badge { opacity: 1; transform: translateX(0); }
-
-/* ── Bottom content ── */
+/* ── Footer ── */
 .pin-footer {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 0 16px 16px;
+  bottom: 0; left: 0; right: 0;
+  padding: 0 14px 14px;
   z-index: 5;
 }
-
 .pin-accent-line {
-  width: 0;
-  height: 2px;
+  width: 24px; height: 2px;
   background: linear-gradient(90deg, var(--blush), var(--rose));
   border-radius: 2px;
-  margin-bottom: 8px;
-  transition: width .4s cubic-bezier(.4,0,.2,1) .05s;
+  margin-bottom: 6px;
 }
-.pin-card:hover .pin-accent-line { width: 32px; }
-
 .pin-name {
   font-family: 'Playfair Display', Georgia, serif;
   font-weight: 900;
   color: #fff;
+  font-size: 15px;
   line-height: 1.2;
   margin-bottom: 6px;
-  transition: color .2s ease;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-
-  line-clamp: 2; /* tambahkan ini */
-  overflow: hidden;
 }
-.pin-card:hover .pin-name { color: var(--blush); }
 
-/* ── Sub-categories reveal ── */
+/* ── Sub list (hover reveal) ── */
 .pin-subs {
   overflow: hidden;
   max-height: 0;
   opacity: 0;
-  transform: translateY(10px);
-  transition:
-    max-height .5s cubic-bezier(.4,0,.2,1),
-    opacity .35s ease .06s,
-    transform .35s ease .06s;
+  transition: max-height .4s ease, opacity .3s ease;
 }
-.pin-card:hover .pin-subs {
-  max-height: 160px;
-  opacity: 1;
-  transform: translateY(0);
-}
+.pin-card:hover .pin-subs { max-height: 120px; opacity: 1; }
 
 .pin-sub-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: block;
   font-size: 10.5px;
   font-weight: 600;
   color: rgba(255,255,255,.55);
-  padding: 2.5px 0;
+  padding: 2px 0;
   text-decoration: none;
-  transition: color .15s ease, gap .2s ease;
 }
-.pin-sub-item:hover { color: var(--blush); gap: 9px; }
-.pin-sub-item::before {
-  content: '';
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: rgba(242,196,206,.35);
-  flex-shrink: 0;
-  transition: background .15s ease, width .2s ease, height .2s ease;
-}
-.pin-sub-item:hover::before { background: var(--blush); width: 5px; height: 5px; }
+.pin-sub-item:hover { color: var(--blush); }
 
-/* ── No-sub CTA ── */
 .pin-cta {
   display: inline-flex;
   align-items: center;
@@ -288,78 +219,11 @@ require __DIR__ . '/../includes/header.php';
   background: linear-gradient(135deg, var(--dusty), var(--rose));
   border-radius: 999px;
   padding: 5px 13px;
-  opacity: 0;
-  transform: translateY(5px);
-  transition: opacity .3s ease .08s, transform .3s ease .08s;
   text-decoration: none;
-}
-.pin-card:hover .pin-cta { opacity: 1; transform: translateY(0); }
-
-/* ── Decorative large number ── */
-.pin-bignum {
-  position: absolute;
-  bottom: -8px;
-  right: 10px;
-  font-family: 'Playfair Display', serif;
-  font-size: 72px;
-  font-weight: 900;
-  line-height: 1;
-  color: rgba(242,196,206,.05);
-  user-select: none;
-  pointer-events: none;
-  z-index: 1;
-  transition: color .35s ease, font-size .35s ease;
-}
-.pin-card:hover .pin-bignum {
-  color: rgba(242,196,206,.12);
-  font-size: 80px;
-}
-
-/* ── Icon center for no-image cards ── */
-.pin-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  font-size: 36px;
-  filter: drop-shadow(0 2px 12px rgba(0,0,0,.25));
-  z-index: 2;
-  opacity: .35;
-  transition: opacity .35s ease, transform .4s cubic-bezier(.34,1.56,.64,1);
-  pointer-events: none;
-}
-.pin-card:hover .pin-icon {
   opacity: 0;
-  transform: translate(-50%, -60%) scale(.6);
+  transition: opacity .3s ease;
 }
-
-/* ── Sparkle corner ── */
-.pin-sparkle {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 80px;
-  height: 80px;
-  background: conic-gradient(from 200deg, rgba(242,196,206,.2) 0deg, transparent 60deg);
-  border-radius: 0 22px 0 100%;
-  transition: width .4s ease, height .4s ease, opacity .4s ease;
-  opacity: .6;
-  pointer-events: none;
-}
-.pin-card:hover .pin-sparkle { width: 120px; height: 120px; opacity: 1; }
-
-/* ── Card border glow ── */
-.pin-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 22px;
-  border: 1.5px solid transparent;
-  transition: border-color .35s ease;
-  pointer-events: none;
-  z-index: 10;
-}
-.pin-card:hover::after { border-color: rgba(212,137,154,.45); }
+.pin-card:hover .pin-cta { opacity: 1; }
 
 /* ── Gradient fallbacks ── */
 .pg-0 { background: linear-gradient(145deg, #fde8ef, #f2c4ce, #e8a8b8); }
@@ -654,26 +518,23 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
         'h-xl'  => 395,
         'h-xxl' => 460,
       ];
-      $height_sequence = ['h-xl','h-md','h-lg','h-sm','h-xxl','h-md','h-lg','h-xl','h-sm','h-lg','h-xxl','h-md','h-xl','h-sm','h-lg','h-md'];
       $pg_classes = ['pg-0','pg-1','pg-2','pg-3','pg-4','pg-5'];
 
       foreach ($all_cats as $i => $cat):
         $subs       = $all_cats_subs[$cat['id']] ?? [];
         $has_sub    = !empty($subs);
         $has_img    = !empty($cat['image']);
-        $hkey       = $height_sequence[$i % count($height_sequence)];
-        $h_px       = $pin_heights[$hkey];
         $pg         = $pg_classes[$i % count($pg_classes)];
         $num        = str_pad($i + 1, 2, '0', STR_PAD_LEFT);
         $cat_url    = BASE_URL . '/' . e($cat['slug']) . '/';
-        $name_size  = in_array($hkey, ['h-lg','h-xl','h-xxl']) ? 'text-xl' : 'text-base';
+        $name_size = 'text-base';
 
         $tag   = $has_sub ? 'div' : 'a';
         $href  = $has_sub ? '' : 'href="' . $cat_url . '"';
         $extra = $has_sub ? 'role="button" tabindex="0"' : '';
       ?>
       <div class="pin-item">
-        <<?= $tag ?> <?= $href ?> <?= $extra ?> class="pin-card" style="--card-h:<?= $h_px ?>px;">
+        <<?= $tag ?> <?= $href ?> <?= $extra ?> class="pin-card">
 
           <!-- Background -->
           <?php if ($has_img): ?>
