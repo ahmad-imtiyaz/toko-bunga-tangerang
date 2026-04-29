@@ -57,6 +57,19 @@ require __DIR__ . '/../includes/header.php';
   display: flex; white-space: nowrap;
 }
 
+/* ━━━ CATEGORY CONTENT SEO ━━━ */
+.cat-prose h1 { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.9rem; font-weight:900; color:var(--cp-dark); margin-bottom:1rem; margin-top:1.5rem; line-height:1.2; }
+.cat-prose h2 { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.45rem; font-weight:800; color:var(--cp-dark); margin-bottom:0.75rem; margin-top:1.25rem; line-height:1.3; }
+.cat-prose h3 { font-family:'Cormorant Garamond',Georgia,serif; font-size:1.15rem; font-weight:700; color:var(--cp-dusty); margin-bottom:0.5rem; margin-top:1rem; }
+.cat-prose p  { margin-bottom:0.75rem; color:var(--cp-muted); }
+.cat-prose ul { list-style:disc; padding-left:1.5rem; margin-bottom:0.75rem; }
+.cat-prose ol { list-style:decimal; padding-left:1.5rem; margin-bottom:0.75rem; }
+.cat-prose li { margin-bottom:0.25rem; color:var(--cp-muted); }
+.cat-prose strong { color:var(--cp-dark); font-weight:700; }
+.cat-prose em { color:var(--cp-dusty); font-style:italic; }
+.cat-prose a  { color:var(--cp-dusty); text-decoration:underline; transition:color .2s ease; }
+.cat-prose a:hover { color:var(--cp-rose); }  
+
 /* ── Shimmer rose line ── */
 @keyframes shimmer-x {
   0%   { background-position: -200% center; }
@@ -517,15 +530,19 @@ require __DIR__ . '/../includes/header.php';
           <span class="w-1.5 h-1.5 rounded-full inline-block" style="background:var(--cp-rose);"></span>
           Tentang Layanan
         </div>
-        <h2 class="text-2xl md:text-3xl font-black mb-5 leading-tight">
-          <?= e($category['name']) ?> Terbaik<br>di Tangerang
-        </h2>
+        <h1 style="font:900 clamp(1.6rem,3.5vw,2.4rem)/1.15 'Cormorant Garamond',serif; color:var(--cp-dark); margin-bottom:1.25rem;">
+  <?= e($category['name']) ?> Terbaik<br>
+  <em style="font-style:italic; background:linear-gradient(135deg,var(--cp-dusty),var(--cp-rose));
+             -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+    di Tangerang
+  </em>
+</h1>
 
         <?php if (!empty($category['content'])): ?>
-        <div class="leading-relaxed text-[15px] mb-6" style="color:var(--cp-muted);">
-          <?= $category['content'] ?>
-        </div>
-        <?php endif; ?>
+<div class="cat-prose leading-relaxed text-[15px] mb-6">
+  <?= $category['content'] ?>
+</div>
+<?php endif; ?>
 
         <p class="text-[15px] leading-relaxed mb-8" style="color:var(--cp-muted);">
           Kami sebagai <strong>florist Tangerang</strong> terpercaya menyediakan

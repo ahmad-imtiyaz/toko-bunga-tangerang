@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/../includes/config.php';
 
-$meta_title    = $location['meta_title']       ?: 'Toko Bunga ' . $location['name'] . ' - Florist Grogol Terpercaya';
+$meta_title    = $location['meta_title']       ?: 'Toko Bunga ' . $location['name'] . ' - Florist Tangerang Terpercaya';
 $meta_desc     = $location['meta_description'] ?: '';
-$meta_keywords = 'toko bunga ' . strtolower($location['name']) . ', florist ' . strtolower($location['name']) . ', bunga Grogol';
+$meta_keywords = 'toko bunga ' . strtolower($location['name']) . ', florist ' . strtolower($location['name']) . ', bunga Tangerang';
 
 $all_cats_raw = db()->query("SELECT * FROM categories WHERE status='active' ORDER BY urutan ASC, id ASC")->fetchAll();
 $all_cats = []; $all_cats_subs = [];
@@ -428,7 +428,7 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
       <div>
         <div class="reveal reveal-1 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase mb-6" style="background:rgba(212,137,154,.12);border:1px solid rgba(212,137,154,.3);color:var(--dusty);">
           <span class="pin-dot w-2 h-2 rounded-full flex-shrink-0 inline-block" style="background:var(--rose);"></span>
-          📍 <?= e($location['name']) ?>, Grogol
+          📍 <?= e($location['name']) ?>, Tangerang
         </div>
         <h1 class="reveal reveal-2 font-serif font-black leading-tight mb-5" style="font-size:clamp(2.2rem,5vw,3.6rem);color:var(--dark);">
           Toko Bunga<br>
@@ -445,7 +445,7 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
           <div><div class="stat-num text-2xl font-black"><?= 'Rp '.number_format($min_price/1000,0,',','.').'rb' ?></div><div class="text-[10px] font-bold uppercase tracking-widest mt-0.5" style="color:var(--muted);">Mulai dari</div></div>
         </div>
         <div class="reveal reveal-4 flex flex-wrap gap-3">
-          <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin memesan bunga di '.$location['name'].', Grogol.') ?>" target="_blank"
+          <a href="<?= e($wa_url) ?>?text=<?= urlencode('Halo, saya ingin memesan bunga di '.$location['name'].', Tangerang.') ?>" target="_blank"
              class="inline-flex items-center gap-2.5 font-bold px-7 py-3.5 rounded-full no-underline transition hover:-translate-y-1"
              style="background:linear-gradient(135deg,var(--dusty),var(--rose));color:#fff;box-shadow:0 8px 24px rgba(200,119,138,.35);">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
@@ -463,7 +463,7 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
           <div class="absolute top-0 right-0 w-28 h-28" style="background:linear-gradient(225deg,rgba(242,196,206,.4),transparent 65%);"></div>
           <p class="text-[11px] font-bold uppercase tracking-widest mb-4" style="color:var(--rose);">Info Pengiriman</p>
           <div class="space-y-3 mb-5">
-            <div class="flex items-center gap-3 py-2.5 border-b" style="border-color:rgba(212,137,154,.1);"><span class="text-xl flex-shrink-0">📍</span><div><p class="text-[10px] uppercase tracking-wider" style="color:var(--muted);">Lokasi</p><p class="text-sm font-semibold" style="color:var(--dark);"><?= e($location['name']) ?>, Grogol</p></div></div>
+            <div class="flex items-center gap-3 py-2.5 border-b" style="border-color:rgba(212,137,154,.1);"><span class="text-xl flex-shrink-0">📍</span><div><p class="text-[10px] uppercase tracking-wider" style="color:var(--muted);">Lokasi</p><p class="text-sm font-semibold" style="color:var(--dark);"><?= e($location['name']) ?>, Tangerang</p></div></div>
             <div class="flex items-center gap-3 py-2.5 border-b" style="border-color:rgba(212,137,154,.1);"><span class="text-xl flex-shrink-0">⚡</span><div><p class="text-[10px] uppercase tracking-wider" style="color:var(--muted);">Estimasi Pengiriman</p><p class="text-sm font-semibold" style="color:var(--dark);">2–4 Jam</p></div></div>
             <div class="flex items-center gap-3 py-2.5 border-b" style="border-color:rgba(212,137,154,.1);"><span class="text-xl flex-shrink-0">⏰</span><div><p class="text-[10px] uppercase tracking-wider" style="color:var(--muted);">Jam Operasional</p><p class="text-sm font-semibold" style="color:var(--dark);"><?= e(setting('jam_buka')) ?></p></div></div>
             <div class="flex items-center gap-3 py-2.5"><span class="text-xl flex-shrink-0">💐</span><div><p class="text-[10px] uppercase tracking-wider" style="color:var(--muted);">Harga Mulai</p><p class="text-sm font-black font-serif" style="color:var(--dusty);"><?= rupiah($min_price) ?></p></div></div>
@@ -503,7 +503,7 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
       </div>
       <h2 class="font-serif font-black" style="font-size:clamp(1.8rem,4vw,2.6rem);color:var(--dark);">
         Layanan Bunga di<br>
-        <span style="background:linear-gradient(135deg,var(--dusty),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Toko Bunga Grogol <?= e($location['name']) ?></span>
+        <span style="background:linear-gradient(135deg,var(--dusty),var(--rose));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Toko Bunga Tangerang <?= e($location['name']) ?></span>
       </h2>
       <p class="mt-3 max-w-lg mx-auto text-[15px]" style="color:var(--muted);">Semua kebutuhan bunga Anda tersedia dan siap dikirim ke <?= e($location['name']) ?></p>
     </div>
