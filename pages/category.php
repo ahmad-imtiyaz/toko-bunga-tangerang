@@ -68,7 +68,7 @@ require __DIR__ . '/../includes/header.php';
 .cat-prose strong { color:var(--cp-dark); font-weight:700; }
 .cat-prose em { color:var(--cp-dusty); font-style:italic; }
 .cat-prose a  { color:var(--cp-dusty); text-decoration:underline; transition:color .2s ease; }
-.cat-prose a:hover { color:var(--cp-rose); }  
+.cat-prose a:hover { color:var(--cp-rose); }
 
 /* ── Shimmer rose line ── */
 @keyframes shimmer-x {
@@ -92,102 +92,28 @@ require __DIR__ . '/../includes/header.php';
 }
 
 /* ══════════════════════════════
-   PRODUCT CARD — Tirai + Bunga
+   PRODUCT CARD — Zoom hover + klik WA
 ══════════════════════════════ */
 .cat-prod-card {
-  transition: box-shadow .35s ease, border-color .35s ease, transform .35s ease;
+  transition: box-shadow .3s ease, border-color .3s ease, transform .3s ease;
   position: relative;
   isolation: isolate;
+  cursor: pointer;
 }
 .cat-prod-card:hover {
-  box-shadow: 0 0 0 1.5px rgba(212,137,154,.5), 0 24px 56px rgba(44,26,30,.15);
+  box-shadow: 0 0 0 1.5px rgba(212,137,154,.5), 0 20px 48px rgba(44,26,30,.13);
   border-color: rgba(212,137,154,.4) !important;
   transform: translateY(-4px);
 }
+.cat-prod-card:active {
+  transform: scale(0.97) translateY(0);
+  transition: transform .1s ease;
+}
 .cat-prod-img {
-  transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+  transition: transform .55s cubic-bezier(.25,.46,.45,.94);
 }
-.cat-prod-card:hover .cat-prod-img { transform: scale(1.1); }
-
-/* ── Tirai kiri-kanan ke tengah ── */
-.cat-prod-overlay {
-  pointer-events: none;
-}
-/* Dua panel tirai */
-.curtain-left,
-.curtain-right {
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 50%;
-  z-index: 20;
-  pointer-events: none;
-  transition: transform .48s cubic-bezier(.77,0,.18,1);
-}
-.curtain-left  {
-  left: 0;
-  transform: translateX(-101%);
-  background: linear-gradient(to right,
-    rgba(44,26,30,.75) 0%,
-    rgba(44,26,30,.65) 100%);
-}
-.curtain-right {
-  right: 0;
-  transform: translateX(101%);
-  background: linear-gradient(to left,
-    rgba(44,26,30,.75) 0%,
-    rgba(44,26,30,.65) 100%);
-}
-.cat-prod-card:hover .curtain-left  { transform: translateX(0); }
-.cat-prod-card:hover .curtain-right { transform: translateX(0); }
-
-/* Konten overlay di atas tirai */
-.curtain-content {
-  position: absolute;
-  inset: 0;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 16px;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .3s ease .25s, transform .3s ease .25s;
-}
-.cat-prod-card:hover .curtain-content {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-/* ── Bunga melayang di sekitar card ── */
-@keyframes floatUp {
-  0%   { opacity:0; transform: translate(var(--fx,0), 0px) scale(.4) rotate(0deg); }
-  20%  { opacity:1; }
-  80%  { opacity:.7; }
-  100% { opacity:0; transform: translate(var(--fx,0), -90px) scale(1) rotate(var(--fr, 30deg)); }
-}
-.card-petal {
-  position: absolute;
-  font-size: 18px;
-  pointer-events: none;
-  z-index: 40;
-  animation: floatUp .9s ease forwards;
-  will-change: transform, opacity;
-}
-
-/* ── Mobile: overlay selalu tampil ── */
-@media (hover: none) {
-  .curtain-left, .curtain-right {
-    transform: translateX(0) !important;
-    transition: none;
-  }
-  .curtain-content {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    transition: none;
-  }
-  .cat-prod-card { transform: none !important; }
+.cat-prod-card:hover .cat-prod-img {
+  transform: scale(1.07);
 }
 
 /* ── Filter tabs ── */
@@ -254,7 +180,6 @@ require __DIR__ . '/../includes/header.php';
   <div class="absolute inset-0">
     <div class="absolute inset-0 bg-cover bg-center"
          style="background-image:url('<?= e(imgUrl($category['image'], 'category')) ?>')"></div>
-    <!-- Overlay: kiri pekat ivory, kanan transparan biar foto kelihatan -->
     <div class="absolute inset-0"
          style="background: linear-gradient(105deg,
            rgba(253,249,244,.97) 0%,
@@ -263,7 +188,6 @@ require __DIR__ . '/../includes/header.php';
            rgba(253,249,244,.15) 100%);"></div>
   </div>
   <?php else: ?>
-  <!-- Fallback: dot pattern cream -->
   <div class="absolute inset-0"
        style="background: radial-gradient(circle at 70% 50%, rgba(242,196,206,.25) 0%, transparent 65%);"></div>
   <div class="absolute inset-0 opacity-[0.06]"
@@ -425,9 +349,13 @@ require __DIR__ . '/../includes/header.php';
       <?php foreach ($products as $prod):
         $img     = imgUrl($prod['image'], 'product');
         $wa_prod = urlencode("Halo, saya tertarik memesan *{$prod['name']}* seharga " . rupiah($prod['price']) . ". Apakah masih tersedia?");
+        $wa_href = e($wa_url) . '?text=' . $wa_prod;
       ?>
-      <div class="cat-prod-card group relative rounded-2xl overflow-hidden cursor-pointer"
-           style="background:#fff; border:1px solid rgba(212,137,154,.12);">
+      <!-- Seluruh card diklik → buka WA -->
+      <a href="<?= $wa_href ?>" target="_blank"
+         class="cat-prod-card group relative rounded-2xl overflow-hidden no-underline block"
+         style="background:#fff; border:1px solid rgba(212,137,154,.12);">
+
         <div class="relative overflow-hidden aspect-[3/4]">
           <img src="<?= e($img) ?>"
                alt="<?= e($prod['name']) ?> Tangerang"
@@ -456,42 +384,9 @@ require __DIR__ . '/../includes/header.php';
               <?= rupiah($prod['price']) ?>
             </span>
           </div>
-
-          <!-- Tirai kiri -->
-          <div class="curtain-left rounded-l-none"></div>
-          <!-- Tirai kanan -->
-          <div class="curtain-right rounded-r-none"></div>
-
-          <!-- Konten muncul setelah tirai menutup -->
-          <div class="curtain-content">
-            <h3 class="font-semibold text-white text-sm leading-tight line-clamp-2 mb-1"
-                style="font-family:'Cormorant Garamond',serif;">
-              <?= e($prod['name']) ?>
-            </h3>
-            <?php if (!empty($prod['description'])): ?>
-            <p class="text-[11px] leading-relaxed line-clamp-2 mb-3" style="color:rgba(255,255,255,.5);">
-              <?= e($prod['description']) ?>
-            </p>
-            <?php endif; ?>
-            <div class="flex items-center justify-between gap-2">
-              <span class="font-bold text-base" style="color:var(--cp-blush); font-family:'Cormorant Garamond',serif;">
-                <?= rupiah($prod['price']) ?>
-              </span>
-              <a href="<?= e($wa_url) ?>?text=<?= $wa_prod ?>" target="_blank"
-                 class="inline-flex items-center gap-1.5 font-bold text-[11px] px-3.5 py-2 rounded-full no-underline transition hover:-translate-y-0.5"
-                 style="background:linear-gradient(135deg,var(--cp-blush),var(--cp-dusty)); color:#fff;
-                        box-shadow:0 3px 10px rgba(200,119,138,.35);">
-                <svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                  <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.533 5.861L0 24l6.305-1.508A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.374l-.36-.214-3.735.893.944-3.639-.234-.374A9.818 9.818 0 1112 21.818z"/>
-                </svg>
-                Pesan
-              </a>
-            </div>
-          </div>
-
         </div>
-      </div>
+
+      </a>
       <?php endforeach; ?>
     </div>
 
@@ -531,18 +426,18 @@ require __DIR__ . '/../includes/header.php';
           Tentang Layanan
         </div>
         <h1 style="font:900 clamp(1.6rem,3.5vw,2.4rem)/1.15 'Cormorant Garamond',serif; color:var(--cp-dark); margin-bottom:1.25rem;">
-  <?= e($category['name']) ?> Terbaik<br>
-  <em style="font-style:italic; background:linear-gradient(135deg,var(--cp-dusty),var(--cp-rose));
-             -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
-    di Tangerang
-  </em>
-</h1>
+          <?= e($category['name']) ?> Terbaik<br>
+          <em style="font-style:italic; background:linear-gradient(135deg,var(--cp-dusty),var(--cp-rose));
+                     -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
+            di Tangerang
+          </em>
+        </h1>
 
         <?php if (!empty($category['content'])): ?>
-<div class="cat-prose leading-relaxed text-[15px] mb-6">
-  <?= $category['content'] ?>
-</div>
-<?php endif; ?>
+        <div class="cat-prose leading-relaxed text-[15px] mb-6">
+          <?= $category['content'] ?>
+        </div>
+        <?php endif; ?>
 
         <p class="text-[15px] leading-relaxed mb-8" style="color:var(--cp-muted);">
           Kami sebagai <strong>florist Tangerang</strong> terpercaya menyediakan
@@ -579,74 +474,74 @@ require __DIR__ . '/../includes/header.php';
       <!-- Kanan: area + kategori lain + CTA -->
       <div class="space-y-5">
 
-      <!-- Area pengiriman -->
-<div class="rounded-2xl p-6"
-     style="background:#fff; border:1px solid rgba(212,137,154,.15);
-            box-shadow:0 4px 20px rgba(44,26,30,.05);">
-  <div class="flex items-center gap-2 mb-4">
-    <span class="text-lg">📍</span>
-    <h3 style="font:700 18px/1 'Cormorant Garamond',serif; color:var(--cp-dark);">
-      Area Pengiriman
-    </h3>
-  </div>
-  <p class="text-[13px] mb-4 leading-relaxed" style="color:var(--cp-muted);">
-    Kami melayani pengiriman <?= e(strtolower($category['name'])) ?>
-    ke seluruh kecamatan di Tangerang:
-  </p>
+        <!-- Area pengiriman -->
+        <div class="rounded-2xl p-6"
+             style="background:#fff; border:1px solid rgba(212,137,154,.15);
+                    box-shadow:0 4px 20px rgba(44,26,30,.05);">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-lg">📍</span>
+            <h3 style="font:700 18px/1 'Cormorant Garamond',serif; color:var(--cp-dark);">
+              Area Pengiriman
+            </h3>
+          </div>
+          <p class="text-[13px] mb-4 leading-relaxed" style="color:var(--cp-muted);">
+            Kami melayani pengiriman <?= e(strtolower($category['name'])) ?>
+            ke seluruh kecamatan di Tangerang:
+          </p>
 
-  <!-- Halaman-halaman area -->
-  <?php for ($p = 0; $p < $slider_pages; $p++): ?>
-  <div id="tngAreaPage<?= $p ?>"
-       style="display:<?= $p === $slider_active_page ? 'grid' : 'none' ?>;
-              grid-template-columns: repeat(2, 1fr);
-              gap: 6px; min-height: 60px;">
-    <?php
-    $slice = array_slice($locations, $p * $slider_per_page, $slider_per_page);
-    foreach ($slice as $l):
-    ?>
-    <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
-       class="area-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold no-underline overflow-hidden"
-       style="background:rgba(242,196,206,.15); border:1px solid rgba(212,137,154,.2);
-              color:var(--cp-muted); min-width:0;">
-      <span class="w-1 h-1 rounded-full flex-shrink-0 inline-block"
-            style="background:rgba(212,137,154,.5);"></span>
-      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">
-        <?= e($l['name']) ?>
-      </span>
-    </a>
-    <?php endforeach; ?>
-  </div>
-  <?php endfor; ?>
+          <!-- Halaman-halaman area -->
+          <?php for ($p = 0; $p < $slider_pages; $p++): ?>
+          <div id="tngAreaPage<?= $p ?>"
+               style="display:<?= $p === $slider_active_page ? 'grid' : 'none' ?>;
+                      grid-template-columns: repeat(2, 1fr);
+                      gap: 6px; min-height: 60px;">
+            <?php
+            $slice = array_slice($locations, $p * $slider_per_page, $slider_per_page);
+            foreach ($slice as $l):
+            ?>
+            <a href="<?= BASE_URL ?>/<?= e($l['slug']) ?>/"
+               class="area-pill inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold no-underline overflow-hidden"
+               style="background:rgba(242,196,206,.15); border:1px solid rgba(212,137,154,.2);
+                      color:var(--cp-muted); min-width:0;">
+              <span class="w-1 h-1 rounded-full flex-shrink-0 inline-block"
+                    style="background:rgba(212,137,154,.5);"></span>
+              <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">
+                <?= e($l['name']) ?>
+              </span>
+            </a>
+            <?php endforeach; ?>
+          </div>
+          <?php endfor; ?>
 
-  <!-- Navigasi -->
-  <?php if ($slider_pages > 1): ?>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(212,137,154,.12);">
-    <button id="tngAreaPrev" onclick="tngAreaSlider(-1)"
-            style="font-size:11px;padding:4px 11px;border-radius:8px;
-                   border:1px solid rgba(212,137,154,.2);
-                   background:#fff;color:var(--cp-muted);cursor:pointer;">
-      ‹ Prev
-    </button>
+          <!-- Navigasi -->
+          <?php if ($slider_pages > 1): ?>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:10px;border-top:1px solid rgba(212,137,154,.12);">
+            <button id="tngAreaPrev" onclick="tngAreaSlider(-1)"
+                    style="font-size:11px;padding:4px 11px;border-radius:8px;
+                           border:1px solid rgba(212,137,154,.2);
+                           background:#fff;color:var(--cp-muted);cursor:pointer;">
+              ‹ Prev
+            </button>
 
-    <div style="display:flex;gap:4px;align-items:center;">
-      <?php for ($p = 0; $p < $slider_pages; $p++): ?>
-      <span id="tngAreaDot<?= $p ?>" onclick="tngAreaGoPage(<?= $p ?>)"
-            style="display:inline-block;height:5px;border-radius:3px;cursor:pointer;transition:all .2s;
-                   width:<?= $p === $slider_active_page ? '16px' : '5px' ?>;
-                   background:<?= $p === $slider_active_page ? 'var(--cp-rose)' : 'rgba(212,137,154,.25)' ?>;"></span>
-      <?php endfor; ?>
-    </div>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <?php for ($p = 0; $p < $slider_pages; $p++): ?>
+              <span id="tngAreaDot<?= $p ?>" onclick="tngAreaGoPage(<?= $p ?>)"
+                    style="display:inline-block;height:5px;border-radius:3px;cursor:pointer;transition:all .2s;
+                           width:<?= $p === $slider_active_page ? '16px' : '5px' ?>;
+                           background:<?= $p === $slider_active_page ? 'var(--cp-rose)' : 'rgba(212,137,154,.25)' ?>;"></span>
+              <?php endfor; ?>
+            </div>
 
-    <button id="tngAreaNext" onclick="tngAreaSlider(1)"
-            style="font-size:11px;padding:4px 11px;border-radius:8px;
-                   border:1px solid rgba(212,137,154,.2);
-                   background:#fff;color:var(--cp-muted);cursor:pointer;">
-      Next ›
-    </button>
-  </div>
-  <p id="tngAreaInfo" style="text-align:center;font-size:11px;color:rgba(44,26,30,.3);margin-top:5px;"></p>
-  <?php endif; ?>
-</div>
+            <button id="tngAreaNext" onclick="tngAreaSlider(1)"
+                    style="font-size:11px;padding:4px 11px;border-radius:8px;
+                           border:1px solid rgba(212,137,154,.2);
+                           background:#fff;color:var(--cp-muted);cursor:pointer;">
+              Next ›
+            </button>
+          </div>
+          <p id="tngAreaInfo" style="text-align:center;font-size:11px;color:rgba(44,26,30,.3);margin-top:5px;"></p>
+          <?php endif; ?>
+        </div>
 
         <!-- Layanan lain -->
         <div class="rounded-2xl p-6"
@@ -759,66 +654,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.sidebar-acc-content.open').forEach(el => {
     el.previousElementSibling?.classList.add('open');
   });
-
-  /* ══════════════════════════════════
-     BUNGA MELAYANG SAAT HOVER / TAP
-  ══════════════════════════════════ */
-  const petals   = ['🌸','🌺','🌷','✿','❀','💮','🪷'];
-  const isMobile = window.matchMedia('(hover: none)').matches;
-
-  function spawnPetals(card, originX, originY) {
-    const count = isMobile ? 5 : 7;
-    for (let i = 0; i < count; i++) {
-      const el = document.createElement('span');
-      el.className  = 'card-petal';
-      el.textContent = petals[Math.floor(Math.random() * petals.length)];
-
-      /* posisi awal acak di sekitar titik sentuh / batas card */
-      const spread = 60;
-      const startX = originX + (Math.random() - .5) * spread;
-      const startY = originY + (Math.random() - .5) * 20;
-      const driftX = (Math.random() - .5) * 60;
-      const rot    = (Math.random() - .5) * 60;
-
-      el.style.cssText = `
-        left: ${startX}px;
-        top:  ${startY}px;
-        --fx: ${driftX}px;
-        --fr: ${rot}deg;
-        animation-delay: ${i * 60}ms;
-        animation-duration: ${750 + Math.random() * 400}ms;
-        font-size: ${14 + Math.random() * 10}px;
-      `;
-
-      card.appendChild(el);
-      el.addEventListener('animationend', () => el.remove());
-    }
-  }
-
-  document.querySelectorAll('.cat-prod-card').forEach(card => {
-    if (isMobile) {
-      /* Mobile: spawn bunga saat tap di titik jari */
-      card.addEventListener('touchstart', e => {
-        const touch = e.touches[0];
-        const rect  = card.getBoundingClientRect();
-        spawnPetals(card,
-          touch.clientX - rect.left,
-          touch.clientY - rect.top
-        );
-      }, { passive: true });
-
-    } else {
-      /* Desktop: spawn bunga saat mouseenter dari tepi card */
-      card.addEventListener('mouseenter', e => {
-        const rect = card.getBoundingClientRect();
-        spawnPetals(card,
-          e.clientX - rect.left,
-          e.clientY - rect.top
-        );
-      });
-    }
-  });
 });
+
 /* ── Area slider Tangerang category ── */
 (function() {
   var perPage = <?= $slider_per_page ?>;
