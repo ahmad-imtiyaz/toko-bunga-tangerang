@@ -269,6 +269,56 @@ $locs    = db()->query("SELECT name, slug FROM locations WHERE status='active' O
   margin-top: 6px;
   opacity: .6;
 }
+/* ─── MARKETPLACE LINKS (rose theme) ─── */
+.footer-markets-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: .6;
+  margin-bottom: 8px;
+  margin-top: 18px;
+}
+.footer-markets {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.footer-market-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: rgba(212,137,154,.07);
+  border: 1px solid rgba(212,137,154,.18);
+  border-radius: 100px;
+  text-decoration: none;
+  color: var(--fg);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  transition: background .22s, border-color .22s, color .22s,
+              transform .22s, box-shadow .22s;
+  white-space: nowrap;
+}
+.footer-market-btn:hover {
+  background: rgba(212,137,154,.15);
+  border-color: var(--rose);
+  color: var(--dusty);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212,137,154,.2);
+}
+.footer-market-btn img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: transform .22s;
+}
+.footer-market-btn:hover img {
+  transform: scale(1.15);
+}
 @media (max-width: 767px) {
   .fas-btn-rose  { width: 34px; height: 34px; }
   .fas-hint-rose { display: block; }
@@ -315,6 +365,29 @@ $locs    = db()->query("SELECT name, slug FROM locations WHERE status='active' O
         <p class="text-[13.5px] leading-relaxed mb-5" style="color: var(--fg);">
           <?= e(setting('footer_text')) ?>
         </p>
+
+        <!-- ── Marketplace ── -->
+        <p class="footer-markets-label">Temukan Kami di</p>
+        <div class="footer-markets">
+          <a href="https://id.shp.ee/R1iEKrTg"
+             target="_blank" rel="noopener"
+             class="footer-market-btn" aria-label="Shopee">
+            <img src="<?= BASE_URL ?>/assets/svg/shopee.svg" alt="Shopee" width="15" height="15">
+            Shopee
+          </a>
+          <a href="https://vt.tiktok.com/ZS9992dcj/?page=Mall"
+             target="_blank" rel="noopener"
+             class="footer-market-btn" aria-label="TikTok Shop">
+            <img src="<?= BASE_URL ?>/assets/svg/tiktok.svg" alt="TikTok Shop" width="15" height="15">
+            TikTok Shop
+          </a>
+          <a href="https://tk.tokopedia.com/ZS999mNA8/"
+             target="_blank" rel="noopener"
+             class="footer-market-btn" aria-label="Tokopedia">
+            <img src="<?= BASE_URL ?>/assets/svg/tokopedia.svg" alt="Tokopedia" width="15" height="15">
+            Tokopedia
+          </a>
+        </div>
 
         <div class="flex gap-1 mb-5 text-base select-none" style="opacity:.45;">
           🌸 🌺 🌷 🌼
