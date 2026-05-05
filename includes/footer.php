@@ -353,8 +353,10 @@ $locs    = db()->query("SELECT name, slug FROM locations WHERE status='active' O
         <div class="flex items-center gap-3 mb-5 group">
           <div class="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 transition duration-300 group-hover:scale-110"
                style="box-shadow: 0 4px 16px rgba(212,137,154,.3); border: 2px solid rgba(212,137,154,.25);">
-            <img src="<?= BASE_URL ?>/assets/images/icon.png" alt="Logo"
-                 class="w-full h-full object-cover transition duration-500 group-hover:rotate-6">
+           <?php $logo = setting('logo'); ?>
+<img src="<?= $logo ? imgUrl($logo) : BASE_URL . '/assets/images/icon.png' ?>"
+     alt="Logo <?= e(setting('site_name')) ?>"
+     class="w-full h-full object-cover transition duration-500 group-hover:rotate-6">
           </div>
           <div class="font-serif font-bold text-lg leading-tight transition duration-300 group-hover:scale-105"
                style="color: var(--dark);">
