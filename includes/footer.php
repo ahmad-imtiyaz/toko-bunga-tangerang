@@ -375,7 +375,7 @@ $locs    = db()->query("SELECT name, slug FROM locations WHERE status='active' O
             <img src="<?= BASE_URL ?>/assets/svg/shopee.svg" alt="Shopee" width="15" height="15">
             Shopee
           </a>
-          <a href="https://vt.tiktok.com/ZS9992dcj/?page=Mall"
+          <a href="https://www.tiktok.com/@companyflorist?_r=1&_t=ZS-963MFQW40e2"
              target="_blank" rel="noopener"
              class="footer-market-btn" aria-label="TikTok Shop">
             <img src="<?= BASE_URL ?>/assets/svg/tiktok.svg" alt="TikTok Shop" width="15" height="15">
@@ -402,6 +402,7 @@ $locs    = db()->query("SELECT name, slug FROM locations WHERE status='active' O
           </a>
         </div>
       </div>
+
 
       <!-- ── Layanan ── -->
       <div>
