@@ -20,13 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'])) {
 
 // If not logged in, show login page
 if (!isLoggedIn()) {
+  $s = allSettings();
     ?>
     <!DOCTYPE html>
     <html lang="id">
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="<?= BASE_URL ?>/assets/images/icon.png">
+    <link rel="icon" href="<?= !empty($s['logo']) ? UPLOAD_URL . e($s['logo']) : BASE_URL . '/assets/images/icon.png' ?>">
     <title>Login — Admin Toko Bunga Grogol</title>
     <meta name="robots" content="noindex, nofollow">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -56,9 +57,11 @@ if (!isLoggedIn()) {
     <!-- Logo area -->
 <div class="text-center mb-8">
   <div class="w-16 h-16 bg-sage rounded-full flex items-center justify-center shadow-lg mx-auto mb-4 overflow-hidden">
-    <img src="../assets/images/icon.png"
-         alt="Logo"
-         class="w-full h-full object-cover">
+     <?php if (!empty($s['logo'])): ?>
+  <img src="<?= UPLOAD_URL . e($s['logo']) ?>" alt="Logo" class="w-full h-full object-cover">
+<?php else: ?>
+  <img src="../assets/images/icon.png" alt="Logo" class="w-full h-full object-cover">
+<?php endif; ?>
   </div>
   <h1 class="font-serif text-2xl font-bold text-navy">Admin Panel</h1>
   <p class="text-gray-500 text-sm mt-1">Toko Bunga Grogol</p>
