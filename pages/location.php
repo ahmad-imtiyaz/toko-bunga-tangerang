@@ -430,10 +430,16 @@ function renderPetals(int $n, string $emojis='🌸🌺🌷🌼'): string {
           <span class="pin-dot w-2 h-2 rounded-full flex-shrink-0 inline-block" style="background:var(--rose);"></span>
           📍 <?= e($location['name']) ?>, Tangerang
         </div>
-        <h1 class="reveal reveal-2 font-serif font-black leading-tight mb-5" style="font-size:clamp(2.2rem,5vw,3.6rem);color:var(--dark);">
-          Toko Bunga<br>
-          <span style="background:linear-gradient(135deg,var(--dusty),var(--rose),var(--blush));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><?= e($location['name']) ?></span>
-        </h1>
+       <h1 class="reveal reveal-2 font-serif font-black leading-tight mb-5" style="font-size:clamp(2.2rem,5vw,3.6rem);color:var(--dark);">
+    <?php
+        $words = explode(' ', e($location['name']));
+        $first = $words[0];
+        $rest  = implode(' ', array_slice($words, 1));
+    ?>
+    <span style="color:var(--dark);"><?= $first ?></span>
+    <br>
+    <span style="background:linear-gradient(135deg,var(--dusty),var(--rose),var(--blush));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><?= $rest ?></span>
+</h1>
         <p class="reveal reveal-3 text-base md:text-lg leading-relaxed mb-8 max-w-md" style="color:var(--muted);">
           <?= !empty($location['meta_description']) ? e($location['meta_description']) : 'Florist '.e($location['name']).' terpercaya — karangan bunga papan, hand bouquet, wedding, duka cita. Pengiriman cepat 2–4 jam ke seluruh '.e($location['name']).'.' ?>
         </p>
